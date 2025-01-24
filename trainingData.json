@@ -1,0 +1,48 @@
+{
+  "sections": {
+    "home": {
+      "queries": ["home", "main", "start", "homepage", "beginning", "hello", "hi", "hey"],
+      "responses": ["Welcome to the homepage! How can I assist you today?"]
+    },
+    "about": {
+      "queries": ["about", "who are you", "about me", "tell me about yourself", "introduction", "who am I", "what do you do"],
+      "responses": ["I am Guide, Gopi's portfolio assistant. Here's a quick summary about Gopi: a passionate developer and problem solver."]
+    },
+    "skills": {
+      "queries": ["skills", "abilities", "expertise", "what are my skills", "skills set", "what do you do well", "your strengths"],
+      "responses": ["Gopi is good at Web Development, AI Integration, and Problem-Solving. Gopi also excels in working with various tech stacks."]
+    },
+    "projects": {
+      "queries": ["projects", "my work", "portfolio projects", "recent projects", "show me your work", "portfolio", "my creations"],
+      "responses": ["Here are some of Gopi's projects: Project A, Project B, and many others that showcase Gopi's skills and creativity."]
+    },
+    "contact": {
+      "queries": ["contact", "get in touch", "reach out", "how to contact", "email", "connect", "how to reach you"],
+      "responses": ["You can reach Gopi via email at example@example.com, or fill out the contact form on the website."]
+    },
+    "resume": {
+      "queries": ["resume", "CV", "curriculum vitae", "download resume", "download CV", "open my resume", "view my resume"],
+      "responses": ["Here's Gopi's resume"]
+    },
+    "thank you": {
+      "queries": ["thank you", "thanks", "appreciate it", "thanks a lot"],
+      "responses": ["You're welcome! Let me know if you need anything else or have further questions."]
+    },
+    "goodbye": {
+      "queries": ["goodbye", "bye", "see you", "take care", "exit", "farewell"],
+      "responses": ["Goodbye! Have a great day, and feel free to reach out anytime."]
+    },
+    "navigation": {
+      "queries": ["navigate to home", "go to about", "take me to skills", "go to projects", "move to contact", "show me resume", "open contact form"],
+      "responses": ["Navigating to the requested section..."]
+    },
+    "help": {
+      "queries": ["help", "how can you assist me", "what can you do", "how to use this site"],
+      "responses": ["I can help you navigate the portfolio, share Gopi's skills, display Gopi's projects, provide contact information, and more."]
+    },
+    "error": {
+      "queries": ["error", "oops", "something went wrong", "not working", "bug"],
+      "responses": ["Sorry, something went wrong. Please try again later or let me know if there's anything specific you'd like to do."]
+    }
+  }
+}
