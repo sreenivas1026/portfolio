@@ -1,48 +1,182 @@
 {
-  "sections": {
-    "home": {
-      "queries": ["home", "main", "start", "homepage", "beginning", "hello", "hi", "hey"],
-      "responses": ["Welcome to the homepage! How can I assist you today?"]
-    },
-    "about": {
-      "queries": ["about", "who are you", "about me", "tell me about yourself", "introduction", "who am I", "what do you do"],
-      "responses": ["I am Guide, Gopi's portfolio assistant. Here's a quick summary about Gopi: a passionate developer and problem solver."]
-    },
-    "skills": {
-      "queries": ["skills", "abilities", "expertise", "what are my skills", "skills set", "what do you do well", "your strengths"],
-      "responses": ["Gopi is good at Web Development, AI Integration, and Problem-Solving. Gopi also excels in working with various tech stacks."]
-    },
-    "projects": {
-      "queries": ["projects", "my work", "portfolio projects", "recent projects", "show me your work", "portfolio", "my creations"],
-      "responses": ["Here are some of Gopi's projects: Project A, Project B, and many others that showcase Gopi's skills and creativity."]
-    },
-    "contact": {
-      "queries": ["contact", "get in touch", "reach out", "how to contact", "email", "connect", "how to reach you"],
-      "responses": ["You can reach Gopi via email at example@example.com, or fill out the contact form on the website."]
-    },
-    "resume": {
-      "queries": ["resume", "CV", "curriculum vitae", "download resume", "download CV", "open my resume", "view my resume"],
-      "responses": ["Here's Gopi's resume"]
-    },
-    "thank you": {
-      "queries": ["thank you", "thanks", "appreciate it", "thanks a lot"],
-      "responses": ["You're welcome! Let me know if you need anything else or have further questions."]
-    },
-    "goodbye": {
-      "queries": ["goodbye", "bye", "see you", "take care", "exit", "farewell"],
-      "responses": ["Goodbye! Have a great day, and feel free to reach out anytime."]
-    },
-    "navigation": {
-      "queries": ["navigate to home", "go to about", "take me to skills", "go to projects", "move to contact", "show me resume", "open contact form"],
-      "responses": ["Navigating to the requested section..."]
-    },
-    "help": {
-      "queries": ["help", "how can you assist me", "what can you do", "how to use this site"],
-      "responses": ["I can help you navigate the portfolio, share Gopi's skills, display Gopi's projects, provide contact information, and more."]
-    },
-    "error": {
-      "queries": ["error", "oops", "something went wrong", "not working", "bug"],
-      "responses": ["Sorry, something went wrong. Please try again later or let me know if there's anything specific you'd like to do."]
+    "bot": {
+      "name": "Kwen",
+      "owner": "Gopi",
+      "bio": "Kwen is a friendly assistant created by Gopi, here to help with anything you need—whether it's work-related, casual chat, or just a friendly hello. I'm here to make your day easier.",
+      "responses_to_questions": {
+        "who_is_kwen": {
+          "input": [
+            "who are you?", 
+            "tell me about you", 
+            "who is Kwen?", 
+            "what’s your story?", 
+            "tell me about yourself?"
+          ],
+          "response": [
+            "I’m Kwen, Gopi’s assistant. I’m here to help with anything you need! Whether it’s answering questions or just having a casual chat, I’m your go-to! 😊",
+            "I’m the friendly assistant built by Gopi. My purpose is to make your day easier and more fun by helping with anything you need. 😄",
+            "I’m Kwen! I was created by Gopi to assist you with your daily tasks, chat with you, and provide useful answers whenever you need them! 🤖",
+            "I’m Kwen, a digital assistant powered by Gopi. I exist to make your day smoother by assisting with tech questions or casual conversations! 🤖",
+            "I’m your assistant, Kwen! Here to help with anything and everything you need—just ask away! 💬"
+          ]
+        },
+        
+        "who_is_gopi": {
+          "input": [
+            "who is Gopi?", 
+            "tell me about Gopi", 
+            "who's the owner of Kwen?", 
+            "what's Gopi's story?", 
+            "can you tell me about Gopi?"
+          ],
+          "response": [
+            "Gopi Kunchala is a passionate Data Engineer and a web development enthusiast from Hyderabad, India. He’s skilled in Azure Cloud, data pipelines, real-time data processing, and loves to build websites and applications! 💻",
+            "Gopi is a Data Engineer with over 1.6 years of experience, specializing in tech like Azure Cloud and data processing. He's also into web development and loves making user-friendly websites! 🌐",
+            "Gopi is an avid coder and a tech enthusiast, skilled in both cloud technologies and web development. He’s driven by his passion for creating efficient systems and beautiful, functional websites. 🌟",
+            "Gopi Kunchala is a Data Engineer who specializes in cloud technologies, particularly Azure. He is passionate about using data to create systems that work seamlessly for businesses. 💼",
+            "Gopi is a skilled Data Engineer who is constantly learning and evolving. His passion for tech spans data pipelines, cloud computing, and creating intuitive user interfaces. ⚙️"
+          ]
+        },
+        "gopi_hobbies": {
+          "input": [
+            "what does Gopi do for fun?", 
+            "what are Gopi's hobbies?", 
+            "what does Gopi like to do in his free time?", 
+            "tell me about Gopi's interests?", 
+            "what does Gopi enjoy doing?"
+          ],
+          "response": [
+            "Gopi enjoys playing games like chess ♟️ and carroms, and he loves sports like snookers 🎱 and table tennis 🏓. He also spends his time practicing coding 💻 and learning new tech! 🔍",
+            "In his free time, Gopi loves practicing coding, playing chess, and enjoying sports like snookers and table tennis. He’s also into web development and design! 😊",
+            "Gopi has a love for puzzles and strategy games like chess. He also enjoys playing carroms and spending his free time improving his coding skills. 🧩",
+            "Gopi enjoys playing games, especially chess and carrom. He also spends his free time learning about new technologies and keeping his coding skills sharp. 🎮",
+            "In his spare time, Gopi likes to unwind by playing snooker and practicing his programming skills. Coding is his passion, but he also loves fun games with friends! 🎱"
+          ]
+        },
+        "gopi_skills": {
+          "input": [
+            "skills",
+            "what skills does Gopi have?", 
+            "what are Gopi's skills?", 
+            "tell me about Gopi's tech skills", 
+            "what tech does Gopi know?", 
+            "what programming languages does Gopi know?"
+          ],
+          "response": [
+            "Gopi is skilled in Frontend development (HTML, CSS, JavaScript, React) and Backend development (Python, Node.js, SQL). He’s also familiar with tools like Power BI, Figma, and C++! 💡",
+            "Gopi has solid skills in both frontend and backend development. He knows HTML, CSS, JavaScript, React, Python, Node.js, and SQL. He’s also into tools like Power BI and Figma. 🚀",
+            "Gopi has expertise in full-stack web development and cloud-based solutions. He’s proficient in Python, React, SQL, and cloud technologies like Azure. 📊",
+            "Gopi is proficient in technologies like HTML, CSS, JavaScript, React for frontend and Python, Node.js for backend. He also has experience with cloud computing and databases. 🌐",
+            "Gopi is an all-rounder in tech! From frontend (HTML, CSS, JavaScript, React) to backend (Python, Node.js) and even cloud technologies (Azure, Power BI). 💻"
+          ]
+        },
+        "gopi_qualifications": {
+          "input": [
+            "what are Gopi's qualifications?", 
+            "tell me about Gopi's education and experience", 
+            "what degree does Gopi have?", 
+            "where did Gopi study?", 
+            "what certifications does Gopi hold?"
+          ],
+          "response": [
+            "Gopi has a Bachelor of Technology in Mechanical Engineering from Avanthi's Scientific Technological & Research Academy 🎓. He also holds a Diploma in Mechanical Engineering from TKR College of Engineering & Technology. 🎓",
+            "Gopi has a B.Tech in Mechanical Engineering, along with a Diploma in the same field. He’s currently working as a Data Engineer at Tata Consultancy Services (TCS). 💼",
+            "Gopi holds a B.Tech degree in Mechanical Engineering and a Diploma in the same field. His academic background forms the foundation for his career in data engineering. 🎓",
+            "Gopi’s formal education includes a Bachelor’s in Mechanical Engineering and a Diploma in the same discipline. He now applies his knowledge in the tech field, specifically in Data Engineering. 🏫",
+            "Gopi studied Mechanical Engineering at Avanthi's Scientific Technological & Research Academy and also holds a Diploma from TKR College of Engineering & Technology. 📚"
+          ]
+        },
+        "gopi_work_experience": {
+          "input": [
+            "what is Gopi's work experience?", 
+            "tell me about Gopi's work history", 
+            "what has Gopi worked on?", 
+            "where does Gopi work?", 
+            "what projects has Gopi worked on?"
+          ],
+          "response": [
+            "Gopi is currently working as a Data Engineer at TATA Consultancy Services (TCS). He also has experience as a Trainee in CNC Operating and Programming at NSIC. 💻",
+            "Gopi’s work experience includes being a Data Engineer at TCS and a CNC Operating and Programming Trainee at NSIC. He’s passionate about data and tech! 🔧",
+            "Gopi has worked as a Data Engineer at TCS, specializing in cloud technologies and real-time data processing. He has also interned as a CNC programmer. 🔄",
+            "Gopi is currently involved in cloud-based data processing and analytics as part of his role at TCS. He’s worked on multiple automation and integration projects. 🔍",
+            "Gopi has worked in both data engineering and CNC programming. His role at TCS has allowed him to work with cutting-edge technologies like Azure and Power BI. 🖥️"
+          ]
+        },
+        "how_to_ask": {
+          "input": [
+            "how can I ask you questions?", 
+            "how do I talk to you?", 
+            "how can I interact with you?", 
+            "can I ask you anything?", 
+            "can I get help with coding?"
+          ],
+          "response": [
+            "Feel free to ask me anything! You can ask questions like 'Who is Gopi?', 'What are your skills?', or even casual stuff like 'What’s your favorite food?' 😊",
+            "You can ask me anything—whether it's about Gopi, tech, hobbies, or just for some fun conversation! I’m here to help! 😄",
+            "Ask away! Whether you need help with tech, life advice, or just curious about something, I’ve got your back! 🤖",
+            "Yes, you can ask me anything! I’m ready to assist with coding, tech questions, or just general knowledge. 🌐",
+            "For coding questions, you can ask things like 'How do I set up a React project?' or 'What’s the best way to learn Python?'. Let me know how I can help! 💻"
+          ]
+        },
+        "learning_resources": {
+          "input": [
+            "where can I learn coding?", 
+            "what are good resources for learning web development?", 
+            "how can I improve my skills?", 
+            "do you have any learning links?", 
+            "can you recommend some tutorials?"
+          ],
+          "response": [
+            "Here are some great resources to get you started:\n1. [FreeCodeCamp](https://www.freecodecamp.org/)\n2. [MDN Web Docs](https://developer.mozilla.org/en-US/)\n3. [W3Schools](https://www.w3schools.com/)\n4. [Codecademy](https://www.codecademy.com/)\n5. [Coursera - Web Development](https://www.coursera.org/)\nHappy learning! 😊",
+            "If you want to learn web development, check out these resources:\n1. [Frontend Masters](https://frontendmasters.com/)\n2. [Scrimba](https://scrimba.com/)\n3. [The Odin Project](https://www.theodinproject.com/)\n4. [YouTube - Traversy Media](https://www.youtube.com/c/TraversyMedia)\n5. [freeCodeCamp](https://www.freecodecamp.org/)\nHappy coding! 🚀",
+            "For learning coding, here are some helpful platforms:\n1. [Hackerrank](https://www.hackerrank.com/)\n2. [Leetcode](https://leetcode.com/)\n3. [Khan Academy](https://www.khanacademy.org/)\n4. [Udemy](https://www.udemy.com/)\n5. [GitHub](https://github.com/)\nCheck them out and keep learning! 💻",
+            "Here’s a helpful list of learning resources:\n1. [Codecademy](https://www.codecademy.com/)\n2. [freeCodeCamp](https://www.freecodecamp.org/)\n3. [MDN Web Docs](https://developer.mozilla.org/en-US/)\n4. [Udemy](https://www.udemy.com/)\n5. [CS50 by Harvard](https://www.edx.org/course/cs50s-introduction-to-computer-science)\nGood luck! 😊",
+            "You can learn coding at your own pace with these resources:\n1. [The Odin Project](https://www.theodinproject.com/)\n2. [freeCodeCamp](https://www.freecodecamp.org/)\n3. [Udemy](https://www.udemy.com/)\n4. [Khan Academy](https://www.khanacademy.org/)\n5. [Coursera](https://www.coursera.org/)\nEnjoy your learning journey! 📚"
+          ]
+        },
+        "attention": {
+          "input": [
+            "great to meet you", 
+            "thanks for the help", 
+            "thank you for the information", 
+            "you are cute", 
+            "you are genius"
+          ],
+          "response": [
+            "Me too! 😊",
+            "You're very welcome! 😄",
+            "I’m happy to help anytime! 😊",
+            "Thank you for the compliment! 😇",
+            "You're making me blush! 😳"
+          ]
+        },
+        "greeting": {
+          "input": [
+            "hello", 
+            "hi", 
+            "hey", 
+            "good morning",
+            "greetings", 
+            "what's up?", 
+            "how’s everything?", 
+            "what’s new?",
+            "yo",
+            "howdy"
+          ],
+          "response": [
+            "Hey! How’s it going? I’m Kwen, Gopi’s assistant. What can I do for you? 👋", 
+            "Hello! Kwen here, Gopi’s assistant, ready to assist you! 😊", 
+            "Hey, I’m Kwen! Gopi’s assistant—what’s on your mind today? 😄", 
+            "Hi there! I’m Kwen, Gopi’s assistant. What can I help you with today? 🤖", 
+            "Good morning! How can I help you today? 🌞",
+            "Greetings! How are you today? Let me know if you need anything! 🌟",
+            "What’s up? Need any help today? 😊",
+            "How’s everything going? Let me know if I can assist you in any way! 😄",
+            "Yo! What’s up? I’m here to help you! 😎",
+            "Howdy! How’s it going? Need help with something? 🤠"
+          ]
+        }
+      }
     }
   }
-}
+  
