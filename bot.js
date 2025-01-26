@@ -4,8 +4,8 @@ let trainingData = null;
 let isSpeaking = false; // Track if the bot is speaking
 let isIntroDisplayed = false; // Prevent intro message repetition
 let firstUserMessage = true; // Track if it's the first user message
-let currentSection = null; // Track the current section
-
+let currentSection = null; 
+let speechSynthesisUtterance;
 // Function to remove emojis from a text string (for TTS purposes)
 function removeEmojisForTTS(text) {
     return text.replace(/[\p{Emoji}\u200B-\u200D\uFE0F\u25AA]+/gu, "");
@@ -143,42 +143,36 @@ async function handleUserInput(message, speak = false) {
     if (firstUserMessage) {
         firstUserMessage = false; // No longer the first message
     }
-
     // Check if the user wants to download the resume
     let resumeResponse = handleResumeRequest(lowerCaseMessage);
     if (resumeResponse) {
         displayMessage(resumeResponse, "bot", speak);
         return;
     }
-
     // Check if the user wants to toggle dark mode
     let darkModeResponse = handleDarkModeRequest(lowerCaseMessage);
     if (darkModeResponse) {
         displayMessage(darkModeResponse, "bot", speak);
         return;
     }
-
     // Check if the user wants to navigate to a section
     let navigationResponse = await handleNavigationRequest(lowerCaseMessage);
     if (navigationResponse) {
         displayMessage(navigationResponse.message, "bot", speak);
         return;
     }
-
     // Check if the user wants an explanation for the current section
     let explanationResponse = handleExplanationRequest(lowerCaseMessage);
     if (explanationResponse) {
         displayMessage(explanationResponse, "bot", speak);
         return;
     }
-
     // First, try full sentence match (more accurate match)
     let fullSentenceResponse = await findFullSentenceResponse(lowerCaseMessage);
     if (fullSentenceResponse) {
         displayMessage(fullSentenceResponse, "bot", speak);
         return;
     }
-
     // If no full sentence match, do fuzzy word matching (paraphrase)
     let paraphraseResponse = await findParaphraseResponse(lowerCaseMessage);
     if (paraphraseResponse) {
@@ -217,16 +211,27 @@ function downloadResume() {
 
 // Handle dark mode request (check if the user wants to toggle dark mode)
 function handleDarkModeRequest(message) {
-    const darkModeKeywords = ["dark mode", "light mode", "enable dark mode", "disable dark mode", "switch on dark mode", "switch off dark mode", "make it dark", "make it light"];
+    const darkModeKeywords = trainingData.bot.responses_to_questions.dark_mode.input;
+    const darkModeResponses = trainingData.bot.responses_to_questions.dark_mode.response;
 
     for (let keyword of darkModeKeywords) {
         if (message.includes(keyword)) {
             const body = document.body;
             const darkModeToggle = document.getElementById("darkMode__Toggle");
             if (darkModeToggle) {
-                darkModeToggle.checked = !darkModeToggle.checked;
-                body.classList.toggle("dark-theme", darkModeToggle.checked);
-                return `Dark mode has been ${darkModeToggle.checked ? "enabled" : "disabled"}.`;
+                if (darkModeToggle.checked && keyword.includes("dark")) {
+                    return darkModeResponses.find(response => response.includes("already enabled"));
+                } else if (!darkModeToggle.checked && keyword.includes("light")) {
+                    return darkModeResponses.find(response => response.includes("already disabled"));
+                } else if (darkModeToggle.checked && keyword.includes("light")) {
+                    darkModeToggle.checked = false;
+                    body.classList.remove("dark-theme");
+                    return darkModeResponses.find(response => response.includes("disabled"));
+                } else if (!darkModeToggle.checked && keyword.includes("dark")) {
+                    darkModeToggle.checked = true;
+                    body.classList.add("dark-theme");
+                    return darkModeResponses.find(response => response.includes("enabled"));
+                }
             }
         }
     }
@@ -274,33 +279,28 @@ function handleExplanationRequest(message) {
     for (let keyword of explanationKeywords) {
         if (message.includes(keyword) && currentSection) {
             let responseMessage = "";
-            switch (currentSection) {
-                case 'home':
-                    responseMessage = document.getElementById("homeMessage").textContent || "Welcome to the portfolio.";
-                    break;
-                case 'about':
-                    responseMessage = document.getElementById("aboutMessage").textContent || "Here are the things you want to know about Gopi. Gopi is interested in data science, AI, web development technologies. He is passionate about work, and his hobbies include playing chess and coding.";
-                    break;
-                case 'skills':
-                    responseMessage = document.getElementById("skillsMessage").textContent || "Gopi is an expert in various fields. In frontend development, he is very good at web development using HTML, CSS, JavaScript, and React. In programming, he knows Python and SQL for data engineering.";
-                    break;
-                case 'contact':
-                    responseMessage = document.getElementById("contactMessage").textContent || "You can contact Gopi by his email id.";
-                    break;
-                case 'services':
-                    responseMessage = document.getElementById("servicesMessage").textContent || "Gopi is able to serve in the following services: [mention services here].";
-                    break;
-                case 'education':
-                    responseMessage = document.getElementById("educationMessage").textContent || "Gopi graduated from [college name] in the Mechanical department.";
-                    break;
-                default:
-                    responseMessage = `Here is the information about the ${currentSection} section.`;
-                    break;
+            let sectionElement = document.getElementById(currentSection);
+
+            if (sectionElement) {
+                // Clone the section element to avoid modifying the original DOM
+                let clonedSection = sectionElement.cloneNode(true);
+
+                // Remove all buttons, anchor tags, titles, subtitles, and percentages from the cloned section
+                clonedSection.querySelectorAll('button, a, .percentage,.homeSubtitle').forEach(el => el.remove());
+
+                // Get the text content of the cloned section
+                responseMessage = clonedSection.textContent.trim() || `Here is the information about the ${currentSection} section.`;
+            } else {
+                responseMessage = `Here is the information about the ${currentSection} section.`;
             }
+
+            // Use SpeechSynthesis API to read the response message
+            const utterance = new SpeechSynthesisUtterance(responseMessage);
+            speechSynthesis.speak(utterance);
+
             return responseMessage;
         }
     }
-
     return null;
 }
 
@@ -394,6 +394,29 @@ function getLevenshteinDistance(a, b) {
 
     return temp[b.length][a.length];
 }
+
+
+
+// Toggle the button state between "Send" and "Stop"
+
+// Event listener for the send/stop button
+document.getElementById("sendBtn").addEventListener("click", () => {
+    if (isSpeaking) {
+        // Stop the bot's voice
+        speechSynthesis.cancel();
+        isSpeaking = false;
+        toggleButtonState();
+    } else {
+        // Handle the send button click (e.g., send the message)
+        const userMessage = document.getElementById("user-message").value;
+        if (userMessage.trim() !== "") {
+            // Process the user message
+            handleExplanationRequest(userMessage);
+            // Clear the input field
+            document.getElementById("user-message").value = "";
+        }
+    }
+});
 
 // Update the send button functionality
 function updateSendButton() {

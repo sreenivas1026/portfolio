@@ -102,6 +102,26 @@
             "Gopi has worked in both data engineering and CNC programming. His role at TCS has allowed him to work with cutting-edge technologies like Azure and Power BI. 🖥️"
           ]
         },
+        "what_to_ask": {
+          "input": [
+            "what you do", 
+            "what are your skills?", 
+            "what can you help with?"
+          ],
+          "response": [
+            "I will guide you with the information you need. You can ask me about Gopi, his skills, work experience etc. I'm here to help you. 😊",
+            "I can help you with information about Gopi, his skills, work experience, and more. Feel free to ask me anything! 😄"
+          ]
+        },
+        "pre-loaded": {
+            "input": [
+              "can you give other than potfolio and gopi details"
+            ],
+            "response": [
+            "Sorry!, I am set to work on gopi's portfolio, I can't help you with other than that. 😔, But Soon I will be programmed by ML then I can help you..."
+          
+            ]
+          },
         "how_to_ask": {
           "input": [
             "how can I ask you questions?", 
@@ -140,7 +160,9 @@
             "thanks for the help", 
             "thank you for the information", 
             "you are cute", 
-            "you are genius"
+            "you are genius",
+            "thanks",
+            "thank you"
           ],
           "response": [
             "Me too! 😊",
@@ -150,6 +172,24 @@
             "You're making me blush! 😳"
           ]
         },
+        "dark_mode": {
+        "input": [
+          "dark mode",
+          "light mode",
+          "enable dark mode",
+          "disable dark mode",
+          "switch on dark mode",
+          "switch off dark mode",
+          "make it dark",
+          "make it light"
+        ],
+        "response": [
+          "Dark mode has been enabled.",
+          "Dark mode has been disabled.",
+          "Dark mode is already enabled.",
+          "Dark mode is already disabled."
+        ]
+      },
         "greeting": {
           "input": [
             "hello", 
@@ -162,6 +202,7 @@
             "what’s new?",
             "yo",
             "howdy"
+            
           ],
           "response": [
             "Hey! How’s it going? I’m Kwen, Gopi’s assistant. What can I do for you? 👋", 
