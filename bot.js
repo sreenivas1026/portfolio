@@ -26,6 +26,9 @@ async function loadTrainingData() {
     }
 }
 
+const botIcon = document.getElementById("botIcon");
+botIcon.setAttribute("aria-label", "Open chatbot");
+
 // Open the chatbot and introduce the bot
 function openChat() {
     const chatContainer = document.getElementById("chatbot-container");
@@ -112,7 +115,7 @@ function typeMessage(message, element, speak) {
             if (speak) speakMessage(message);
             scrollToLatestMessage(); // Ensure scrolling after typing
         }
-    }, 15); // Adjust typing speed here
+    }, 20); // Adjusted typing speed
 }
 
 // Bot's voice synthesis (female voice)
@@ -210,29 +213,28 @@ function downloadResume() {
 }
 
 // Handle dark mode request (check if the user wants to toggle dark mode)
+function toggleDarkMode(isEnabled) {
+    const body = document.body;
+    const darkModeToggle = document.getElementById("darkMode__Toggle");
+    if (darkModeToggle) {
+        darkModeToggle.checked = isEnabled;
+        if (isEnabled) {
+            body.classList.add("dark-theme");
+        } else {
+            body.classList.remove("dark-theme");
+        }
+    }
+}
+
 function handleDarkModeRequest(message) {
     const darkModeKeywords = trainingData.bot.responses_to_questions.dark_mode.input;
     const darkModeResponses = trainingData.bot.responses_to_questions.dark_mode.response;
 
     for (let keyword of darkModeKeywords) {
         if (message.includes(keyword)) {
-            const body = document.body;
-            const darkModeToggle = document.getElementById("darkMode__Toggle");
-            if (darkModeToggle) {
-                if (darkModeToggle.checked && keyword.includes("dark")) {
-                    return darkModeResponses.find(response => response.includes("already enabled"));
-                } else if (!darkModeToggle.checked && keyword.includes("light")) {
-                    return darkModeResponses.find(response => response.includes("already disabled"));
-                } else if (darkModeToggle.checked && keyword.includes("light")) {
-                    darkModeToggle.checked = false;
-                    body.classList.remove("dark-theme");
-                    return darkModeResponses.find(response => response.includes("disabled"));
-                } else if (!darkModeToggle.checked && keyword.includes("dark")) {
-                    darkModeToggle.checked = true;
-                    body.classList.add("dark-theme");
-                    return darkModeResponses.find(response => response.includes("enabled"));
-                }
-            }
+            const isDarkMode = keyword.includes("dark");
+            toggleDarkMode(isDarkMode);
+            return darkModeResponses.find(response => response.includes(isDarkMode ? "enabled" : "disabled"));
         }
     }
 
