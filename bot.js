@@ -26,9 +26,6 @@ async function loadTrainingData() {
     }
 }
 
-const botIcon = document.getElementById("botIcon");
-botIcon.setAttribute("aria-label", "Open chatbot");
-
 // Open the chatbot and introduce the bot
 function openChat() {
     const chatContainer = document.getElementById("chatbot-container");
@@ -115,7 +112,7 @@ function typeMessage(message, element, speak) {
             if (speak) speakMessage(message);
             scrollToLatestMessage(); // Ensure scrolling after typing
         }
-    }, 20); // Adjusted typing speed
+    }, 15); // Adjust typing speed here
 }
 
 // Bot's voice synthesis (female voice)
@@ -422,18 +419,25 @@ document.getElementById("sendBtn").addEventListener("click", () => {
 });
 
 // Update the send button functionality
-function handleSendMessage() {
-    const userMessage = document.getElementById("user-message").value.trim();
-    if (userMessage !== "") {
-        handleUserInput(userMessage);
-        document.getElementById("user-message").value = ""; // Clear the input
-    }
+function updateSendButton() {
+    const sendBtn = document.getElementById("sendBtn");
+    sendBtn.onclick = () => {
+        const userMessage = document.getElementById("user-message").value.trim();
+        if (userMessage !== "") {
+            handleUserInput(userMessage);
+            document.getElementById("user-message").value = ""; // Clear the input
+        }
+    };
 }
 
-document.getElementById("sendBtn").onclick = handleSendMessage;
+// Event listener for the Enter key to send the message
 document.getElementById("user-message").addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
-        handleSendMessage();
+        const userMessage = document.getElementById("user-message").value.trim();
+        if (userMessage !== "") {
+            handleUserInput(userMessage);
+            document.getElementById("user-message").value = ""; // Clear the input
+        }
     }
 });
 
