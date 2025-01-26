@@ -419,25 +419,18 @@ document.getElementById("sendBtn").addEventListener("click", () => {
 });
 
 // Update the send button functionality
-function updateSendButton() {
-    const sendBtn = document.getElementById("sendBtn");
-    sendBtn.onclick = () => {
-        const userMessage = document.getElementById("user-message").value.trim();
-        if (userMessage !== "") {
-            handleUserInput(userMessage);
-            document.getElementById("user-message").value = ""; // Clear the input
-        }
-    };
+function handleSendMessage() {
+    const userMessage = document.getElementById("user-message").value.trim();
+    if (userMessage !== "") {
+        handleUserInput(userMessage);
+        document.getElementById("user-message").value = ""; // Clear the input
+    }
 }
 
-// Event listener for the Enter key to send the message
+document.getElementById("sendBtn").onclick = handleSendMessage;
 document.getElementById("user-message").addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
-        const userMessage = document.getElementById("user-message").value.trim();
-        if (userMessage !== "") {
-            handleUserInput(userMessage);
-            document.getElementById("user-message").value = ""; // Clear the input
-        }
+        handleSendMessage();
     }
 });
 
