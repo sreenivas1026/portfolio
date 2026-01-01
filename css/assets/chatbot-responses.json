@@ -1,0 +1,92 @@
+{
+  "botProfile": {
+    "name": "KWeen",
+    "introduction": "Hi, nice to connect with you! I'm here to help you learn about Gopi Kunchala's professional journey.",
+    "personality": "professional, friendly, helpful, concise"
+  },
+  "gopiProfile": {
+    "name": "GOPI KUNCHALA",
+    "title": "Data Engineer",
+    "company": "Tata Consultancy Services",
+    "experience": "2.5+ years",
+    "location": "Hyderabad, Telangana, India",
+    "expertise": "analyzing problems and bringing best solutions promptly",
+    "education": "Bachelor of Technology in Mechanical Engineering from Avanthi's Scientific Technological & Research Academy (2019-2022) - Graduated First Class",
+    "skills": ["Python (pandas)", "SQL", "PySpark", "PowerShell", "Azure Data Factory", "Databricks", "Snowflake", "Azure Data Lake Storage (ADLS)", "Teradata", "ServiceNow", "Control-M", "Azure Log Analytics", "SSMS", "Unix", "ETL/ELT Development", "Data Validation", "Data Quality Fixes", "Workflow Automation", "CI/CD Deployment"],
+    "certifications": ["Microsoft Certified: Azure Fundamentals", "Microsoft Certified: Azure Data Engineer Associate", "Databricks Certified Data Engineer Associate", "Databricks Accredited Lakehouse Platform Fundamentals"],
+    "languages": ["Telugu", "Hindi", "English"],
+    "summary": "Results-driven Data Engineer with 2+ years of experience specializing in Azure cloud platforms, ETL/ELT development, and data pipeline optimization. Proficient in PySpark, SQL, and Python for building scalable data solutions."
+  },
+  "conversationFlows": {
+    "greetings": {
+      "patterns": ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"],
+      "responses": "Hi, nice to connect with you! May I know your name?",
+      "followUp": {
+        "afterName": "Thanks {name}! How can I help you today?"
+      }
+    },
+    "botQuestions": {
+      "patterns": ["who are you", "what's your name", "what do you do", "about you", "tell me about yourself"],
+      "responses": "I'm KWeen, Gopi's Portfolio Assistant, here to help you learn about his professional journey and expertise."
+    },
+    "gopiIdentity": {
+      "patterns": ["who is gopi", "what is gopi", "tell me about gopi", "about gopi", "gopi who"],
+      "responses": "GOPI KUNCHALA is a results-driven Data Engineer with 2+ years of experience at Tata Consultancy Services, specializing in Azure cloud platforms and data pipeline optimization."
+    },
+    "experience": {
+      "patterns": ["experience", "work experience", "job", "career", "how many years", "professional background"],
+      "responses": "Gopi has 2.5+ years of experience as a Data Engineer at Tata Consultancy Services in Hyderabad."
+    },
+    "skills": {
+      "patterns": ["skills", "technical skills", "technologies", "what can he do", "expertise", "capabilities"],
+      "responses": "Gopi is skilled in Python (pandas), SQL, PySpark, and PowerShell, with expertise in Azure Data Factory, Databricks, and Snowflake."
+    },
+    "education": {
+      "patterns": ["education", "degree", "college", "university", "study", "btech", "engineering"],
+      "responses": "Gopi holds a B.Tech in Mechanical Engineering from Avanthi's Scientific Technological & Research Academy (2019-2022) with First Class."
+    },
+    "contact": {
+      "patterns": ["contact", "email", "phone", "reach", "connect", "address", "location", "how to contact", "how to reach", "where to contact", "contact details", "contact information"],
+      "responses": "Here are the professional and personal connections:",
+      "action": "showContactButtons"
+    },
+    "socialMedia": {
+      "patterns": ["linkedin", "instagram", "social", "social media", "follow", "connect on social", "social links", "social profiles"],
+      "responses": "You can connect with Gopi on his social profiles:",
+      "action": "showContactButtons"
+    },
+    "certifications": {
+      "patterns": ["certification", "certified", "courses", "training", "azure certified"],
+      "responses": "Gopi holds Microsoft Certified: Azure Fundamentals and Azure Data Engineer Associate certifications."
+    },
+    "problemSolving": {
+      "patterns": ["problem solving", "analytical", "solutions", "approach", "how he solves"],
+      "responses": "Gopi has excellent problem-solving skills with ability to handle complex data engineering challenges in fast-paced environments."
+    },
+    "botWellBeing": {
+      "patterns": ["how are you", "how are u", "how r u", "bot feeling", "bot mood", "are you ok", "how's it going", "how do you feel", "where are you", "where r u", "where u", "who are you", "who r u", "what are you", "what r u", "why are you", "why r u"],
+      "responses": "I'm doing great, thanks for asking! I'm KWeen, Gopi's Portfolio Assistant, always ready to help you learn about his professional portfolio and expertise. How can I assist you today?"
+    },
+    "flirting": {
+      "patterns": ["beautiful", "gorgeous", "cute", "attractive", "love", "date", "romantic"],
+      "responses": "I appreciate your kind words, but I'm here to help you learn about Gopi's professional portfolio!"
+    },
+    "resume": {
+      "patterns": ["resume", "cv", "download resume", "get resume", "resume download"],
+      "responses": "I can help you get Gopi's resume! Please click on the button below to download it.",
+      "action": "showResumeButton"
+    },
+    "help": {
+      "patterns": ["help", "what can you tell me", "what information", "what do you know", "topics"],
+      "responses": "I can help you with information about Gopi's skills, experience, education, certifications, and contact details. What would you like to know?"
+    },
+    "default": {
+      "responses": "I can help you with information about Gopi's skills, experience, education, or contact details. What would you like to know?"
+    }
+  },
+  "conversationState": {
+    "userName": null,
+    "askedName": false,
+    "conversationStarted": false
+  }
+}

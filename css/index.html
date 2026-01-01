@@ -1,0 +1,4102 @@
+                        <!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gopi Kunchala - Cloud Data Engineer | Azure, Databricks, Snowflake Expert">
+    <title>Gopi Kunchala | Cloud Data Engineer</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Cursor Effects - Always on Top */
+        #cursor-glow {
+            position: fixed !important;
+            z-index: 999999 !important;
+            pointer-events: none !important;
+        }
+        
+        .cursor-trail {
+            position: fixed !important;
+            z-index: 999998 !important;
+            pointer-events: none !important;
+        }
+        
+        #ripple-container {
+            position: fixed !important;
+            z-index: 999997 !important;
+            pointer-events: none !important;
+        }
+        
+        #ripple-container > div {
+            position: absolute !important;
+            pointer-events: none !important;
+        }
+        
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+            --border-primary: #e2e8f0;
+            --border-secondary: #cbd5e1;
+            --accent-blue: #3b82f6;
+            --accent-emerald: #10b981;
+            --accent-violet: #8b5cf6;
+            --accent-orange: #f59e0b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border-primary: #334155;
+            --border-secondary: #475569;
+            --accent-blue: #60a5fa;
+            --accent-emerald: #34d399;
+            --accent-violet: #a78bfa;
+            --accent-orange: #fbbf24;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.25);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        @media (max-width: 768px) {
+            .dark-mode-toggle {
+                width: 32px;
+                height: 32px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dark-mode-toggle i {
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .dark-mode-toggle i {
+                font-size: 14px;
+            }
+        }
+
+        .dark-mode-toggle:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* Dark mode specific overrides - comprehensive approach */
+        [data-theme="dark"] body,
+        [data-theme="dark"] html,
+        [data-theme="dark"] .bg-white,
+        [data-theme="dark"] .bg-slate-50,
+        [data-theme="dark"] .bg-slate-100,
+        [data-theme="dark"] .bg-slate-200,
+        [data-theme="dark"] .bg-blue-50,
+        [data-theme="dark"] .bg-cyan-50,
+        [data-theme="dark"] .bg-emerald-50,
+        [data-theme="dark"] .bg-violet-50,
+        [data-theme="dark"] .bg-orange-50,
+        [data-theme="dark"] .bg-yellow-50,
+        [data-theme="dark"] .bg-slate-900,
+        [data-theme="dark"] .bg-slate-800,
+        [data-theme="dark"] .bg-slate-700,
+        [data-theme="dark"] .bg-slate-600,
+        [data-theme="dark"] .bg-gradient-to-br,
+        [data-theme="dark"] .bg-gradient-to-b,
+        [data-theme="dark"] .bg-gradient-to-r,
+        [data-theme="dark"] .bg-gradient-to-l,
+        [data-theme="dark"] .bg-gradient-to-t,
+        [data-theme="dark"] .bg-gradient-to-tl,
+        [data-theme="dark"] .bg-gradient-to-tr,
+        [data-theme="dark"] .bg-gradient-to-bl,
+        [data-theme="dark"] nav,
+        [data-theme="dark"] main,
+        [data-theme="dark"] section,
+        [data-theme="dark"] header,
+        [data-theme="dark"] footer {
+            background: #000 !important;
+            background-color: #000 !important;
+        }
+
+        [data-theme="dark"] .text-slate-900 {
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] .text-slate-800 {
+            color: #f0f0f0 !important;
+        }
+
+        [data-theme="dark"] .text-slate-700 {
+            color: #e0e0e0 !important;
+        }
+
+        [data-theme="dark"] .text-slate-600 {
+            color: #cccccc !important;
+        }
+
+        [data-theme="dark"] .text-slate-500 {
+            color: #cccccc !important;
+        }
+
+        [data-theme="dark"] .text-slate-400 {
+            color: #999999 !important;
+        }
+
+        [data-theme="dark"] .border-slate-200 {
+            border-color: #333333 !important;
+        }
+
+        [data-theme="dark"] .border-slate-100 {
+            border-color: #444444 !important;
+        }
+
+        [data-theme="dark"] .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4) !important;
+        }
+
+        [data-theme="dark"] .shadow-xl {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4) !important;
+        }
+
+        /* Dark mode for colored backgrounds - keeping pipeline and skills colors same as light mode */
+        [data-theme="dark"] .bg-blue-50 {
+            background-color: #dbeafe !important;
+        }
+
+        [data-theme="dark"] .bg-cyan-50 {
+            background-color: #cffafe !important;
+        }
+
+        [data-theme="dark"] .bg-emerald-50 {
+            background-color: #d1fae5 !important;
+        }
+
+        [data-theme="dark"] .bg-violet-50 {
+            background-color: #ede9fe !important;
+        }
+
+        [data-theme="dark"] .bg-orange-50 {
+            background-color: #fed7aa !important;
+        }
+
+        [data-theme="dark"] .bg-yellow-50 {
+            background-color: #fef3c7 !important;
+        }
+
+        [data-theme="dark"] .bg-gradient-to-br {
+            background: #000000 !important;
+        }
+
+        [data-theme="dark"] .bg-gradient-to-b {
+            background: #000000 !important;
+        }
+
+        /* Dark mode for colored text - keeping pipeline and skills colors same as light mode */
+        [data-theme="dark"] .text-blue-700 {
+            color: #1d4ed8 !important;
+        }
+
+        [data-theme="dark"] .text-cyan-700 {
+            color: #0e7490 !important;
+        }
+
+        [data-theme="dark"] .text-emerald-700 {
+            color: #047857 !important;
+        }
+
+        [data-theme="dark"] .text-violet-700 {
+            color: #6d28d9 !important;
+        }
+
+        [data-theme="dark"] .text-orange-700 {
+            color: #fb923c !important;
+        }
+
+        [data-theme="dark"] .text-yellow-800 {
+            color: #fbbf24 !important;
+        }
+
+        /* Dark mode for colored borders - keeping pipeline and skills colors same as light mode */
+        [data-theme="dark"] .border-blue-100 {
+            border-color: #dbeafe !important;
+        }
+
+        [data-theme="dark"] .border-cyan-100 {
+            border-color: #cffafe !important;
+        }
+
+        [data-theme="dark"] .border-emerald-100 {
+            border-color: #d1fae5 !important;
+        }
+
+        [data-theme="dark"] .border-violet-100 {
+            border-color: #ede9fe !important;
+        }
+
+        [data-theme="dark"] .border-orange-100 {
+            border-color: #7c2d12 !important;
+        }
+
+        [data-theme="dark"] .border-yellow-100 {
+            border-color: #713f12 !important;
+        }
+
+        /* Dark mode for skills section - fix white border corner frames with pure black */
+        [data-theme="dark"] #skills .bg-white {
+            background-color: #000000 !important;
+        }
+
+        [data-theme="dark"] #skills .border-slate-200 {
+            border-color: #000000 !important;
+        }
+
+        [data-theme="dark"] #skills .bg-gradient-to-br {
+            background: linear-gradient(135deg, #000000 0%, #1e293b 100%) !important;
+        }
+
+        [data-theme="dark"] #skills .from-white {
+            background-color: #000000 !important;
+        }
+
+        [data-theme="dark"] #skills .to-transparent {
+            background-color: transparent !important;
+        }
+
+        [data-theme="dark"] #skills .bg-gradient-to-r {
+            background: linear-gradient(90deg, #000000 0%, transparent 100%) !important;
+        }
+
+        [data-theme="dark"] #skills .bg-gradient-to-l {
+            background: linear-gradient(270deg, #000000 0%, transparent 100%) !important;
+        }
+
+        /* Dark mode for pipeline workflow rectangles */
+        [data-theme="dark"] #pipeline .from-red-100 {
+            background-color: #7f1d1d !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-red-200 {
+            background-color: #991b1b !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-blue-100 {
+            background-color: #1e3a8a !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-blue-200 {
+            background-color: #1e40af !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-purple-100 {
+            background-color: #581c87 !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-purple-200 {
+            background-color: #6b21a8 !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-orange-100 {
+            background-color: #fed7aa !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-orange-200 {
+            background-color: #fdba74 !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-red-100 {
+            background-color: #fecaca !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-red-200 {
+            background-color: #fca5a5 !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-green-100 {
+            background-color: #14532d !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-green-200 {
+            background-color: #166534 !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-emerald-100 {
+            background-color: #064e3b !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-emerald-200 {
+            background-color: #047857 !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-cyan-100 {
+            background-color: #083344 !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-cyan-200 {
+            background-color: #0e7490 !important;
+        }
+
+        [data-theme="dark"] #pipeline .from-indigo-100 {
+            background-color: #312e81 !important;
+        }
+
+        [data-theme="dark"] #pipeline .to-indigo-200 {
+            background-color: #3730a3 !important;
+        }
+
+        /* Dark mode for pipeline text colors */
+        [data-theme="dark"] #pipeline .text-red-700 {
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] #pipeline .text-blue-700 {
+            color: #93c5fd !important;
+        }
+
+        [data-theme="dark"] #pipeline .text-purple-700 {
+            color: #c4b5fd !important;
+        }
+
+        [data-theme="dark"] #pipeline .text-orange-700 {
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] #pipeline .text-green-700 {
+            color: #86efac !important;
+        }
+
+        [data-theme="dark"] #pipeline .text-emerald-700 {
+            color: #6ee7b7 !important;
+        }
+
+        [data-theme="dark"] #pipeline .text-cyan-700 {
+            color: #67e8f9 !important;
+        }
+
+        [data-theme="dark"] #pipeline .text-indigo-700 {
+            color: #a5b4fc !important;
+        }
+
+        /* Dark mode for about section colored backgrounds */
+        [data-theme="dark"] #about .bg-blue-50 {
+            background-color: #1e3a8a !important;
+        }
+
+        [data-theme="dark"] #about .bg-orange-50 {
+            background-color: #7c2d12 !important;
+        }
+
+        [data-theme="dark"] #about .bg-cyan-50 {
+            background-color: #083344 !important;
+        }
+
+        [data-theme="dark"] #about .bg-yellow-50 {
+            background-color: #713f12 !important;
+        }
+
+        [data-theme="dark"] #about .bg-emerald-50 {
+            background-color: #064e3b !important;
+        }
+
+        /* Dark mode for about section colored text */
+        [data-theme="dark"] #about .text-blue-700 {
+            color: #60a5fa !important;
+        }
+
+        [data-theme="dark"] #about .text-orange-700 {
+            color: #fb923c !important;
+        }
+
+        [data-theme="dark"] #about .text-cyan-700 {
+            color: #67e8f9 !important;
+        }
+
+        [data-theme="dark"] #about .text-yellow-800 {
+            color: #fbbf24 !important;
+        }
+
+        [data-theme="dark"] #about .text-emerald-700 {
+            color: #34d399 !important;
+        }
+
+        /* Dark mode for about section colored borders */
+        [data-theme="dark"] #about .border-blue-100 {
+            border-color: #1e3a8a !important;
+        }
+
+        [data-theme="dark"] #about .border-orange-100 {
+            border-color: #7c2d12 !important;
+        }
+
+        [data-theme="dark"] #about .border-cyan-100 {
+            border-color: #083344 !important;
+        }
+
+        [data-theme="dark"] #about .border-yellow-100 {
+            border-color: #713f12 !important;
+        }
+
+        [data-theme="dark"] #about .border-emerald-100 {
+            border-color: #064e3b !important;
+        }
+
+        /* Dark mode for social icons */
+        [data-theme="dark"] .hero-social .text-slate-700 {
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] .hero-social a {
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] .hero-social .bg-white {
+            background-color: #111111 !important;
+        }
+
+        [data-theme="dark"] .hero-social .border-slate-200 {
+            border-color: #333333 !important;
+        }
+
+        [data-theme="dark"] .hero-social rect[fill="rgba(255,255,255,0.96)"] {
+            fill: rgba(17, 17, 17, 0.96) !important;
+        }
+
+        [data-theme="dark"] .hero-social .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1) !important;
+        }
+
+        [data-theme="dark"] .text-slate-700 {
+            color: #e0e0e0 !important;
+        }
+
+        /* Dark mode for menu icon */
+        [data-theme="dark"] .text-slate-700 {
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] #bottom-menu-btn .bg-slate-700 {
+            background-color: #ffffff !important;
+        }
+
+        /* Dark mode for 'Let's discuss' button */
+        [data-theme="dark"] .bg-white\/95 {
+            background-color: #334155 !important;
+        }
+
+        [data-theme="dark"] .hover\:bg-white:hover {
+            background-color: #475569 !important;
+        }
+
+        [data-theme="dark"] .text-slate-800 {
+            color: #f8fafc !important;
+        }
+
+        /* Dark mode for hover states */
+        [data-theme="dark"] .hover\:bg-slate-50:hover {
+            background-color: #111111 !important;
+        }
+
+        [data-theme="dark"] .hover\:bg-slate-100:hover {
+            background-color: #111111 !important;
+        }
+
+        [data-theme="dark"] .hover\:bg-white:hover {
+            background-color: #111111 !important;
+        }
+
+        [data-theme="dark"] .hover\:border-slate-300:hover {
+            border-color: #444444 !important;
+        }
+
+        /* Dark mode for specific sections */
+        [data-theme="dark"] #page-loader {
+            background-color: #000000 !important;
+        }
+
+        [data-theme="dark"] .loader-bar {
+            background: linear-gradient(90deg, rgba(96, 165, 250, 0.20), rgba(96, 165, 250, 1), rgba(34, 211, 238, 0.20)) !important;
+        }
+
+        [data-theme="dark"] .data-grid {
+            background-image:
+                linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px) !important;
+        }
+
+        /* Dark mode for navigation */
+        [data-theme="dark"] nav.bg-white {
+            background-color: #000000 !important;
+        }
+
+        [data-theme="dark"] nav .border-t {
+            border-color: #333333 !important;
+        }
+
+        [data-theme="dark"] nav .text-slate-900 {
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] nav .text-slate-700 {
+            color: #e0e0e0 !important;
+        }
+
+        [data-theme="dark"] nav .hover\:bg-slate-50:hover {
+            background-color: #111111 !important;
+        }
+
+        [data-theme="dark"] nav .bg-white\/95 {
+            background-color: #000000 !important;
+        }
+
+        [data-theme="dark"] nav .border-slate-200 {
+            border-color: #333333 !important;
+        }
+
+        [data-theme="dark"] nav .bg-slate-900 {
+            background-color: #111111 !important;
+        }
+
+        [data-theme="dark"] nav .bg-slate-700 {
+            background-color: #111111 !important;
+        }
+
+        /* Dark mode for role badges */
+        [data-theme="dark"] .role-badge {
+            color: #60a5fa !important;
+        }
+
+        /* Dark mode for section backgrounds */
+        [data-theme="dark"] #hero {
+            background: linear-gradient(135deg, #000000 0%, #111111 100%) !important;
+        }
+
+        [data-theme="dark"] #about,
+        [data-theme="dark"] #pipeline,
+        [data-theme="dark"] #contact,
+        [data-theme="dark"] #interests {
+            background-color: #000000 !important;
+        }
+
+        [data-theme="dark"] #skills,
+        [data-theme="dark"] #certifications {
+            background-color: #000000 !important;
+        }
+
+        [data-theme="dark"] #career {
+            background: linear-gradient(135deg, #000000 0%, #111111 50%, #000000 100%) !important;
+        }
+
+        .data-grid {
+            background-image:
+                linear-gradient(to right, rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-position: center;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity 500ms ease, transform 500ms ease;
+            pointer-events: none;
+        }
+
+        .loader-bar {
+            height: 3px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.20), rgba(59, 130, 246, 1), rgba(14, 165, 233, 0.20));
+            background-size: 220% 100%;
+            animation: shimmer 1.3s linear infinite;
+        }
+
+        .clamp-4 {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            line-clamp: 4;
+            overflow: hidden;
+        }
+
+        .menu-pop {
+            animation: menuPop 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            transform-origin: bottom right;
+        }
+
+        .floaty {
+            animation: floaty 7.5s ease-in-out infinite;
+        }
+
+        .blink {
+            animation: blink 3.8s ease-in-out infinite;
+        }
+
+        .data-droplet {
+            animation: droplet 3.6s ease-in-out infinite;
+        }
+
+        .social-l-shape {
+            clip-path: polygon(50% 0, 100% 0, 100% 100%, 0 100%, 0 50%, 50% 50%);
+        }
+
+        .role-roller {
+            --role-step: 2em;
+            height: var(--role-step);
+            line-height: var(--role-step);
+            overflow: hidden;
+        }
+
+        .role-roller-track {
+            display: flex;
+            flex-direction: column;
+            animation: roleRoll 8.8s linear infinite;
+            will-change: transform;
+        }
+
+        .role-roller-track > div {
+            height: var(--role-step);
+            line-height: var(--role-step);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .role-badge {
+            color: #1e40af;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            display: inline-block;
+            line-height: 1.2;
+            min-height: 24px;
+        }
+
+        .social-float {
+            filter: drop-shadow(0 14px 12px rgba(2, 6, 23, 0.22));
+        }
+
+        .hero-social,
+        .hero-social a,
+        .hero-social a:hover,
+        .hero-social a:focus,
+        .hero-social a:active,
+        .hero-social a:visited,
+        .hero-social * {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            box-shadow: none !important;
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
+        }
+
+        @keyframes floaty {
+            0% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -6px, 0); }
+            100% { transform: translate3d(0, 0, 0); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.18; transform: scale(0.98); }
+            50% { opacity: 0.55; transform: scale(1); }
+        }
+
+        @keyframes droplet {
+            0%, 100% { opacity: 0; transform: translate3d(0, 10px, 0) scale(0.96); }
+            25% { opacity: 0.65; transform: translate3d(0, 0, 0) scale(1); }
+            65% { opacity: 0.15; transform: translate3d(0, -8px, 0) scale(0.98); }
+        }
+
+        @keyframes dataFloat {
+            0%, 100% { 
+                opacity: 0; 
+                transform: translate3d(0, 20px, 0) scale(0.95); 
+            }
+            25% { 
+                opacity: 0.5; 
+                transform: translate3d(10px, -10px, 0) scale(1); 
+            }
+            50% { 
+                opacity: 0.3; 
+                transform: translate3d(-15px, 5px, 0) scale(0.98); 
+            }
+            75% { 
+                opacity: 0.5; 
+                transform: translate3d(8px, -15px, 0) scale(1.02); 
+            }
+        }
+
+        .data-float {
+            animation: dataFloat 8s ease-in-out infinite;
+            will-change: transform, opacity;
+        }
+
+        @keyframes roleRoll {
+            0%, 22.727% { transform: translateY(0); }
+            25%, 47.727% { transform: translateY(calc(-1 * var(--role-step))); }
+            50%, 72.727% { transform: translateY(calc(-2 * var(--role-step))); }
+            75%, 97.727% { transform: translateY(calc(-3 * var(--role-step))); }
+            100% { transform: translateY(calc(-4 * var(--role-step))); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 220% 0%; }
+        }
+
+        @keyframes menuPop {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .role-badge {
+            color: #1e40af;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            display: inline-block;
+            line-height: 1.2;
+            min-height: 24px;
+        }
+
+        .social-float {
+            filter: drop-shadow(0 14px 12px rgba(2, 6, 23, 0.22));
+        }
+        
+        /* Dark mode qualification timeline */
+        [data-theme="dark"] .qualification-timeline-line {
+            background: linear-gradient(to bottom, rgb(52 211 153), rgb(167 139 250), rgb(96 165 250)) !important;
+        }
+        
+        /* Add margin-top for home and about sections from 1024px */
+        @media (min-width: 1025px) {
+            #home {
+                margin-top: 8rem !important;
+            }
+            #about {
+                margin-top: 8rem !important;
+            }
+            
+            /* Dark mode backgrounds for sections with margin-top */
+            [data-theme="dark"] #home {
+                background-color: rgb(0 0 0) !important;
+            }
+            [data-theme="dark"] #about {
+                background-color: rgb(0 0 0) !important;
+            }
+            
+            /* Hide gradient overlay in dark mode to show black background */
+            [data-theme="dark"] .home-gradient {
+                display: none !important;
+            }
+        }
+        
+        /* Active menu highlighting for bottom navigation - light mode */
+        #bottom-menu a.active {
+            background-color: rgb(59 130 246) !important;
+            color: rgb(255 255 255) !important;
+        }
+        
+        #bottom-menu a.active i {
+            color: rgb(255 255 255) !important;
+        }
+        
+        /* Active menu highlighting for bottom navigation - dark mode */
+        [data-theme="dark"] #bottom-menu a.active {
+            background-color: rgb(59 130 246) !important;
+            color: rgb(255 255 255) !important;
+        }
+        
+        [data-theme="dark"] #bottom-menu a.active i {
+            color: rgb(255 255 255) !important;
+        }
+
+        .hero-social,
+        .hero-social a,
+        .hero-social a:hover,
+        .hero-social a:focus,
+        .hero-social a:active,
+        .hero-social a:visited,
+        .hero-social * {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            box-shadow: none !important;
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
+        }
+
+        #top-nav {
+            display: none; /* Hidden by default */
+        }
+
+        /* All screens from 768px and above */
+        @media (min-width: 768px) {
+            /* Switch to top navigation */
+            #bottom-nav {
+                display: none !important;
+            }
+            #top-nav {
+                display: flex !important;
+            }
+            
+            /* Hero section - vertical center with 80vh */
+            #home {
+                min-height: 80vh !important;
+                display: flex;
+                align-items: center;
+            }
+            
+            /* Two column layout: Image on left, Content on right */
+            #home .grid {
+                grid-template-columns: 2fr 3fr !important;
+                gap: 3rem !important;
+                align-items: flex-start !important;
+            }
+            
+            /* Left column - just image centered */
+            #home > div > .max-w-7xl > .grid > div:first-child {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: flex-start !important;
+            }
+            
+            /* Right column header - full width */
+            #home .flex.flex-col.sm\:flex-row.sm\:items-start.sm\:justify-between {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+            
+            #home h1 {
+                text-align: left !important;
+                width: 100% !important;
+            }
+            
+            /* Style for the dynamically created role-resume row */
+            .role-resume-row {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+                margin-top: 0 !important;
+            }
+            
+            .role-resume-row > div:first-child {
+                flex: 0 0 auto !important;
+            }
+            
+            .role-resume-row > div:last-child {
+                flex: 0 0 auto !important;
+            }
+            
+            /* Dark mode toggle in nav */
+            .dark-mode-toggle.in-nav {
+                position: relative;
+                top: auto;
+                right: auto;
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
+        /* Pipeline flow adjustments for 680px+ */
+        @media (min-width: 680px) {
+            #pipeline .w-28 {
+                width: 8.5rem !important;
+            }
+            
+            #pipeline .w-32 {
+                width: 8.5rem !important;
+            }
+            
+            #pipeline .h-12 {
+                height: 4rem !important;
+            }
+            
+            #pipeline .h-20 {
+                height: 5rem !important;
+            }
+            
+            #pipeline .gap-2\.5 {
+                gap: 0.5rem !important;
+            }
+            
+            #pipeline .w-28,
+            #pipeline .w-32 {
+                width: auto !important;
+                flex: 1 1 0% !important;
+                min-width: 120px !important;
+                max-width: none !important;
+            }
+            
+            #pipeline .text-\[10px\] {
+                font-size: 0.875rem !important;
+            }
+            
+            #pipeline .pl-\[488px\] {
+                padding-left: calc(100% - 3rem) !important;
+            }
+            
+            #pipeline .pl-\[552px\] {
+                padding-left: calc(100% - 3rem) !important;
+            }
+        }
+        
+        /* Small tablets/Large phones: 630px - 767px */
+        @media (min-width: 630px) and (max-width: 767px) {
+            /* About section: image left, content right */
+            #about .grid {
+                grid-template-columns: 40% 60% !important;
+                gap: 1.5rem !important;
+            }
+            
+            /* Add padding to right content to prevent edge touching */
+            #about .space-y-8 {
+                padding-right: 1rem !important;
+            }
+            
+            /* Reduce font sizes to prevent overflow */
+            #about h2 {
+                font-size: 1.75rem !important;
+            }
+            
+            #about .text-base {
+                font-size: 0.813rem !important;
+            }
+            
+            #about .space-y-4 p {
+                font-size: 0.813rem !important;
+                line-height: 1.5 !important;
+            }
+            
+            /* Hide inline track record (shown full width via JS) */
+            #about .space-y-8 > .rounded-2xl.border.border-slate-200 {
+                display: none !important;
+            }
+            
+            /* Full width track record: 2x2 grid */
+            #about-track-record-full > .grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        
+        /* Career Qualification Timeline - Centered from 650px */
+        @media (min-width: 650px) {
+            /* Hide qualification by default - JS will show when selected */
+            #career-panel-qualification.hidden {
+                display: none !important;
+            }
+            
+            #career-panel-qualification {
+                display: flex;
+                justify-content: center;
+            }
+            
+            #career-panel-qualification > .relative {
+                width: 100%;
+                max-width: 900px;
+                position: relative;
+                padding: 0 1rem;
+            }
+            
+            /* Center the timeline line */
+            #career-panel-qualification > .relative > .absolute.w-0\.5 {
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            /* Position cards - 1st card on left */
+            #career-panel-qualification > .relative > div:nth-child(2) .bg-white {
+                margin-left: 0 !important;
+                margin-right: calc(50% + 3rem) !important;
+                max-width: 400px !important;
+                min-width: 280px !important;
+            }
+            
+            /* 1st card icon - on center line */
+            #career-panel-qualification > .relative > div:nth-child(2) > .absolute {
+                left: 50% !important;
+                margin-left: 0 !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            /* Position cards - 2nd card on right */
+            #career-panel-qualification > .relative > div:nth-child(3) .bg-white {
+                margin-left: calc(50% + 3rem) !important;
+                margin-right: 0 !important;
+                max-width: 400px !important;
+                min-width: 280px !important;
+            }
+            
+            /* 2nd card icon - on center line */
+            #career-panel-qualification > .relative > div:nth-child(3) > .absolute {
+                left: 50% !important;
+                margin-left: 0 !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            /* Position cards - 3rd card on left */
+            #career-panel-qualification > .relative > div:nth-child(4) .bg-white {
+                margin-left: 0 !important;
+                margin-right: calc(50% + 3rem) !important;
+                max-width: 400px !important;
+                min-width: 280px !important;
+            }
+            
+            /* 3rd card icon - on center line */
+            #career-panel-qualification > .relative > div:nth-child(4) > .absolute {
+                left: 50% !important;
+                margin-left: 0 !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            /* Card content layout - institute and grade in separate rows */
+            #career-panel-qualification .bg-white .flex.flex-col.sm\:flex-row.sm\:items-center.sm\:justify-between {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
+            }
+            
+            #career-panel-qualification .bg-white .flex.flex-col.sm\:flex-row.sm\:items-center.sm\:justify-between > div:first-child {
+                text-align: left !important;
+                width: 100% !important;
+            }
+            
+            #career-panel-qualification .bg-white .flex.flex-col.sm\:flex-row.sm\:items-center.sm\:justify-between > div:last-child {
+                text-align: right !important;
+                width: 100% !important;
+                align-self: flex-end !important;
+            }
+            
+            /* Reduce font sizes for compact layout */
+            #career-panel-qualification .text-sm,
+            #career-panel-qualification .text-lg {
+                font-size: 0.875rem !important;
+            }
+            
+            #career-panel-qualification .text-xs {
+                font-size: 0.75rem !important;
+            }
+        }
+        
+        /* Tablet Portrait: 768px - 900px */
+        @media (min-width: 768px) and (max-width: 900px) {
+            /* Padding */
+            #top-nav > div,
+            #home > div > .max-w-7xl,
+            main#main-content > section > .max-w-7xl {
+                padding-left: 2rem !important;
+                padding-right: 2rem !important;
+            }
+            
+            /* Text sizes */
+            #home h1 {
+                font-size: 2.25rem !important;
+            }
+            
+            #home .role-badge {
+                font-size: 1rem !important;
+                padding: 0.5rem 1rem !important;
+            }
+            
+            /* About section: image left (40%), content text right (60%) */
+            #about .grid {
+                grid-template-columns: 40% 60% !important;
+                gap: 2rem !important;
+            }
+            
+            /* Certifications - redesign: left panel + right list */
+            #certifications .rounded-3xl > .grid {
+                grid-template-columns: 35% 65% !important;
+            }
+        }
+        
+        /* Track record hidden inline for 768-1024px (shown full width via JS) */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            #about .space-y-8 > .rounded-2xl.border.border-slate-200 {
+                display: none !important;
+            }
+            
+            /* Full width track record: 4 columns in 1 row */
+            #about-track-record-full > .grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+        }
+
+        /* Tablet Landscape: 901px - 1024px */
+        @media (min-width: 901px) and (max-width: 1024px) {
+            /* Padding */
+            #top-nav > div,
+            #home > div > .max-w-7xl,
+            main#main-content > section > .max-w-7xl {
+                padding-left: 3rem !important;
+                padding-right: 3rem !important;
+            }
+            
+            /* Text sizes */
+            #home h1 {
+                font-size: 2.75rem !important;
+            }
+            
+            #home .role-badge {
+                font-size: 1.1rem !important;
+                padding: 0.5rem 1rem !important;
+            }
+            
+            /* About section: image left (40%), content text right (60%) */
+            #about .grid {
+                grid-template-columns: 40% 60% !important;
+                gap: 2.5rem !important;
+            }
+            
+            /* Certifications redesign */
+            #certifications .rounded-3xl > .grid {
+                grid-template-columns: 30% 70% !important;
+            }
+        }
+
+        /* Desktop: 1025px and above - maintain tablet layout */
+        @media (min-width: 1025px) {
+            /* Home section - keep two column layout like tablet */
+            #home {
+                min-height: 100vh !important;
+                display: flex;
+                align-items: center;
+            }
+            
+            /* Override Tailwind lg classes - force 2 column grid */
+            #home .grid.lg\:grid-cols-12 {
+                grid-template-columns: 2fr 3fr !important;
+            }
+            
+            #home .grid {
+                grid-template-columns: 2fr 3fr !important;
+                gap: 3rem !important;
+                align-items: flex-start !important;
+            }
+            
+            /* Override lg:col-span classes */
+            #home .lg\:col-span-5,
+            #home .lg\:col-span-7 {
+                grid-column: auto !important;
+            }
+            
+            /* Left column - image centered */
+            #home > div > .max-w-7xl > .grid > div:first-child {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: flex-start !important;
+            }
+            
+            /* Right column header - full width */
+            #home .flex.flex-col.sm\:flex-row.sm\:items-start.sm\:justify-between {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+            
+            #home h1 {
+                text-align: left !important;
+                width: 100% !important;
+                font-size: 3.25rem !important;
+            }
+            
+            /* Role-resume row - vertical stack */
+            .role-resume-row {
+                flex-direction: column !important;
+                align-items: flex-end !important;
+                gap: 1.5rem !important;
+            }
+            
+            #home .role-badge {
+                font-size: 1.25rem !important;
+                padding: 0.625rem 1.25rem !important;
+            }
+            
+            /* Intro paragraph */
+            #home p.text-sm,
+            #home p.text-base {
+                font-size: 1.125rem !important;
+                line-height: 1.75rem !important;
+            }
+            
+            /* All sections 100vh from 1024px */
+            section#about,
+            section#skills,
+            section#pipeline,
+            section#career,
+            section#certifications,
+            section#interests,
+            section#contact {
+                min-height: 100vh !important;
+                display: flex;
+                align-items: center;
+            }
+            
+            section#about > div,
+            section#skills > div,
+            section#pipeline > div,
+            section#career > div,
+            section#certifications > div,
+            section#interests > div,
+            section#contact > div {
+                width: 100%;
+            }
+            
+            /* Increase top/bottom padding for home and about sections from 1024px */
+            #home > div > .max-w-7xl {
+                padding-top: 8rem !important;
+                padding-bottom: 8rem !important;
+            }
+            
+            #about {
+                padding-top: 8rem !important;
+                padding-bottom: 8rem !important;
+            }
+            
+            /* Resume/Role row below intro - only show on large screens */
+            #home .resume-role-row {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+            }
+            
+            /* Role badge smaller font */
+            #home .resume-role-row .role-roller {
+                font-size: 1.125rem !important;
+            }
+            
+            /* Ensure header role badge hides on large screens */
+            @media (min-width: 1024px) {
+                #home .lg\:hidden {
+                    display: none !important;
+                }
+            }
+            
+            /* Dark mode navbar colors from 768px */
+            @media (min-width: 768px) {
+                [data-theme="dark"] #top-nav {
+                    background-color: rgb(15 23 42) !important;
+                    border-bottom-color: rgb(51 65 85) !important;
+                }
+                
+                [data-theme="dark"] #top-nav a {
+                    color: rgb(226 232 240) !important;
+                }
+                
+                [data-theme="dark"] #top-nav a:hover {
+                    color: rgb(59 130 246) !important;
+                }
+                
+                /* Active menu highlighting for light mode */
+                #top-nav a.active {
+                    background-color: rgb(59 130 246) !important;
+                    color: rgb(255 255 255) !important;
+                }
+                
+                /* Active menu highlighting for dark mode */
+                [data-theme="dark"] #top-nav a.active {
+                    background-color: rgb(59 130 246) !important;
+                    color: rgb(255 255 255) !important;
+                }
+            }
+            
+            /* Pipeline flow text center alignment from 640px */
+            @media (min-width: 640px) {
+                #pipeline .w-28,
+                #pipeline .sm\:w-32 {
+                    text-align: center !important;
+                }
+            }
+        }
+        
+        /* Desktop: 1025px - 1279px */
+        @media (min-width: 1025px) and (max-width: 1279px) {
+            /* Padding */
+            #top-nav > div {
+                padding-left: 4rem !important;
+                padding-right: 4rem !important;
+            }
+            
+            #home > div > .max-w-7xl {
+                padding-left: 5rem !important;
+                padding-right: 5rem !important;
+            }
+            
+            main#main-content > section > .max-w-7xl {
+                padding-left: 4.5rem !important;
+                padding-right: 4.5rem !important;
+            }
+            
+            /* Home section - keep two column layout */
+            #home {
+                min-height: 80vh !important;
+            }
+            
+            #home .grid {
+                grid-template-columns: 2fr 3fr !important;
+            }
+            
+            /* Text sizes */
+            #home h1 {
+                font-size: 3.5rem !important;
+            }
+            
+            #home .role-badge {
+                font-size: 1.375rem !important;
+                padding: 0.625rem 1.25rem !important;
+            }
+            
+            /* About section */
+            #about .grid {
+                grid-template-columns: 40% 60% !important;
+            }
+            
+            /* About highlights - keep 4 columns in one row */
+            #about .rounded-2xl.border.border-slate-200 > .grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .text-3xl {
+                font-size: 1.75rem !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .text-sm {
+                font-size: 0.75rem !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .px-6 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .py-5 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+            
+            /* Branch-style timeline for qualifications */
+            #career-panel-qualification {
+                display: flex;
+                justify-content: center;
+            }
+            #career-panel-qualification > .relative {
+                width: 100%;
+                max-width: 1200px;
+            }
+        }
+        
+        /* Large Desktop: 1280px and above */
+        @media (min-width: 1280px) {
+            /* Padding */
+            #top-nav > div {
+                padding-left: 6rem !important;
+                padding-right: 6rem !important;
+            }
+            
+            /* Home section - keep two column layout */
+            #home {
+                min-height: 80vh !important;
+            }
+            
+            #home .grid {
+                grid-template-columns: 2fr 3fr !important;
+            }
+            
+            #home h1 {
+                font-size: 4rem !important;
+            }
+            
+            #home .role-badge {
+                font-size: 1.5rem !important;
+            }
+            
+            /* About highlights - keep 4 columns in one row */
+            #about .rounded-2xl.border.border-slate-200 > .grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .px-6 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .py-5 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+        }
+        
+        /* Extra Large Desktop: 1300px and above */
+        @media (min-width: 1300px) {
+            /* About section - reduce photo, increase text space */
+            #about .grid {
+                grid-template-columns: 35% 65% !important;
+            }
+            
+            /* About highlights - larger font with sufficient space */
+            #about .rounded-2xl.border.border-slate-200 > .grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .text-3xl {
+                font-size: 2rem !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .text-sm {
+                font-size: 0.875rem !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .px-6 {
+                padding-left: 1.25rem !important;
+                padding-right: 1.25rem !important;
+            }
+            
+            #about .rounded-2xl.border.border-slate-200 .py-5 {
+                padding-top: 1.25rem !important;
+                padding-bottom: 1.25rem !important;
+            }
+            
+            #home > div > .max-w-7xl {
+                padding-left: 8rem !important;
+                padding-right: 8rem !important;
+            }
+            
+            main#main-content > section > .max-w-7xl {
+                padding-left: 7rem !important;
+                padding-right: 7rem !important;
+            }
+            
+            /* Text sizes */
+            #home h1 {
+                font-size: 3.75rem !important;
+            }
+            
+            #home .role-badge {
+                font-size: 1.15rem !important;
+                padding: 0.55rem 1.1rem !important;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="dark-mode-toggle" aria-label="Toggle dark mode">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </button>
+
+    <!-- Top Navigation (for screens > 900px) -->
+    <header id="top-nav" class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-b border-slate-200 z-50 h-20 items-center justify-between transition-all duration-300">
+        <div class="w-full mx-auto px-6 lg:px-8 flex justify-between items-center">
+            <a href="#home" class="text-lg font-light text-slate-900" style="font-family: 'Poppins', sans-serif;">
+                Gopi Kunchala
+            </a>
+            <nav class="flex space-x-2 lg:space-x-4">
+                <a href="#home" class="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">Home</a>
+                <a href="#about" class="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">About</a>
+                <a href="#skills" class="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">Skills</a>
+                <a href="#career" class="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">Career</a>
+                <a href="#certifications" class="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">Certifications</a>
+                <a href="#contact" class="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">Contact</a>
+            </nav>
+            <div id="top-nav-right-placeholder"></div> <!-- Placeholder for dark mode toggle -->
+        </div>
+    </header>
+    <div id="page-loader" class="fixed inset-0 z-[100] bg-white">
+        <div class="absolute inset-0 data-grid opacity-[0.35]"></div>
+        <div class="relative h-full flex items-center justify-center px-6">
+            <div class="w-full max-w-md">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-sm font-semibold tracking-wide" style="font-family: 'Poppins', sans-serif;">Gopi Kunchala</div>
+                    <div class="text-xs text-slate-500">Initializing Data Pipeline</div>
+                </div>
+                <div class="w-full rounded-full overflow-hidden bg-slate-100 border border-slate-200">
+                    <div class="loader-bar w-full"></div>
+                </div>
+                <div class="mt-4 text-xs text-slate-500 leading-relaxed">
+                    Loading modules • Skills • Career • Certifications
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Professional Bottom Navigation -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Left: Professional Name -->
+                <h4 class="text-lg font-light text-slate-900" style="font-family: 'Poppins', sans-serif;">
+                    Gopi Kunchala
+                </h4>
+                
+                <!-- Right: Professional Menu -->
+                <div class="relative">
+                    <button id="bottom-menu-btn" class="w-12 h-12 rounded-lg flex items-center justify-center text-slate-700 hover:bg-slate-100 transition-colors">
+                        <div class="grid grid-cols-2 gap-1">
+                            <div class="w-2.5 h-2.5 bg-slate-700 rounded"></div>
+                            <div class="w-2.5 h-2.5 bg-slate-700 rounded"></div>
+                            <div class="w-2.5 h-2.5 bg-slate-700 rounded"></div>
+                            <div class="w-2.5 h-2.5 bg-slate-700 rounded"></div>
+                        </div>
+                    </button>
+                    
+                    <!-- Professional Menu - 3x2 Grid for Mobile -->
+                    <div id="bottom-menu-backdrop" class="fixed inset-0 z-40 hidden bg-slate-900/20"></div>
+                    <div id="bottom-menu" class="fixed inset-x-0 bottom-20 z-50 hidden px-4">
+                        <div id="bottom-menu-panel" class="max-w-xl mx-auto bg-white/95 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-2">
+                            <div class="grid grid-cols-3 gap-2">
+                                <a href="#home" class="flex flex-col items-center gap-1 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
+                                    <i class="fas fa-home text-lg"></i>
+                                    <span class="text-xs font-medium">Home</span>
+                                </a>
+                                <a href="#about" class="flex flex-col items-center gap-1 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
+                                    <i class="fas fa-user text-lg"></i>
+                                    <span class="text-xs font-medium">About</span>
+                                </a>
+                                <a href="#skills" class="flex flex-col items-center gap-1 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
+                                    <i class="fas fa-cogs text-lg"></i>
+                                    <span class="text-xs font-medium">Skills</span>
+                                </a>
+                                <button id="career-menu-toggle" type="button" class="flex flex-col items-center gap-1 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
+                                    <i class="fas fa-timeline text-lg"></i>
+                                    <span class="text-xs font-medium">Career</span>
+                                </button>
+                                <a href="#certifications" class="flex flex-col items-center gap-1 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
+                                    <i class="fas fa-certificate text-lg"></i>
+                                    <span class="text-xs font-medium">Certifications</span>
+                                </a>
+                                <a href="#contact" class="flex flex-col items-center gap-1 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
+                                    <i class="fas fa-envelope text-lg"></i>
+                                    <span class="text-xs font-medium">Contact</span>
+                                </a>
+                            </div>
+
+                            <div id="career-submenu" class="mt-2 hidden grid grid-cols-2 gap-2">
+                                <a href="#career" data-career-tab="experience" class="flex items-center justify-center gap-2 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors border border-slate-200/70">
+                                    <i class="fas fa-briefcase text-sm"></i>
+                                    <span class="text-xs font-medium">Experience</span>
+                                </a>
+                                <a href="#career" data-career-tab="qualification" class="flex items-center justify-center gap-2 p-3 text-slate-700 hover:bg-slate-50 rounded-lg transition-colors border border-slate-200/70">
+                                    <i class="fas fa-graduation-cap text-sm"></i>
+                                    <span class="text-xs font-medium">Qualification</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+        <main id="main-content" class="pb-20">
+            <div id="home-margin-bg" style="display:none;height:0;background:#000;"></div>
+        <!-- Clean Professional Hero Section -->
+        <section id="home" class="min-h-screen bg-white home-section">
+                    <style>
+                        #home {
+                            padding-top: 0 !important;
+                            margin-top: 0rem !important;
+                            background: #fff !important;
+                        }
+                        @media (min-width: 768px) {
+                            #home {
+                                padding-top: 0 !important;
+                                margin-top: 5rem !important;
+                            }
+                        }
+                        #top-nav {
+                            background: #fff !important;
+                        }
+                        [data-theme="dark"] #home {
+                            background: #000 !important;
+                        }
+                        [data-theme="dark"] #top-nav {
+                            background: #000 !important;
+                        }
+                    </style>
+            <div class="relative data-grid">
+                <div class="absolute inset-0 bg-gradient-to-b from-white via-white/90 to-white pointer-events-none home-gradient"></div>
+                <div class="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 lg:pt-20 pb-14">
+                    <div class="grid lg:grid-cols-12 gap-10 items-center">
+                        <div class="lg:col-span-5 flex justify-start">
+                            <div class="relative inline-block" style="z-index: 10;">
+                                <div class="relative group">
+                                    <div class="w-48 sm:w-56 lg:w-[280px] aspect-[4/5] rounded-3xl overflow-hidden border border-slate-200 shadow-[0_22px_60px_-28px_rgba(2,6,23,0.35)] bg-white" style="z-index: 1;">
+                                        <img src="./assets/Kanna.jpg" alt="GOPI KUNCHALA" class="w-full h-full object-cover">
+                                    </div>
+
+                                    <div class="absolute -bottom-4 -right-4">
+                                        <div class="relative w-[92px] h-[92px] hero-social">
+                                            <div class="absolute inset-0 rounded-2xl social-float shadow-[0_16px_40px_-10px_rgba(2,6,23,0.40)]">
+                                                <svg viewBox="0 0 92 92" class="w-full h-full" aria-hidden="true">
+                                                    <defs>
+                                                        <mask id="lmask">
+                                                            <rect x="0" y="0" width="92" height="92" rx="16" fill="white"></rect>
+                                                            <rect x="0" y="0" width="46" height="46" rx="0" fill="black"></rect>
+                                                        </mask>
+                                                    </defs>
+                                                    <rect x="0" y="0" width="92" height="92" rx="16" fill="rgba(255,255,255,0.96)" stroke="none" mask="url(#lmask)"></rect>
+                                                </svg>
+                                            </div>
+                                            <a href="https://www.linkedin.com/in/gopi-kunchala-ade" target="_blank" aria-label="LinkedIn" class="absolute top-0 right-0 w-11 h-11 flex items-center justify-center text-slate-700">
+                                                <i class="fab fa-linkedin"></i>
+                                            </a>
+                                            <a href="https://www.instagram.com/gopi_0k9" target="_blank" aria-label="Instagram" class="absolute bottom-0 left-0 w-11 h-11 flex items-center justify-center text-slate-700">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                            <a href="#" onclick="showGitHubPopup(event)" aria-label="GitHub" class="absolute bottom-0 right-0 w-11 h-11 flex items-center justify-center text-slate-700">
+                                                <i class="fab fa-github"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hidden sm:block absolute top-0 left-full ml-6 h-full w-20 pointer-events-none overflow-hidden">
+                                    <div class="absolute top-4 left-2 text-slate-400/80 font-mono text-xs font-semibold data-droplet whitespace-nowrap overflow-hidden" style="animation-delay: -0.6s;">1</div>
+                                    <div class="absolute top-14 right-3 text-slate-400/80 font-mono text-xs font-semibold data-droplet whitespace-nowrap overflow-hidden" style="animation-delay: -1.8s;">2</div>
+                                    <div class="absolute top-28 left-4 text-slate-400/80 font-mono text-xs font-semibold data-droplet whitespace-nowrap overflow-hidden" style="animation-delay: -2.7s;">A</div>
+                                    <div class="absolute top-40 right-2 text-slate-400/80 font-mono text-xs font-semibold data-droplet whitespace-nowrap overflow-hidden" style="animation-delay: -3.4s;">B</div>
+                                    <div class="absolute bottom-24 left-3 text-slate-400/80 font-mono text-xs font-semibold data-droplet whitespace-nowrap overflow-hidden" style="animation-delay: -1.1s;">0</div>
+                                    <div class="absolute bottom-10 right-4 text-slate-400/80 font-mono text-xs font-semibold data-droplet whitespace-nowrap overflow-hidden" style="animation-delay: -2.2s;">9</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7">
+                            <div class="flex flex-col gap-6">
+                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900" style="font-family: 'Poppins', sans-serif;">
+                                        Gopi Kunchala
+                                    </h1>
+                                    <div class="w-full text-right sm:w-auto lg:hidden">
+                                        <div class="text-base sm:text-lg font-semibold">
+                                            <div class="role-roller">
+                                                <div class="role-roller-track">
+                                                    <div><span class="role-badge">Data Engineer</span></div>
+                                                    <div><span class="role-badge">Developer</span></div>
+                                                    <div><span class="role-badge">BI Developer</span></div>
+                                                    <div><span class="role-badge">Analyst</span></div>
+                                                    <div><span class="role-badge">Data Engineer</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">Azure</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-100">Databricks</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-cyan-50 text-cyan-700 border border-cyan-100">Snowflake</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-800 border border-yellow-100">Spark</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">SQL</span>
+                                </div>
+
+                                <p class="text-sm sm:text-base text-slate-600 leading-relaxed text-justify">
+                                    I am an enthusiastic data engineer who builds and supports data pipelines on Azure using ADF, Databricks, SQL, and Python. I enjoy fixing pipeline issues, improving performance, and making data delivery smooth and reliable while continuously learning new methodologies to solve modern data engineering challenges.
+                                </p>
+
+                                <div class="hidden lg:flex items-center justify-between resume-role-row">
+                                    <div id="resume-btn-container-desktop" class="flex items-center gap-3">
+                                        <button onclick="toggleResumeOptions('desktop')" id="resume-main-btn-desktop" class="inline-flex items-center justify-center gap-3 px-5 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all duration-300 shadow-lg" style="font-family: 'Poppins', sans-serif;">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span>Resume</span>
+                                        </button>
+                                        <div id="resume-actions-desktop" class="hidden flex items-center gap-2 transition-all duration-300">
+                                            <button onclick="downloadResume()" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg" style="font-family: 'Poppins', sans-serif;">
+                                                <i class="fas fa-download"></i>
+                                                <span>Download</span>
+                                            </button>
+                                            <button onclick="shareResume()" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-lg" style="font-family: 'Poppins', sans-serif;">
+                                                <i class="fas fa-share-alt"></i>
+                                                <span>Share</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-base sm:text-lg font-semibold">
+                                            <div class="role-roller">
+                                                <div class="role-roller-track">
+                                                    <div><span class="role-badge">Data Engineer</span></div>
+                                                    <div><span class="role-badge">Developer</span></div>
+                                                    <div><span class="role-badge">BI Developer</span></div>
+                                                    <div><span class="role-badge">Analyst</span></div>
+                                                    <div><span class="role-badge">Data Engineer</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center lg:hidden">
+                                    <div id="resume-btn-container-mobile" class="flex items-center gap-3 flex-wrap">
+                                        <button onclick="toggleResumeOptions('mobile')" id="resume-main-btn-mobile" class="inline-flex items-center justify-center gap-3 px-5 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all duration-300 shadow-lg" style="font-family: 'Poppins', sans-serif;">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span>Resume</span>
+                                        </button>
+                                        <div id="resume-actions-mobile" class="hidden flex items-center gap-2 transition-all duration-300">
+                                            <button onclick="downloadResume()" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg" style="font-family: 'Poppins', sans-serif;">
+                                                <i class="fas fa-download"></i>
+                                                <span>Download</span>
+                                            </button>
+                                            <button onclick="shareResume()" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-lg" style="font-family: 'Poppins', sans-serif;">
+                                                <i class="fas fa-share-alt"></i>
+                                                <span>Share</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animated Data Elements on Right Side -->
+                <div class="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden">
+                    <div class="absolute top-20 right-10 text-blue-500/60 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -0.3s;">ETL</div>
+                    <div class="absolute top-32 right-24 text-orange-500/50 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.5s;">ELT</div>
+                    <div class="absolute top-48 right-16 text-cyan-500/70 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.1s;">Python</div>
+                    <div class="absolute top-64 right-32 text-green-500/40 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -0.8s;">SQL</div>
+                    <div class="absolute top-80 right-8 text-purple-500/60 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -3.2s;">Snowflake</div>
+                    <div class="absolute top-96 right-20 text-indigo-500/50 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.7s;">Databricks</div>
+                    <div class="absolute top-12 right-28 text-pink-500/40 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.8s;">JSON</div>
+                    <div class="absolute top-40 right-4 text-teal-500/70 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.2s;">CSV</div>
+                    <div class="absolute top-72 right-36 text-yellow-500/50 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.4s;">XLSX</div>
+                    <div class="absolute top-56 right-12 text-red-500/60 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -0.6s;">DAT</div>
+                    <div class="absolute top-28 right-40 text-gray-500/40 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -3.0s;">Blob Storage</div>
+                    <div class="absolute top-88 right-16 text-blue-500/50 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.9s;">API</div>
+                    <div class="absolute top-44 right-32 text-green-500/60 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.6s;">200 OK</div>
+                    <div class="absolute top-76 right-8 text-red-500/50 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -0.9s;">500</div>
+                    <div class="absolute top-60 right-24 text-orange-500/40 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.4s;">404</div>
+                    <div class="absolute top-92 right-36 text-yellow-500/60 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.2s;">403</div>
+                    <div class="absolute top-24 right-12 text-purple-500/50 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -3.1s;">DLT</div>
+                    <div class="absolute top-52 right-28 text-cyan-500/40 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -0.7s;">Delta Lake</div>
+                    <div class="absolute top-68 right-4 text-blue-500/60 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.8s;">Data Modelling</div>
+                    <div class="absolute top-84 right-20 text-green-500/50 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.5s;">Data Optimisation</div>
+                    <div class="absolute top-36 right-16 text-orange-500/40 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.1s;">Performance Tuning</div>
+                    <div class="absolute top-72 right-32 text-red-500/60 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.9s;">Data Quality</div>
+                    <div class="absolute top-48 right-8 text-purple-500/50 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -0.5s;">Incidents</div>
+                    <div class="absolute top-56 right-24 text-blue-500/40 font-mono text-xs font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -1.6s;">Code</div>
+                    <div class="absolute top-80 right-12 text-green-500/60 font-mono text-sm font-semibold data-float whitespace-nowrap overflow-hidden" style="animation-delay: -2.3s;">Deploy</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 px-6 lg:px-8 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-16">
+                    <h2 class="text-3xl lg:text-4xl font-semibold text-slate-900 mb-4" style="font-family: 'Poppins', sans-serif;">About</h2>
+                    <p class="text-base sm:text-lg text-slate-600">Data Engineer with proven expertise in cloud data solutions</p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-16">
+                    <div>
+                        <div class="relative">
+                            <div class="relative aspect-[4/3] bg-white rounded-2xl shadow-lg overflow-hidden">
+                                <img src="./assets/about.jpg" alt="About GOPI KUNCHALA" class="w-full h-full object-cover">
+                            </div>
+                            <a href="#contact" class="absolute -bottom-4 -right-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/95 backdrop-blur border border-slate-200 text-slate-800 shadow-lg hover:bg-white transition-colors">
+                                <i class="fas fa-comments"></i>
+                                <span class="text-sm font-semibold">Let’s discuss</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-8">
+                        <div class="space-y-4">
+                            <p class="text-slate-700 text-sm sm:text-base leading-relaxed text-justify">
+                                Data Engineer with 2.5+ years of experience designing, developing, and optimizing cloud-based data solutions. Skilled in Azure Data Factory, Databricks (PySpark, SQL), and Snowflake, with expertise in data pipeline automation using Python and PowerShell.
+                            </p>
+                            <p class="text-slate-700 text-sm sm:text-base leading-relaxed text-justify">
+                                Proven track record in improving performance, streamlining workflows, and collaborating with cross-functional teams to deliver scalable and reliable data platforms.
+                            </p>
+                        </div>
+                        
+                        <div class="rounded-2xl border border-slate-200 shadow-sm overflow-hidden bg-white">
+                            <div class="grid sm:grid-cols-4">
+                                <div class="px-6 py-5 bg-gradient-to-br from-blue-50 to-white">
+                                    <div class="text-3xl font-bold text-slate-900">30+</div>
+                                    <div class="text-sm text-slate-600">RCA’s Delivered</div>
+                                </div>
+                                <div class="px-6 py-5 bg-gradient-to-br from-emerald-50 to-white border-t sm:border-t-0 sm:border-l border-slate-200">
+                                    <div class="text-3xl font-bold text-slate-900">28+</div>
+                                    <div class="text-sm text-slate-600">Problem Fixes Implemented</div>
+                                </div>
+                                <div class="px-6 py-5 bg-gradient-to-br from-sky-50 to-white border-t sm:border-t-0 sm:border-l border-slate-200">
+                                    <div class="text-3xl font-bold text-slate-900">20+</div>
+                                    <div class="text-sm text-slate-600">Safe Production Deployments</div>
+                                    <div class="text-xs text-slate-500 mt-1">Safe & verified releases</div>
+                                </div>
+                                <div class="px-6 py-5 bg-gradient-to-br from-violet-50 to-white border-t sm:border-t-0 sm:border-l border-slate-200">
+                                    <div class="text-3xl font-bold text-slate-900">4+</div>
+                                    <div class="text-sm text-slate-600">Certifications Completed</div>
+                                    <div class="text-xs text-slate-500 mt-1">More in progress</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-24 px-6 lg:px-8 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-16">
+                    <h2 class="text-3xl lg:text-4xl font-semibold text-slate-900 mb-4" style="font-family: 'Poppins', sans-serif;">Skills</h2>
+                    <p class="text-base sm:text-lg text-slate-600">Technologies and expertise driving data solutions</p>
+                </div>
+
+                <div id="skills-carousel" class="relative">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent"></div>
+
+                    <button id="skills-prev" class="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-lg items-center justify-center text-slate-700 hover:bg-slate-50 transition-colors">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button id="skills-next" class="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-lg items-center justify-center text-slate-700 hover:bg-slate-50 transition-colors">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+
+                    <div id="skills-scroll" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-3 pr-2">
+                        <div class="skills-slide snap-start min-w-[280px] sm:min-w-[320px] p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-white">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-blue-100 flex items-center justify-center text-blue-700"><i class="fas fa-diagram-project"></i></div>
+                                <h3 class="text-lg font-semibold text-slate-900">ETL & Orchestration</h3>
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-2">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Azure Data Factory</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Databricks</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Pipeline Scheduling</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-slide snap-start min-w-[280px] sm:min-w-[320px] p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-orange-50 to-white">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-orange-100 flex items-center justify-center text-orange-700"><i class="fas fa-bolt"></i></div>
+                                <h3 class="text-lg font-semibold text-slate-900">Data Engineering</h3>
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-2">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>PySpark</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>SQL Optimization</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Data Validation & Reconciliation</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-slide snap-start min-w-[280px] sm:min-w-[320px] p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-cyan-50 to-white">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-cyan-100 flex items-center justify-center text-cyan-700"><i class="fas fa-snowflake"></i></div>
+                                <h3 class="text-lg font-semibold text-slate-900">Data Stores</h3>
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-2">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Teradata</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Delta Lake</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Snowflake</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-slide snap-start min-w-[280px] sm:min-w-[320px] p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-yellow-50 to-white">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-yellow-100 flex items-center justify-center text-yellow-800"><i class="fas fa-code"></i></div>
+                                <h3 class="text-lg font-semibold text-slate-900">Languages</h3>
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-2">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Python (Pandas, PySpark)</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>SQL</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>PowerShell</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-slide snap-start min-w-[280px] sm:min-w-[320px] p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-700"><i class="fas fa-chart-line"></i></div>
+                                <h3 class="text-lg font-semibold text-slate-900">Monitoring & ITSM</h3>
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-2">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Azure Log Analytics</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>ServiceNow</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Control-M</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-slide snap-start min-w-[280px] sm:min-w-[320px] p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50 to-white">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-700"><i class="fas fa-shield-halved"></i></div>
+                                <h3 class="text-lg font-semibold text-slate-900">Data Practices</h3>
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-2">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>ETL/ELT</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Data Validation</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Data Quality Fixes</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-slide snap-start min-w-[280px] sm:min-w-[320px] p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-violet-50 to-white">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-violet-100 flex items-center justify-center text-violet-700"><i class="fas fa-cloud"></i></div>
+                                <h3 class="text-lg font-semibold text-slate-900">Storage</h3>
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-2">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>ADLS Gen2</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Secure Access & Containers</span></div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-slate-400"></i><span>Data Movement & File Handling</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pipeline" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-16">
+                    <h2 class="text-3xl lg:text-4xl font-semibold text-slate-900 mb-4" style="font-family: 'Poppins', sans-serif;">Pipeline Workflow</h2>
+                    <p class="text-base sm:text-lg text-slate-600">A clean ADF-style incident-to-deploy flow</p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-lg p-2.5 overflow-hidden">
+                    <!-- Scrolling Pipeline Container -->
+                    <div class="overflow-x-auto overflow-y-hidden lg:overflow-x-visible">
+                        <div class="min-w-[400px] lg:min-w-0">
+                            <!-- Main Pipeline Flow -->
+                            <div class="relative">
+                                <!-- Pipeline Stages -->
+                                <div class="relative" style="z-index: 2;">
+                                    <!-- Simple 2x4 Grid with Colored Rectangles -->
+                                    <div class="relative p-0">
+                                                <!-- Row 1: 1234 -->
+                                                <div class="flex items-center gap-2.5">
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-red-100 to-red-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-red-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Monitor</strong><span>Data & Pipelines</span></span>
+                                                    </div>
+                                                    <div class="text-slate-400 font-bold text-sm sm:text-base">→</div>
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-blue-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Detect</strong><span>Data/Pipeline Issue</span></span>
+                                                    </div>
+                                                    <div class="text-slate-400 font-bold text-sm sm:text-base">→</div>
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-purple-100 to-purple-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-purple-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Investigate</strong><span>Root Cause</span></span>
+                                                    </div>
+                                                    <div class="text-slate-400 font-bold text-sm sm:text-base">→</div>
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-orange-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Analyze</strong><span>Data & Logs</span></span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Downward Arrow -->
+                                                <div class="flex justify-start pl-[488px] sm:pl-[552px] mt-1">
+                                                    <div class="text-slate-400 font-bold text-sm sm:text-base" style="transform: rotate(90deg);">→</div>
+                                                </div>
+                                                
+                                                <!-- Row 2: 8765 -->
+                                                <div class="flex items-center gap-2.5 mt-1">
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-green-100 to-green-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-green-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Observe</strong><span>Data Outputs</span></span>
+                                                    </div>
+                                                    <div class="text-slate-400 font-bold text-sm sm:text-base">←</div>
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-emerald-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Monitor</strong><span>(continuous)</span></span>
+                                                    </div>
+                                                    <div class="text-slate-400 font-bold text-sm sm:text-base">←</div>
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-cyan-100 to-cyan-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-cyan-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Deploy</strong><span>Pipeline/Code/Fix</span></span>
+                                                    </div>
+                                                    <div class="text-slate-400 font-bold text-sm sm:text-base">←</div>
+                                                    <div class="w-28 h-12 sm:w-32 sm:h-20 rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-200 shadow-sm flex items-center justify-center p-0 flex-shrink-0">
+                                                        <span class="text-indigo-700 text-[10px] flex flex-col items-center justify-center text-center"><strong>Validate</strong><span>Data Quality</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career Section (Experience + Qualification) -->
+        <section id="career" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16">
+                    <div>
+                        <h2 class="text-3xl lg:text-4xl font-semibold text-slate-900 mb-4" style="font-family: 'Poppins', sans-serif;">Career Journey</h2>
+                        <p class="text-sm sm:text-lg text-slate-600">Professional experience and academic background</p>
+                    </div>
+
+                    <div class="w-full sm:w-auto inline-flex p-1 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <button id="career-tab-experience" type="button" data-career-tab="experience" class="flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-slate-900 text-white">Experience</button>
+                        <button id="career-tab-qualification" type="button" data-career-tab="qualification" class="flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap text-slate-700 hover:bg-slate-50">Qualification</button>
+                    </div>
+                </div>
+
+                <div id="career-panel-experience">
+                    <div class="relative pl-7 sm:pl-10">
+                        <div class="absolute left-2 sm:left-3 top-0 bottom-0 w-px bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600"></div>
+                        <div class="relative">
+                            <div class="absolute left-2 sm:left-3 top-4 -translate-x-1/2 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-lg ring-2 ring-blue-100"></div>
+                            <div class="text-xs sm:text-sm font-medium text-slate-500 mb-2">
+                                <span id="experience-duration">Jun 2023 – Present</span>
+                                <span class="ml-2 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold" id="experience-years">1+ years</span>
+                            </div>
+                            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-shadow duration-300">
+                                <div class="flex flex-col lg:flex-row lg:items-start gap-6 sm:gap-8">
+                                    <div class="lg:w-1/4">
+                                        <div class="text-base sm:text-lg font-semibold text-slate-900 mb-2">Tata Consultancy Services</div>
+                                        <div class="text-sm sm:text-base text-slate-600 mb-3">Kolkata, West Bengal</div>
+                                    </div>
+                                    <div class="lg:w-3/4">
+                                        <h3 class="text-base sm:text-lg font-semibold text-blue-600 mb-2 bg-blue-50 px-3 py-1 rounded-lg">Data Engineer</h3>
+                                        <p class="text-sm sm:text-base text-slate-600 opacity-75 mb-4 sm:mb-5">Day-to-Day Data Operations</p>
+                                        <ul class="space-y-3 text-sm sm:text-base text-slate-700">
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Utilized Log Analytics, Control-M, and ServiceNow for active SLA history monitoring and issue resolution</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Optimized SQL queries to improve performance and reduce execution time across data pipelines</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Developed PySpark and SQL notebooks to implement smooth data transformations for Snowflake and Delta tables loading</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Led cross-team platform initiatives to implement cloud-based Control-M level automation and job scheduling</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Implemented code fixes in shell scripts to resolve automation issues and improve reliability</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Developed large file handling solutions in ADLS Gen2 for efficient renaming and data management</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Introduced pandas-based workflows to generate automated solutions for regular data tasks</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Analyzed critical production issues and resolved them within quicker SLA timeframes</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Handled critical production challenges and performed deep analysis to maintain data load stability</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <div class="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                                <span>Monitored and maintained data pipeline health to ensure consistent performance and reliability</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="career-panel-qualification" class="hidden">
+                    <div class="relative">
+                        <div class="absolute left-5 sm:left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500 via-violet-500 to-blue-500 rounded-full qualification-timeline-line"></div>
+
+                        <div class="relative">
+                            <div class="absolute left-5 sm:left-6 top-0 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-emerald-50 border-2 border-emerald-100 flex items-center justify-center text-emerald-700 shadow-lg z-10">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-200 ml-12 sm:ml-16 max-w-4xl hover:shadow-2xl transition-shadow duration-300">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i class="fas fa-calendar-alt text-emerald-600 opacity-60"></i>
+                                    <span class="text-xs sm:text-sm font-medium text-slate-500">Jun 2019 – Jul 2022</span>
+                                </div>
+                                <div>
+                                    <div class="text-sm sm:text-lg font-semibold text-slate-900">Bachelor of Technology in Mechanical Engineering</div>
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                                        <div class="text-xs sm:text-sm text-slate-600">Avanthi's Scienfic Technological & Research Academy</div>
+                                        <div class="text-xs sm:text-sm text-slate-700 text-right">Grade: <strong>First Class</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative mt-12">
+                            <div class="absolute left-5 sm:left-6 top-0 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-violet-50 border-2 border-violet-100 flex items-center justify-center text-violet-700 shadow-lg z-10">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-200 ml-12 sm:ml-16 max-w-4xl hover:shadow-2xl transition-shadow duration-300">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i class="fas fa-calendar-alt text-violet-600 opacity-60"></i>
+                                    <span class="text-xs sm:text-sm font-medium text-slate-500">Jun 2016 – May 2019</span>
+                                </div>
+                                <div>
+                                    <div class="text-sm sm:text-lg font-semibold text-slate-900">Diploma in Mechanical Engineering</div>
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                                        <div class="text-xs sm:text-sm text-slate-600">TKR College of Engineering & Technology</div>
+                                        <div class="text-xs sm:text-sm text-slate-700 text-right">Grade: <strong>81.89%</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative mt-12">
+                            <div class="absolute left-5 sm:left-6 top-0 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-blue-50 border-2 border-blue-100 flex items-center justify-center text-blue-700 shadow-lg z-10">
+                                <i class="fas fa-school"></i>
+                            </div>
+                            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-200 ml-12 sm:ml-16 max-w-4xl hover:shadow-2xl transition-shadow duration-300">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i class="fas fa-calendar-alt text-blue-600 opacity-60"></i>
+                                    <span class="text-xs sm:text-sm font-medium text-slate-500">Jun 2015 – Apr 2016</span>
+                                </div>
+                                <div>
+                                    <div class="text-sm sm:text-lg font-semibold text-slate-900">SSC - Secondary Education</div>
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                                        <div class="text-xs sm:text-sm text-slate-600">Gauthami High School - Hyderabad</div>
+                                        <div class="text-xs sm:text-sm text-slate-700 text-right">Grade: <strong>9.2 CGPA</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications Section -->
+        <section id="certifications" class="py-24 px-6 lg:px-8 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-16">
+                    <h2 class="text-3xl lg:text-4xl font-semibold text-slate-900 mb-4" style="font-family: 'Poppins', sans-serif;">Certifications</h2>
+                    <p class="text-base sm:text-lg text-slate-600">Certifications completed</p>
+                </div>
+
+                <div class="rounded-3xl border border-slate-200 shadow-xl overflow-hidden bg-white">
+                    <div class="grid lg:grid-cols-12">
+                        <div class="lg:col-span-4 p-6 sm:p-8 bg-gradient-to-b from-slate-50 to-white border-b lg:border-b-0 lg:border-r border-slate-200">
+                            <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Certifications</div>
+                            <div class="mt-3 text-2xl font-semibold text-slate-900" style="font-family: 'Poppins', sans-serif;">Achievements</div>
+                            <div class="mt-2 text-sm text-slate-600">Azure + Databricks learning path.</div>
+
+                            <div class="mt-6 grid grid-cols-2 gap-3">
+                                <div class="p-4 rounded-2xl border border-slate-200 bg-white">
+                                    <div class="text-xl font-bold text-slate-900">4</div>
+                                    <div class="text-xs text-slate-600">Completed</div>
+                                </div>
+                                <div class="p-4 rounded-2xl border border-slate-200 bg-white">
+                                    <div class="text-xl font-bold text-slate-900">+</div>
+                                    <div class="text-xs text-slate-600">More planned</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-8 p-2 sm:p-6">
+                            <div class="rounded-2xl border border-slate-200 overflow-hidden">
+                                <div class="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-blue-700"><i class="fab fa-microsoft"></i></div>
+                                        <div>
+                                            <div class="font-semibold text-slate-900">Microsoft</div>
+                                            <div class="text-xs text-slate-600">Azure</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divide-y divide-slate-200">
+                                    <div class="px-5 py-4 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-certificate text-slate-400 flex-shrink-0"></i>
+                                            <span class="text-sm sm:text-base text-slate-800">Microsoft Certified: Azure Fundamentals</span>
+                                        </div>
+                                        <a href="https://learn.microsoft.com/en-in/users/gopikunchala-2718/credentials/5522acec9df38f1b" target="_blank" class="px-2 py-1 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 text-xs flex-shrink-0 whitespace-nowrap"><i class="fas fa-external-link-alt"></i> View</a>
+                                    </div>
+                                    <div class="px-5 py-4 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-certificate text-slate-400 flex-shrink-0"></i>
+                                            <span class="text-sm sm:text-base text-slate-800">Microsoft Certified: Azure Data Engineer Associate</span>
+                                        </div>
+                                        <a href="https://learn.microsoft.com/en-in/users/gopikunchala-2718/credentials/c6ac051a4e3aceef" target="_blank" class="px-2 py-1 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 text-xs flex-shrink-0 whitespace-nowrap"><i class="fas fa-external-link-alt"></i> View</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 rounded-2xl border border-slate-200 overflow-hidden">
+                                <div class="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-orange-700"><i class="fas fa-database"></i></div>
+                                        <div>
+                                            <div class="font-semibold text-slate-900">Databricks</div>
+                                            <div class="text-xs text-slate-600">Lakehouse</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divide-y divide-slate-200">
+                                    <div class="px-5 py-4 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-certificate text-slate-400 flex-shrink-0"></i>
+                                            <span class="text-sm sm:text-base text-slate-800">Databricks Certified Data Engineer Associate</span>
+                                        </div>
+                                        <a href="https://credentials.databricks.com/a375ff93-0160-4537-80b5-371c69855373#acc.Fl5frqTA" target="_blank" class="px-2 py-1 rounded-full bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-100 text-xs flex-shrink-0 whitespace-nowrap"><i class="fas fa-external-link-alt"></i> View</a>
+                                    </div>
+                                    <div class="px-5 py-4 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-certificate text-slate-400 flex-shrink-0"></i>
+                                            <span class="text-sm sm:text-base text-slate-800">Databricks Accredited Lakehouse Platform Fundamentals</span>
+                                        </div>
+                                        <a href="https://credentials.databricks.com/ab85b094-05a9-432e-b835-131d79dbce42#acc.PB" target="_blank" class="px-2 py-1 rounded-full bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-100 text-xs flex-shrink-0 whitespace-nowrap"><i class="fas fa-external-link-alt"></i> View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="interests" class="py-20 px-6 lg:px-8 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-lg p-8">
+                    <div class="text-xs uppercase tracking-[0.18em] text-slate-500">Interests</div>
+                    <div class="mt-2 text-2xl font-semibold text-slate-900" style="font-family: 'Poppins', sans-serif;">Open to Data Roles</div>
+                    <p class="mt-3 text-slate-700 leading-relaxed">
+                        I'm passionate about data engineering with AI integration applying artificial intelligence to modern data engineering solutions to solve real-world business problems. I want to be part of building intelligent data pipelines that leverage machine learning for automation, predictive analytics, and smart data processing. My focus is on creating scalable data systems that combine traditional engineering with AI capabilities to deliver actionable insights and drive business innovation.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">Data Engineering</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-violet-50 text-violet-700 border border-violet-100">Data Science</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">AI</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-50 text-slate-700 border border-slate-200">Modern Data Stack</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-12 px-4 lg:px-8 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-8 text-center">
+                    <h2 class="text-2xl lg:text-4xl font-semibold text-slate-900 mb-2" style="font-family: 'Poppins', sans-serif;">Get in touch</h2>
+                    <p class="text-sm lg:text-base text-slate-600">Let's connect for data engineering opportunities</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="p-4 lg:p-6">
+                        <div class="space-y-4">
+                            <div class="text-center lg:text-left">
+                                <div class="text-xs uppercase tracking-[0.18em] text-slate-500 mb-1">Location</div>
+                                <div class="text-lg lg:text-xl font-semibold text-slate-900">Hyderabad, India</div>
+                                <div class="text-xs lg:text-sm text-slate-600">Open to relocation / remote based on role.</div>
+                            </div>
+
+                            <div class="flex justify-center lg:justify-start gap-3">
+                                <a href="https://www.instagram.com/gopi_0k9" target="_blank" class="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-50 transition-colors" aria-label="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://github.com/gopikunchala-ade" target="_blank" class="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-50 transition-colors" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+
+                            <div class="flex gap-3 mb-3">
+                                <a href="mailto:gopi.sk079@gmail.com" class="flex-1 group p-3 rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
+                                    <div class="flex items-center justify-center gap-3">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 flex-shrink-0">
+                                            <i class="fas fa-envelope text-xs sm:text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-xs sm:text-sm text-slate-500">Email</div>
+                                            <div class="mt-1 font-semibold text-slate-900 group-hover:underline text-xs sm:text-sm">Tap to compose</div>
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <a href="https://www.linkedin.com/in/gopi-kunchala-ade" target="_blank" class="flex-1 group p-3 rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all">
+                                    <div class="flex items-center justify-center gap-3">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 flex-shrink-0">
+                                            <i class="fab fa-linkedin text-xs sm:text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-xs sm:text-sm text-slate-500">LinkedIn</div>
+                                            <div class="mt-1 font-semibold text-slate-900 group-hover:underline text-xs sm:text-sm">Tap to connect</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                                <div class="p-3 rounded-xl border border-slate-200">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 flex-shrink-0">
+                                            <i class="fas fa-location-dot text-xs sm:text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-xs sm:text-sm text-slate-500">Address</div>
+                                            <div class="mt-1 font-semibold text-slate-900 text-xs sm:text-sm">Hyderabad, India</div>
+                                            <div class="mt-1 text-xs text-slate-600">Available for onsite meetings</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 rounded-xl border border-slate-200">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-700 flex-shrink-0">
+                                            <i class="fas fa-briefcase text-xs sm:text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-xs sm:text-sm text-slate-500">Focus</div>
+                                            <div class="mt-1 font-semibold text-slate-900 text-xs sm:text-sm">Data Engineering • Data Science • AI</div>
+                                            <div class="mt-1 text-xs text-slate-600">Pipelines, analytics, automation</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Dark Mode Toggle Functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const bodyElement = document.body;
+
+        // Check for saved theme preference or default to light
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        bodyElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        // Update theme icon based on current theme
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', () => {
+            const currentTheme = bodyElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            bodyElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        const qs = (sel) => document.querySelector(sel);
+
+        // Calculate dynamic experience duration
+        function calculateExperience() {
+            const startDate = new Date('2023-06-01');
+            const currentDate = new Date();
+            
+            let years = currentDate.getFullYear() - startDate.getFullYear();
+            let months = currentDate.getMonth() - startDate.getMonth();
+            
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            
+            let experienceText = '';
+            if (years > 0) {
+                experienceText = `${years} year${years > 1 ? 's' : ''}`;
+                if (months > 0) {
+                    experienceText += ` ${months} month${months > 1 ? 's' : ''}`;
+                }
+            } else if (months > 0) {
+                experienceText = `${months} month${months > 1 ? 's' : ''}`;
+            } else {
+                experienceText = 'Less than 1 month';
+            }
+            
+            // Update the experience years display
+            const yearsElement = document.getElementById('experience-years');
+            if (yearsElement) {
+                yearsElement.textContent = experienceText;
+            }
+            
+            // Update the duration display
+            const durationElement = document.getElementById('experience-duration');
+            if (durationElement) {
+                durationElement.textContent = 'June 2023 – Present';
+            }
+        }
+        
+        // Page Loader
+        window.addEventListener('load', () => {
+            const loader = qs('#page-loader');
+            if (!loader) return;
+            requestAnimationFrame(() => loader.classList.add('fade-out'));
+            setTimeout(() => loader.remove(), 650);
+            
+            // Calculate experience on page load
+            calculateExperience();
+        });
+
+        // Bottom Navigation Menu Toggle
+        const bottomMenuBtn = qs('#bottom-menu-btn');
+        const bottomMenu = qs('#bottom-menu');
+        const bottomMenuBackdrop = qs('#bottom-menu-backdrop');
+
+        const careerMenuToggle = qs('#career-menu-toggle');
+        const careerSubmenu = qs('#career-submenu');
+
+        const setCareerTab = (tab) => {
+            const panelExp = qs('#career-panel-experience');
+            const panelQual = qs('#career-panel-qualification');
+            const btnExp = qs('#career-tab-experience');
+            const btnQual = qs('#career-tab-qualification');
+
+            if (!panelExp || !panelQual || !btnExp || !btnQual) return;
+
+            const isExp = tab === 'experience';
+            panelExp.classList.toggle('hidden', !isExp);
+            panelQual.classList.toggle('hidden', isExp);
+
+            btnExp.classList.toggle('bg-slate-900', isExp);
+            btnExp.classList.toggle('text-white', isExp);
+            btnExp.classList.toggle('text-slate-700', !isExp);
+            btnExp.classList.toggle('hover:bg-slate-50', !isExp);
+
+            btnQual.classList.toggle('bg-slate-900', !isExp);
+            btnQual.classList.toggle('text-white', !isExp);
+            btnQual.classList.toggle('text-slate-700', isExp);
+            btnQual.classList.toggle('hover:bg-slate-50', isExp);
+        };
+
+        const closeMenu = () => {
+            bottomMenu?.classList.add('hidden');
+            bottomMenuBackdrop?.classList.add('hidden');
+            careerSubmenu?.classList.add('hidden');
+        };
+
+        careerMenuToggle?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            careerSubmenu?.classList.toggle('hidden');
+        });
+
+        bottomMenuBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const opening = bottomMenu?.classList.contains('hidden');
+            bottomMenu?.classList.toggle('hidden');
+            bottomMenuBackdrop?.classList.toggle('hidden');
+
+            if (opening) {
+                const panel = qs('#bottom-menu-panel');
+                if (panel) {
+                    panel.classList.remove('menu-pop');
+                    void panel.offsetWidth;
+                    panel.classList.add('menu-pop');
+                }
+            }
+        });
+
+        bottomMenuBackdrop?.addEventListener('click', closeMenu);
+
+        bottomMenu?.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || href === '#') return;
+                const target = qs(href);
+                if (!target) return;
+                e.preventDefault();
+
+                const tab = this.getAttribute('data-career-tab');
+                if (tab) setCareerTab(tab);
+
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                closeMenu();
+            });
+        });
+
+        qs('#career-tab-experience')?.addEventListener('click', () => setCareerTab('experience'));
+        qs('#career-tab-qualification')?.addEventListener('click', () => setCareerTab('qualification'));
+
+        // Safety: close menu if user taps anywhere else
+        document.addEventListener('click', (e) => {
+            if (bottomMenuBtn?.contains(e.target)) return;
+            if (bottomMenu?.contains(e.target)) return;
+            closeMenu();
+        });
+
+        // Skills slider: auto-scroll + manual arrows + manual swipe/scroll
+        const skillsCarousel = qs('#skills-carousel');
+        const skillsScroll = qs('#skills-scroll');
+        const skillsPrev = qs('#skills-prev');
+        const skillsNext = qs('#skills-next');
+
+        let skillsTimer = null;
+
+        const getSkillsStep = () => {
+            if (!skillsScroll) return 320;
+            const first = skillsScroll.querySelector('.skills-slide');
+            if (!first) return 320;
+            const rect = first.getBoundingClientRect();
+            return rect.width + 16;
+        };
+
+        const scrollSkillsBy = (dir) => {
+            if (!skillsScroll) return;
+            skillsScroll.scrollBy({ left: dir * getSkillsStep(), behavior: 'smooth' });
+        };
+
+        const autoAdvanceSkills = () => {
+            if (!skillsScroll) return;
+            const atEnd = skillsScroll.scrollLeft + skillsScroll.clientWidth >= skillsScroll.scrollWidth - 8;
+            if (atEnd) {
+                skillsScroll.scrollTo({ left: 0, behavior: 'smooth' });
+                return;
+            }
+            scrollSkillsBy(1);
+        };
+
+        const startSkills = () => {
+            if (skillsTimer) clearInterval(skillsTimer);
+            skillsTimer = setInterval(autoAdvanceSkills, 5000);
+        };
+
+        const stopSkills = () => {
+            if (skillsTimer) clearInterval(skillsTimer);
+            skillsTimer = null;
+        };
+
+        skillsPrev?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            stopSkills();
+            scrollSkillsBy(-1);
+            startSkills();
+        });
+
+        skillsNext?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            stopSkills();
+            scrollSkillsBy(1);
+            startSkills();
+        });
+
+        skillsCarousel?.addEventListener('mouseenter', stopSkills);
+        skillsCarousel?.addEventListener('mouseleave', startSkills);
+        skillsCarousel?.addEventListener('touchstart', stopSkills, { passive: true });
+        skillsCarousel?.addEventListener('touchend', startSkills, { passive: true });
+
+        startSkills();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const topNavRightPlaceholder = document.getElementById('top-nav-right-placeholder');
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+            function handleResponsiveNav() {
+                // Move dark mode toggle to top nav for screens 768px and wider
+                if (window.innerWidth >= 768) {
+                    if (topNavRightPlaceholder && darkModeToggle && !topNavRightPlaceholder.contains(darkModeToggle)) {
+                        topNavRightPlaceholder.appendChild(darkModeToggle);
+                        darkModeToggle.classList.add('in-nav');
+                    }
+                } else {
+                    if (document.body && darkModeToggle && !document.body.contains(darkModeToggle)) {
+                        document.body.appendChild(darkModeToggle);
+                        darkModeToggle.classList.remove('in-nav');
+                    }
+                }
+            }
+
+            function handleRoleResumeLayout() {
+                const rightColumn = document.querySelector('#home .lg\\:col-span-7 > .flex.flex-col.gap-6');
+                const roleElement = document.querySelector('#home .flex.flex-col.sm\\:flex-row.sm\\:items-start.sm\\:justify-between > div:last-child');
+                const resumeButtonContainer = document.querySelector('#home .lg\\:col-span-7 > .flex.flex-col.gap-6 > .flex.items-center');
+                
+                if (window.innerWidth >= 768) {
+                    // Create role+resume row on right side
+                    if (rightColumn && roleElement && resumeButtonContainer && !rightColumn.querySelector('.role-resume-row')) {
+                        // Create container for role and resume in same row
+                        const rowContainer = document.createElement('div');
+                        rowContainer.className = 'role-resume-row flex items-center justify-between gap-4';
+                        
+                        // Clone role (left side of row)
+                        const roleClone = roleElement.cloneNode(true);
+                        roleClone.style.display = 'block';
+                        
+                        // Clone resume button (right side of row)
+                        const resumeClone = resumeButtonContainer.cloneNode(true);
+                        resumeClone.style.display = 'flex';
+                        
+                        // Append to row container
+                        rowContainer.appendChild(roleClone);
+                        rowContainer.appendChild(resumeClone);
+                        
+                        // Hide originals
+                        roleElement.style.display = 'none';
+                        resumeButtonContainer.style.display = 'none';
+                        
+                        // Add to right column
+                        rightColumn.appendChild(rowContainer);
+                    }
+                } else {
+                    // Restore mobile view
+                    const rowContainer = rightColumn?.querySelector('.role-resume-row');
+                    if (rowContainer) {
+                        rowContainer.remove();
+                    }
+                    if (roleElement) roleElement.style.display = '';
+                    if (resumeButtonContainer) resumeButtonContainer.style.display = '';
+                }
+            }
+            
+            // Handle track record full width for tablets
+            function handleAboutTrackRecord() {
+                const aboutSection = document.querySelector('#about > .max-w-7xl');
+                const trackRecordInline = document.querySelector('#about .space-y-8 > .rounded-2xl.border.border-slate-200');
+                
+                if (window.innerWidth >= 630 && window.innerWidth <= 1024) {
+                    if (aboutSection && trackRecordInline && !document.querySelector('#about-track-record-full')) {
+                        // Clone the track record
+                        const trackRecordClone = trackRecordInline.cloneNode(true);
+                        trackRecordClone.id = 'about-track-record-full';
+                        trackRecordClone.style.width = '100%';
+                        trackRecordClone.style.marginTop = '2rem';
+                        
+                        // Hide inline version
+                        trackRecordInline.style.display = 'none';
+                        
+                        // Append full-width version after grid
+                        aboutSection.appendChild(trackRecordClone);
+                    }
+                } else {
+                    // Remove full-width version and show inline version
+                    const trackRecordFull = document.querySelector('#about-track-record-full');
+                    if (trackRecordFull) {
+                        trackRecordFull.remove();
+                    }
+                    if (trackRecordInline) {
+                        trackRecordInline.style.display = '';
+                    }
+                }
+            }
+
+            handleResponsiveNav();
+            handleRoleResumeLayout();
+            handleAboutTrackRecord();
+            
+            window.addEventListener('resize', () => {
+                handleResponsiveNav();
+                handleRoleResumeLayout();
+                handleAboutTrackRecord();
+            });
+            
+            // Active Menu Highlighting
+            const sections = document.querySelectorAll('section[id]');
+            const topNavLinks = document.querySelectorAll('#top-nav nav a');
+            const bottomNavLinks = document.querySelectorAll('#bottom-menu a');
+            
+            function setActiveMenu() {
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (window.scrollY >= sectionTop - 200) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+                
+                // Update top nav
+                topNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                // Update bottom nav
+                bottomNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            // Set active menu on scroll
+            window.addEventListener('scroll', setActiveMenu);
+            // Set initial active menu
+            setActiveMenu();
+        });
+        
+        // GitHub Popup
+        function showGitHubPopup(event) {
+            event.preventDefault();
+            const modal = document.getElementById('github-popup-modal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        
+        function closeGitHubPopup() {
+            const modal = document.getElementById('github-popup-modal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+        
+        // Resume Button Toggle Functions
+        function toggleResumeOptions(device) {
+            const mainBtn = document.getElementById(`resume-main-btn-${device}`);
+            const actions = document.getElementById(`resume-actions-${device}`);
+            
+            if (actions.classList.contains('hidden')) {
+                // Show actions, hide main button
+                mainBtn.style.display = 'none';
+                actions.classList.remove('hidden');
+                actions.classList.add('flex');
+            } else {
+                // Hide actions, show main button
+                actions.classList.add('hidden');
+                actions.classList.remove('flex');
+                mainBtn.style.display = 'flex';
+            }
+        }
+
+        
+        function downloadResume() {
+            // Check if mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            
+            if (isMobile) {
+                // For mobile, open in new tab instead of download
+                window.open('./assets/Gopi Kunchala.pdf', '_blank');
+            } else {
+                // For desktop, use download
+                const link = document.createElement('a');
+                link.href = './assets/Gopi Kunchala.pdf';
+                link.download = 'Gopi_Kunchala_Resume.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+        
+        function shareResume() {
+            const resumeUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/assets/Gopi Kunchala.pdf';
+            
+            if (navigator.share) {
+                // For mobile, try to share the file directly
+                fetch('./assets/Gopi Kunchala.pdf')
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const file = new File([blob], 'Gopi_Kunchala_Resume.pdf', { type: 'application/pdf' });
+                        
+                        // Check if we can share files
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            return navigator.share({
+                                title: 'Gopi Kunchala - Resume',
+                                text: 'Check out my resume',
+                                files: [file]
+                            });
+                        } else {
+                            // Fallback to sharing URL
+                            return navigator.share({
+                                title: 'Gopi Kunchala - Resume',
+                                text: 'Check out my resume',
+                                url: resumeUrl
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        // Fallback to clipboard
+                        navigator.clipboard.writeText(resumeUrl).then(() => {
+                            alert('Resume link copied to clipboard!');
+                        }).catch(() => {
+                            alert('Share failed. Please copy the link manually: ' + resumeUrl);
+                        });
+                    });
+            } else {
+                // Desktop fallback - copy to clipboard
+                navigator.clipboard.writeText(resumeUrl).then(() => {
+                    alert('Resume link copied to clipboard!');
+                }).catch(() => {
+                    alert('Unable to copy. URL: ' + resumeUrl);
+                });
+            }
+        }
+        
+        // Pinch Zoom for Resume
+        let scale = 1;
+        let panning = false;
+        let pointX = 0;
+        let pointY = 0;
+        let start = { x: 0, y: 0 };
+        let initialDistance = 0;
+        
+        function setTransform(iframe) {
+            iframe.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        }
+        
+        function handlePinchStart(e) {
+            if (e.touches.length === 2) {
+                initialDistance = Math.hypot(
+                    e.touches[0].pageX - e.touches[1].pageX,
+                    e.touches[0].pageY - e.touches[1].pageY
+                );
+            } else if (e.touches.length === 1) {
+                panning = true;
+                start = { x: e.touches[0].clientX - pointX, y: e.touches[0].clientY - pointY };
+            }
+        }
+        
+        function handlePinchMove(e) {
+            const iframe = document.getElementById('resume-iframe');
+            
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const currentDistance = Math.hypot(
+                    e.touches[0].pageX - e.touches[1].pageX,
+                    e.touches[0].pageY - e.touches[1].pageY
+                );
+                scale = Math.min(Math.max(0.5, (currentDistance / initialDistance) * scale), 4);
+                setTransform(iframe);
+            } else if (panning && e.touches.length === 1) {
+                e.preventDefault();
+                pointX = e.touches[0].clientX - start.x;
+                pointY = e.touches[0].clientY - start.y;
+                setTransform(iframe);
+            }
+        }
+        
+        function handlePinchEnd(e) {
+            panning = false;
+            if (e.touches.length < 2) {
+                initialDistance = 0;
+            }
+        }
+        
+        // Mouse wheel zoom
+        function handleWheel(e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                const iframe = document.getElementById('resume-iframe');
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                scale = Math.min(Math.max(0.5, scale * delta), 4);
+                setTransform(iframe);
+            }
+        }
+        
+        // Reset zoom
+        function resetZoom() {
+            scale = 1;
+            pointX = 0;
+            pointY = 0;
+            const iframe = document.getElementById('resume-iframe');
+            setTransform(iframe);
+        }
+    </script>
+    
+    <!-- GitHub Popup Modal -->
+    <div id="github-popup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+        <div style="background: white; border-radius: 20px; padding: 32px; max-width: 400px; margin: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;">
+            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fab fa-github" style="font-size: 32px; color: white;"></i>
+            </div>
+            <h3 style="font-size: 24px; font-weight: 600; color: #1e293b; margin-bottom: 12px; font-family: 'Poppins', sans-serif;">GitHub Coming Soon!</h3>
+            <p style="color: #64748b; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">My GitHub profile will be available soon. Stay tuned for exciting projects and code samples!</p>
+            <button onclick="closeGitHubPopup()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s; font-family: 'Poppins', sans-serif;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Got it!</button>
+        </div>
+    </div>
+    
+    <!-- Resume Viewer Modal -->
+    <div id="resume-viewer-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+        <div style="width: 95%; max-width: 900px; height: 90vh; background: white; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 80px rgba(0,0,0,0.5);">
+            <!-- Header -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button onclick="downloadResume()" title="Download" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 44px; height: 44px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button onclick="shareResume()" title="Share" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 44px; height: 44px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <button onclick="resetZoom()" title="Reset Zoom" class="desktop-only-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 44px; height: 44px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                </div>
+                <button onclick="closeResumeViewer()" style="background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: white; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.3)'" onmouseout="this.style.background='rgba(239,68,68,0.2)'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- PDF Container -->
+            <div id="pdf-viewer-container" style="flex: 1; overflow: hidden; position: relative; background: #f1f5f9;" ontouchstart="handlePinchStart(event)" ontouchmove="handlePinchMove(event)" ontouchend="handlePinchEnd(event)" onwheel="handleWheel(event)">
+                <!-- Desktop: iframe with direct PDF -->
+                <iframe id="resume-iframe" class="desktop-viewer" src="./assets/Gopi Kunchala.pdf" style="width: 100%; height: 100%; border: none; transform-origin: center center; transition: transform 0.1s ease-out;"></iframe>
+                
+                <!-- Mobile: PDF.js Canvas Viewer -->
+                <div id="resume-mobile-viewer" class="mobile-viewer" style="width: 100%; height: 100%; overflow: auto; display: none;">
+                    <div style="padding: 12px; display: flex; justify-content: center; align-items: center; gap: 12px; background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10;">
+                        <span id="page-info" class="text-sm text-slate-700 font-medium">Loading PDF...</span>
+                    </div>
+                    <div id="canvas-container" style="display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 16px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        #github-popup-modal.show,
+        #resume-viewer-modal.show {
+            opacity: 1 !important;
+        }
+        
+        /* Mobile-specific PDF viewer styles */
+        @media (max-width: 767px) {
+            .desktop-viewer {
+                display: none !important;
+            }
+            .mobile-viewer {
+                display: block !important;
+            }
+            .desktop-only-btn {
+                display: none !important;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .desktop-viewer {
+                display: block !important;
+            }
+            .mobile-viewer {
+                display: none !important;
+            }
+        }
+    </style>
+    
+    <!-- Holi Color Splash Effect - Mobile Touch & Water Wave -->
+    <script>
+        // Holi Color Splash - Touch & Mouse with Water Wave Effects
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Holi splash container
+            const holiContainer = document.createElement('div');
+            holiContainer.id = 'holi-container';
+            document.body.appendChild(holiContainer);
+
+            Object.assign(holiContainer.style, {
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+                pointerEvents: 'none',
+                zIndex: '999999',
+            });
+
+        // Check if dark mode is active
+        function isDarkMode() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ||
+                   document.documentElement.getAttribute('data-theme') === 'dark' ||
+                   document.body.classList.contains('dark');
+        }
+
+        // Holi colors - vibrant festival colors
+        const holiColors = [
+            { hue: 0, name: 'Red', rgb: '255, 0, 0' },
+            { hue: 30, name: 'Orange', rgb: '255, 127, 0' },
+            { hue: 60, name: 'Yellow', rgb: '255, 255, 0' },
+            { hue: 120, name: 'Green', rgb: '0, 255, 0' },
+            { hue: 180, name: 'Cyan', rgb: '0, 255, 255' },
+            { hue: 240, name: 'Blue', rgb: '0, 0, 255' },
+            { hue: 270, name: 'Purple', rgb: '128, 0, 128' },
+            { hue: 300, name: 'Pink', rgb: '255, 192, 203' },
+            { hue: 330, name: 'Magenta', rgb: '255, 0, 255' }
+        ];
+
+        // Color splash trail particles
+        const colorTrail = [];
+
+        const trailLength = 15; // Number of trail particles
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let targetX = mouseX, targetY = mouseY;
+        let isMouseDown = false;
+        let isTouchDown = false;
+        let touchStartX = 0, touchStartY = 0;
+        let time = 0;
+
+        const MAX_SPLASHES = 90;
+        const DRAG_SPAWN_INTERVAL_MS = 180;
+        const TOUCH_MOVE_SPAWN_INTERVAL_MS = 180;
+        let lastDragSpawnAt = 0;
+        let lastTouchMoveSpawnAt = 0;
+
+        // Create trail particles
+        for (let i = 0; i < trailLength; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'color-trail';
+            holiContainer.appendChild(trail);
+            
+            Object.assign(trail.style, {
+                position: 'absolute',
+                borderRadius: '50%',
+                pointerEvents: 'none', // IMPORTANT: Don't block touch events
+                transform: 'translate(-50%, -50%)',
+                willChange: 'transform, width, height, opacity, background',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            });
+            
+            colorTrail.push({
+                element: trail,
+                x: mouseX,
+                y: mouseY,
+                size: 0,
+                opacity: 0,
+                delay: i * 0.1, // Staggered delay for smooth trail
+                colorIndex: i % holiColors.length, // Each trail point has different color
+                color: holiColors[i % holiColors.length]
+            });
+        }
+
+        // Create color splash particle
+        function createColorSplash(x, y, colorIndex, isBurst = false) {
+            const splash = document.createElement('div');
+            splash.className = 'color-splash';
+            holiContainer.appendChild(splash);
+            
+            const color = holiColors[colorIndex];
+            const size = isBurst ? Math.random() * 25 + 15 : Math.random() * 12 + 6;
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = isBurst ? Math.random() * 6 + 3 : Math.random() * 3 + 1;
+            
+            Object.assign(splash.style, {
+                position: 'absolute',
+                borderRadius: '50%',
+                pointerEvents: 'none', // IMPORTANT: Don't block touch events
+                transform: 'translate(-50%, -50%)',
+                willChange: 'transform, width, height, opacity, background',
+                transition: 'all 0.1s linear',
+                width: size + 'px',
+                height: size + 'px',
+                background: `radial-gradient(circle at 30% 30%, rgba(${color.rgb}, 0.3), rgba(${color.rgb}, 0.2), rgba(${color.rgb}, 0.1), transparent)`, // Glassy gradient with low opacity
+                boxShadow: `0 0 ${size/2}px ${size/4}px rgba(${color.rgb}, 0.2)`, // Reduced glow
+                filter: 'blur(0.8px) saturate(1.2)' // More blur for glassy feel
+            });
+            
+            // Add to colorSplashes array for physics animation
+            if (!window.colorSplashes) window.colorSplashes = [];
+
+            while (window.colorSplashes.length >= MAX_SPLASHES) {
+                const oldSplash = window.colorSplashes.shift();
+                if (oldSplash && oldSplash.element) oldSplash.element.remove();
+            }
+
+            window.colorSplashes.push({
+                element: splash,
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * velocity,
+                vy: Math.sin(angle) * velocity,
+                size: size,
+                color: color,
+                opacity: 0.4, // Lower opacity
+                life: 0,
+                gravity: 0.08, // Less gravity for floaty feel
+                bounce: 0.6
+            });
+        }
+
+        // Create water wave effect
+        function createWaterWave(x, y, colorIndex) {
+            const wave = document.createElement('div');
+            wave.className = 'water-wave';
+            holiContainer.appendChild(wave);
+            
+            const color = holiColors[colorIndex];
+            
+            Object.assign(wave.style, {
+                position: 'absolute',
+                borderRadius: '50%',
+                pointerEvents: 'none', // IMPORTANT: Don't block touch events
+                transform: 'translate(-50%, -50%)',
+                willChange: 'transform, width, height, opacity, border',
+                transition: 'all 2s cubic-bezier(0.4, 0, 0.2, 1)',
+                width: '20px',
+                height: '20px',
+                border: `2px solid rgba(${color.rgb}, 0.3)`, // Lower opacity
+                opacity: '0.6', // Lower opacity
+                background: `radial-gradient(circle, rgba(${color.rgb}, 0.1), transparent)` // Glassy feel
+            });
+            
+            setTimeout(() => {
+                wave.style.width = '150px'; // Smaller waves
+                wave.style.height = '150px';
+                wave.style.opacity = '0';
+                wave.style.border = `1px solid rgba(${color.rgb}, 0)`;
+                wave.style.background = `radial-gradient(circle, rgba(${color.rgb}, 0), transparent)`;
+            }, 10);
+            
+            setTimeout(() => {
+                wave.remove();
+            }, 2000);
+        }
+
+        // Create color burst explosion
+        function createColorBurst(x, y) {
+            const burstCount = 6;
+            for (let i = 0; i < burstCount; i++) {
+                const colorIndex = Math.floor(Math.random() * holiColors.length);
+                createColorSplash(x, y, colorIndex, true);
+            }
+            
+            // Create water wave at burst center
+            const waveColorIndex = Math.floor(Math.random() * holiColors.length);
+            createWaterWave(x, y, waveColorIndex);
+        }
+
+        // Mouse events
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            if (isMouseDown) {
+                const now = performance.now();
+                if (now - lastDragSpawnAt >= DRAG_SPAWN_INTERVAL_MS) {
+                    lastDragSpawnAt = now;
+                    const colorIndex = Math.floor(Math.random() * holiColors.length);
+                    createColorSplash(mouseX, mouseY, colorIndex);
+                }
+            }
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            createColorBurst(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        // Touch events for mobile - FOLLOW FINGER (NON-BLOCKING)
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            mouseX = touch.clientX;
+            mouseY = touch.clientY;
+
+            const now = performance.now();
+            if (now - lastTouchMoveSpawnAt < TOUCH_MOVE_SPAWN_INTERVAL_MS) {
+                return;
+            }
+            lastTouchMoveSpawnAt = now;
+
+            if (Math.random() < 0.4) {
+                const colorIndex = Math.floor(Math.random() * holiColors.length);
+                createColorSplash(mouseX, mouseY, colorIndex);
+            }
+
+            if (Math.random() < 0.01) {
+                const waveColorIndex = Math.floor(Math.random() * holiColors.length);
+                createWaterWave(mouseX, mouseY, waveColorIndex);
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            mouseX = touch.clientX;
+            mouseY = touch.clientY;
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            isTouchDown = true;
+
+            for (let i = 0; i < 5; i++) {
+                const colorIndex = Math.floor(Math.random() * holiColors.length);
+                createColorSplash(touch.clientX, touch.clientY, colorIndex, true);
+            }
+
+            if (Math.random() < 0.5) {
+                const waveColorIndex = Math.floor(Math.random() * holiColors.length);
+                createWaterWave(touch.clientX, touch.clientY, waveColorIndex);
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            isTouchDown = false;
+            clearTimeout(longPressTimer);
+        });
+
+        // Long press detection for mobile (NON-BLOCKING) - REDUCED
+        let longPressTimer;
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            const x = touch.clientX;
+            const y = touch.clientY;
+
+            clearTimeout(longPressTimer);
+            longPressTimer = setTimeout(() => {
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const offsetX = (Math.random() - 0.5) * 60;
+                        const offsetY = (Math.random() - 0.5) * 60;
+                        const colorIndex = Math.floor(Math.random() * holiColors.length);
+                        createColorSplash(x + offsetX, y + offsetY, colorIndex, true);
+                    }, i * 50);
+                }
+
+                for (let i = 0; i < 2; i++) {
+                    setTimeout(() => {
+                        const waveColorIndex = Math.floor(Math.random() * holiColors.length);
+                        createWaterWave(x, y, waveColorIndex);
+                    }, i * 150);
+                }
+            }, 500);
+        });
+
+        function animateEffects() {
+            time += 0.016; // ~60fps
+
+            // Smooth cursor following
+            targetX += (mouseX - targetX) * 0.15;
+            targetY += (mouseY - targetY) * 0.15;
+            
+            // Update color trail - FOLLOW CURSOR/FINGER
+            colorTrail.forEach((trail, index) => {
+                const reverseIndex = trailLength - index - 1;
+                
+                // Position following with delay
+                trail.x += (targetX - trail.x) * (0.2 - trail.delay * 0.01);
+                trail.y += (targetY - trail.y) * (0.2 - trail.delay * 0.01);
+                
+                // Size and opacity based on position
+                trail.size = Math.max(4, 20 - reverseIndex * 1.2);
+                trail.opacity = Math.max(0.1, 0.8 - reverseIndex * 0.05);
+                
+                // Use the specific color for this trail point
+                const color = trail.color;
+                
+                trail.element.style.left = trail.x + 'px';
+                trail.element.style.top = trail.y + 'px';
+                trail.element.style.width = trail.size + 'px';
+                trail.element.style.height = trail.size + 'px';
+                trail.element.style.background = `radial-gradient(circle at 30% 30%, rgba(${color.rgb}, ${trail.opacity * 0.4}), rgba(${color.rgb}, ${trail.opacity * 0.3}), rgba(${color.rgb}, ${trail.opacity * 0.2}), transparent)`; // Glassy gradient
+                trail.element.style.boxShadow = `0 0 ${trail.size}px ${trail.size/2}px rgba(${color.rgb}, ${trail.opacity * 0.3})`; // Reduced glow
+                trail.element.style.filter = `blur(${0.5 + reverseIndex * 0.08}px) saturate(1.3)`; // More blur for glassy feel
+            });
+            
+            // Animate physics splashes
+            if (window.colorSplashes) {
+                for (let index = window.colorSplashes.length - 1; index >= 0; index--) {
+                    const splash = window.colorSplashes[index];
+                    // Physics
+                    splash.vy += splash.gravity;
+                    splash.x += splash.vx;
+                    splash.y += splash.vy;
+                    splash.vx *= 0.98; // Air resistance
+                    splash.vy *= 0.98;
+                    
+                    // Bounce off walls
+                    if (splash.x <= splash.size || splash.x >= window.innerWidth - splash.size) {
+                        splash.vx *= -splash.bounce;
+                        splash.x = splash.x <= splash.size ? splash.size : window.innerWidth - splash.size;
+                    }
+                    
+                    if (splash.y >= window.innerHeight - splash.size) {
+                        splash.vy *= -splash.bounce;
+                        splash.y = window.innerHeight - splash.size;
+                        splash.vx *= 0.8; // Friction on ground
+                    }
+                    
+                    // Life cycle
+                    splash.life += 0.016;
+                    splash.opacity = Math.max(0, 1 - splash.life / 3);
+                    
+                    // Apply styles
+                    splash.element.style.left = splash.x + 'px';
+                    splash.element.style.top = splash.y + 'px';
+                    splash.element.style.opacity = splash.opacity;
+                    splash.element.style.transform = `translate(-50%, -50%) scale(${1 - splash.life * 0.1})`;
+                    
+                    // Remove old particles
+                    if (splash.life > 3 || splash.opacity <= 0) {
+                        splash.element.remove();
+                        window.colorSplashes.splice(index, 1);
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animateEffects);
+        }
+        
+        // Initialize colorSplashes array
+        window.colorSplashes = [];
+        
+        // Start animation
+        animateEffects();
+        });
+    </script>
+
+    <!-- Portfolio Assistant Chatbot -->
+    <div id="chatbot-overlay" onclick="toggleChatbot()"></div>
+    <div id="chatbot-container">
+        <!-- Chat Toggle Button -->
+        <button id="chatbot-toggle" onclick="toggleChatbot()">
+            <img src="./assets/Bot.png" alt="KWeen" class="w-full h-full object-cover rounded-full">
+        </button>
+        <!-- Helper Text -->
+        <div id="chatbot-helper" class="chatbot-helper-text">
+            Try Assistant
+        </div>
+        
+        <!-- Chat Window -->
+        <div id="chatbot-window" class="hidden">
+            <!-- Chat Header -->
+            <div id="chatbot-header">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+                        <img src="./assets/Bot.png" alt="KWeen" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="text-white font-semibold">KWeen</h3>
+                        <p class="text-white/80 text-xs">Portfolio Assistant</p>
+                    </div>
+                </div>
+                <button onclick="toggleChatbot()" class="text-white/80 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="chatbot-messages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <!-- Chat Input -->
+            <div id="chatbot-input">
+                <input type="text" id="message-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Styles -->
+    <style>
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .chatbot-helper-text {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        /* Force light mode styles with higher specificity */
+        body.light-mode .chatbot-helper-text,
+        .chatbot-helper-text.light-mode {
+            background: rgb(255, 255, 255) !important;
+            border: none !important;
+            color: rgb(0, 0, 0) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        body.light-mode .chatbot-helper-text:hover,
+        .chatbot-helper-text.light-mode:hover {
+            background: rgb(245, 245, 245) !important;
+            border: none !important;
+        }
+
+        .chatbot-helper-text:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        /* Overlay for chat window */
+        #chatbot-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        #chatbot-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #chatbot-toggle:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 40px rgba(31, 38, 135, 0.5);
+        }
+
+        /* Light mode styles */
+        body.light-mode #chatbot-toggle {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: black;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode #chatbot-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        #chatbot-window {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            width: 350px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.3s ease;
+            margin: 5px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        #chatbot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 21px;
+            background: #f8f9fa;
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chat-message.bot-message {
+            justify-content: flex-start;
+        }
+
+        .chat-message.user-message {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 78%;
+            min-width: 80px;
+            width: fit-content;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .bot-message .message-content {
+            background: #e9ecef;
+            color: #212529;
+            padding: 10px 14px;
+            border-radius: 16px 16px 16px 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .user-message .message-content {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 16px 16px 6px 16px;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(33, 37, 41, 0.6);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .message-content p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        #chatbot-input {
+            padding: 16px;
+            background: #ffffff;
+            border-top: 1px solid rgba(224, 224, 224, 0.3);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid rgba(224, 224, 224, 0.3);
+            background: #f8f9fa;
+            border-radius: 24px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        #message-input:focus {
+            border-color: #667eea;
+            background: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            #chatbot-container {
+                bottom: 80px;
+                right: 15px;
+            }
+
+            #chatbot-toggle {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            #chatbot-window {
+                width: calc(100vw - 30px);
+                height: 450px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                left: 50% !important;
+            }
+
+            #chatbot-input {
+                padding: 12px;
+                gap: 8px;
+            }
+
+            #message-input {
+                padding: 10px 14px;
+                font-size: 16px;
+            }
+
+            #send-button {
+                width: 36px;
+                height: 36px;
+                flex-shrink: 0;
+            }
+
+            .message-content {
+                max-width: 85%;
+                min-width: 80px;
+            }
+        }
+
+        /* Dark mode support - Black Glassy */
+        @media (prefers-color-scheme: dark) {
+            #chatbot-toggle {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            #chatbot-header {
+                background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            }
+            
+            #chatbot-messages {
+                background: #212529;
+            }
+            
+            .bot-message .message-content {
+                background: #343a40;
+                color: #f8f9fa;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+
+            .user-message .message-content {
+                background: rgba(37, 99, 235, 0.95);
+                color: #ffffff;
+                border: 1px solid rgba(255, 255, 255, 0.14);
+            }
+            
+            #chatbot-input {
+                background: #343a40;
+                border-top-color: rgba(68, 68, 68, 0.3);
+            }
+            
+            #message-input {
+                background: #495057;
+                border-color: rgba(108, 117, 125, 0.3);
+                color: white;
+            }
+            
+            #message-input:focus {
+                background: #6c757d;
+                border-color: #63b3ed;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Extra small mobile */
+        @media (max-width: 480px) {
+            #chatbot-container {
+                bottom: 75px;
+                right: 10px;
+            }
+
+            #chatbot-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            #chatbot-window {
+                width: calc(100vw - 20px);
+                height: 400px;
+            }
+
+            #chatbot-input {
+                padding: 10px;
+                gap: 6px;
+            }
+
+            #message-input {
+                padding: 8px 12px;
+                font-size: 16px;
+            }
+
+            #send-button {
+                width: 32px;
+                height: 32px;
+                flex-shrink: 0;
+            }
+
+            .message-content {
+                max-width: 65%;
+                min-width: 70px;
+            }
+        }
+    </style>
+
+    <!-- Chatbot JavaScript -->
+    <script>
+        let isChatbotOpen = false;
+        let conversationState = {
+            userName: null,
+            askedName: false,
+            conversationStarted: false,
+            helperTextShown: false
+        };
+        
+        // Load chatbot responses from JSON
+        let chatbotData = null;
+        
+        async function loadChatbotData() {
+            try {
+                const response = await fetch('./assets/chatbot-responses.json');
+                chatbotData = await response.json();
+            } catch (error) {
+                // Fallback data
+                chatbotData = {
+                    conversationFlows: {
+                        greetings: { responses: "Hi! How can I help you?" },
+                        default: { responses: "I can help you with information." }
+                    }
+                };
+            }
+        }
+        
+        function toggleChatbot() {
+            const chatWindow = document.getElementById('chatbot-window');
+            const toggleBtn = document.getElementById('chatbot-toggle');
+            const overlay = document.getElementById('chatbot-overlay');
+            const helperText = document.getElementById('chatbot-helper');
+            
+            isChatbotOpen = !isChatbotOpen;
+            
+            if (isChatbotOpen) {
+                chatWindow.classList.remove('hidden');
+                toggleBtn.classList.add('hidden');
+                overlay.style.display = 'block';
+                
+                // Hide helper text permanently after first use
+                if (!conversationState.helperTextShown) {
+                    helperText.classList.add('hidden');
+                    conversationState.helperTextShown = true;
+                }
+                
+                // Add welcome message when first opened
+                if (!conversationState.conversationStarted) {
+                    setTimeout(() => {
+                        addBotMessageWithTyping("Hi! I'm KWeen, Gopi's Portfolio Assistant. How can I help you today?");
+                        conversationState.conversationStarted = true;
+                    }, 500);
+                }
+            } else {
+                chatWindow.classList.add('hidden');
+                toggleBtn.classList.remove('hidden');
+                overlay.style.display = 'none';
+                // Don't show helper text again - it's one-time view
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            // Add user message
+            addUserMessage(message);
+            
+            // Clear input
+            input.value = '';
+            
+            // Generate bot response
+            if (chatbotData) {
+                generateBotResponse(message);
+            }
+        }
+        
+        function sendQuickMessage(message) {
+            addUserMessage(message);
+            if (chatbotData) {
+                generateBotResponse(message);
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function addUserMessage(message) {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message user-message';
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function addBotMessageWithTyping(message, action = null) {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            
+            // Create typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message bot-message';
+            typingDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Simulate typing delay then show actual message
+            setTimeout(() => {
+                messagesContainer.removeChild(typingDiv);
+                addBotMessage(message, action);
+            }, 1500);
+        }
+        
+        function addBotMessage(message, action = null) {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message bot-message';
+            
+            let messageContent = `<p>${message}</p>`;
+            
+            if (action === 'showResumeButton') {
+                messageContent += `
+                    <button onclick="downloadResume()" style="margin-top: 8px; padding: 8px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px;">
+                        <i class="fas fa-download"></i> Download Resume
+                    </button>
+                `;
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${messageContent}
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // If contact buttons action, add separate button messages
+            if (action === 'showContactButtons') {
+                setTimeout(() => {
+                    addContactButton('instagram', 'Follow him on Instagram', 'https://www.instagram.com/gopi_0k9');
+                }, 600);
+                setTimeout(() => {
+                    addContactButton('linkedin', 'Connect on LinkedIn', 'https://www.linkedin.com/in/gopi-kunchala-ade');
+                }, 1200);
+            }
+        }
+        
+        function addContactButton(platform, text, url) {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = 'chat-message bot-message';
+            
+            const bgColor = platform === 'instagram' ? 'linear-gradient(135deg, #E4405F 0%, #C13584 100%)' : 'linear-gradient(135deg, #0077B5 0%, #005885 100%)';
+            const icon = platform === 'instagram' ? 'fab fa-instagram' : 'fab fa-linkedin';
+            
+            buttonDiv.innerHTML = `
+                <div class="message-content">
+                    <button onclick="window.open('${url}', '_blank')" style="margin-top: 4px; padding: 10px 16px; background: ${bgColor}; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; width: 100%; text-align: left;">
+                        <i class="${icon}" style="margin-right: 8px;"></i>${text}
+                    </button>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(buttonDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function generateBotResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Check if we need to ask for name
+            if (!conversationState.askedName && chatbotData.conversationFlows.greetings.patterns.some(pattern => lowerMessage.includes(pattern))) {
+                const response = chatbotData.conversationFlows.greetings.responses;
+                addBotMessageWithTyping(response);
+                conversationState.askedName = true;
+                return;
+            }
+            
+            // Check if user provided their name
+            if (conversationState.askedName && !conversationState.userName && lowerMessage.length > 2 && !lowerMessage.includes('hi') && !lowerMessage.includes('hello')) {
+                conversationState.userName = message;
+                if (chatbotData.conversationFlows.greetings.followUp && chatbotData.conversationFlows.greetings.followUp.afterName) {
+                    const followUp = chatbotData.conversationFlows.greetings.followUp.afterName;
+                    addBotMessageWithTyping(followUp.replace('{name}', message));
+                } else {
+                    addBotMessageWithTyping(`Thanks ${message}! How can I help you today?`);
+                }
+                return;
+            }
+            
+            // Check all conversation flows except greetings (handled above)
+            for (const [category, flow] of Object.entries(chatbotData.conversationFlows)) {
+                if (category === 'greetings') continue; // Skip greetings - handled above
+                if (flow.patterns && flow.patterns.some(pattern => lowerMessage.includes(pattern))) {
+                    const response = flow.responses;
+                    addBotMessageWithTyping(response, flow.action);
+                    return;
+                }
+            }
+            
+            // Default response
+            const defaultResponse = chatbotData.conversationFlows.default.responses;
+            addBotMessageWithTyping(defaultResponse);
+        }
+        
+        function downloadResume() {
+            const link = document.createElement('a');
+            link.href = './assets/Gopi Kunchala.pdf';
+            link.download = 'Gopi_Kunchala_Resume.pdf';
+            link.click();
+        }
+        
+        // Initialize chatbot
+        loadChatbotData();
+        
+        // Detect light/dark mode and apply appropriate classes
+        function detectColorScheme() {
+            const helperText = document.getElementById('chatbot-helper');
+            if (!helperText) return;
+            
+            // Check if data-theme is "dark" (dark mode)
+            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            if (!isDarkMode) {
+                // Light mode - apply light-mode class
+                helperText.classList.add('light-mode');
+            } else {
+                // Dark mode - remove light-mode class
+                helperText.classList.remove('light-mode');
+            }
+        }
+        
+        // Run detection on load
+        detectColorScheme();
+        
+        // Also listen for theme changes (watch for data-theme changes)
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                    detectColorScheme();
+                }
+            });
+        });
+        
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+        
+        // Prevent chat window clicks from closing the overlay
+        document.getElementById('chatbot-window').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    
+    </script>
+</body>
+</html>
