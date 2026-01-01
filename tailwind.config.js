@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./**/*.{html,js}"],
+  content: [
+    "./index.html",
+    "./**/*.html",
+    "./js/**/*.js"
+  ],
   theme: {
     extend: {
       colors: {
@@ -16,14 +20,14 @@ module.exports = {
         heading: ['Poppins', 'Inter', 'sans-serif'],
       },
       animation: {
-        'blob': 'blob 7s infinite',
-        'gradient': 'gradient 3s ease infinite',
-        'float': 'float 3s ease-in-out infinite',
+        blob: 'blob 7s infinite',
+        gradient: 'gradient 3s ease infinite',
+        float: 'float 3s ease-in-out infinite',
         'float-delay-1': 'float 3s ease-in-out 0.5s infinite',
         'float-delay-2': 'float 3s ease-in-out 1s infinite',
         'float-delay-3': 'float 3s ease-in-out 1.5s infinite',
         'spin-slow': 'spin 8s linear infinite',
-        'dash': 'dash 1.5s linear infinite',
+        dash: 'dash 1.5s linear infinite',
         'fade-in': 'fadeIn 0.5s ease-in',
         'fade-in-up': 'fadeInUp 0.6s ease-out',
       },
@@ -35,15 +39,21 @@ module.exports = {
           '100%': { transform: 'translate(0px, 0px) scale(1)' },
         },
         gradient: {
-          '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
-          '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-20px)' },
         },
         dash: {
-          'to': { 'stroke-dashoffset': '-10' },
+          to: { 'stroke-dashoffset': '-10' },
         },
         fadeIn: {
           '0%': { opacity: '0' },

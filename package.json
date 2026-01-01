@@ -13,7 +13,9 @@
   "description": "",
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
+    "autoprefixer": "^10.4.23",
     "live-server": "^1.2.2",
-    "tailwindcss": "^4.1.18"
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
   }
 }
