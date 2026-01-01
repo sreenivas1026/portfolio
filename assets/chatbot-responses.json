@@ -46,8 +46,14 @@
       "responses": "Gopi holds a B.Tech in Mechanical Engineering from Avanthi's Scientific Technological & Research Academy (2019-2022) with First Class."
     },
     "contact": {
-      "patterns": ["contact", "email", "phone", "reach", "connect", "address", "location"],
-      "responses": "You can reach Gopi via email at contact@gopikunchala.com or connect on LinkedIn (linkedin.com/in/gopikunchala)."
+      "patterns": ["contact", "email", "phone", "reach", "connect", "address", "location", "how to contact", "how to reach", "where to contact", "contact details", "contact information"],
+      "responses": "Here are the professional and personal connections:",
+      "action": "showContactButtons"
+    },
+    "socialMedia": {
+      "patterns": ["linkedin", "instagram", "social", "social media", "follow", "connect on social", "social links", "social profiles"],
+      "responses": "You can connect with Gopi on his social profiles:",
+      "action": "showContactButtons"
     },
     "certifications": {
       "patterns": ["certification", "certified", "courses", "training", "azure certified"],
