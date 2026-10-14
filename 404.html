@@ -1,132 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark scroll-smooth" data-theme="black">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 | Page Not Found</title>
+    <title>404 | Pipeline Route Not Found - Gopi Kunchala</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --accent-primary: #3b82f6;
-            --accent-secondary: #10b981;
-            --border-color: #e2e8f0;
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-primary: #60a5fa;
-            --accent-secondary: #34d399;
-            --border-color: #334155;
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .error-code {
-            font-size: 6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .btn-primary {
-            background: var(--accent-primary);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .error-code {
-                font-size: 4rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./css/tailwind.css">
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
-<body class="min-h-screen flex items-center justify-center px-6">
-    <main class="text-center max-w-2xl">
-        <div class="error-code mb-6">404</div>
+<body data-theme="black" class="min-h-screen flex items-center justify-center p-6 relative">
+    <canvas id="canvas-bg"></canvas>
+
+    <main class="relative z-10 text-center max-w-md panel-card p-8 sm:p-10 rounded-2xl shadow-2xl">
+        <div class="w-14 h-14 rounded-xl btn-accent flex items-center justify-center text-white text-xl font-bold mx-auto mb-5 shadow-lg">
+            404
+        </div>
         
-        <h1 class="text-3xl font-bold mb-4" style="font-family: 'Poppins', sans-serif; color: var(--text-primary);">
-            Page Not Found
+        <h1 class="text-2xl font-heading font-bold text-zinc-900 dark:text-white mb-2">
+            Pipeline Route Not Found
         </h1>
         
-        <p class="text-lg mb-8" style="color: var(--text-secondary);">
-            The page you're looking for doesn't exist or has been moved.
+        <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
+            The data partition or page you're searching for does not exist in this cluster.
         </p>
         
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="index.html" class="btn-primary">
+        <div class="flex flex-col sm:flex-row gap-2.5 justify-center">
+            <a href="index.html" class="btn-accent px-4 py-2 rounded-lg text-xs font-semibold inline-flex items-center justify-center gap-2">
                 <i class="fas fa-home"></i>
-                Back to Home
+                <span>Return to Home</span>
             </a>
             
-            <a href="index.html#contact" class="btn-secondary">
+            <a href="index.html#contact" class="panel-card px-4 py-2 rounded-lg text-xs font-semibold inline-flex items-center justify-center gap-2">
                 <i class="fas fa-envelope"></i>
-                Contact
+                <span>Contact Gopi</span>
             </a>
         </div>
         
-        <div class="mt-12 text-sm" style="color: var(--text-secondary);">
-            <p>GOPI KUNCHALA • Azure Data Engineer</p>
+        <div class="mt-8 pt-4 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-400">
+            <span>Gopi Kunchala • Data Engineer (TCS)</span>
         </div>
     </main>
 
-    <script>
-        // Dark mode support
-        const htmlElement = document.documentElement;
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        htmlElement.setAttribute('data-theme', currentTheme);
-    </script>
+    <script src="./js/app.js"></script>
 </body>
 </html>
