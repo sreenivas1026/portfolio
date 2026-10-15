@@ -1578,15 +1578,15 @@
                     <i class="fas fa-key"></i>
                 </div>
                 <div>
-                    <h3 class="font-heading font-bold text-base text-white">Owner Security Challenge</h3>
-                    <p class="text-[11px] text-zinc-400 mt-1">Enter dynamic access key (reverse of visit count):</p>
+                    <h3 class="font-heading font-bold text-base text-white">Admin Security Challenge</h3>
+                    <p class="text-[11px] text-zinc-400 mt-1">Enter Admin Password to access confidential visitor analytics:</p>
                 </div>
                 <form id="vault-password-form" class="space-y-3">
-                    <input type="password" id="vault-password-input" placeholder="Enter key..." class="w-full text-center px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-sm font-mono tracking-widest text-white focus:outline-none focus:border-accent">
-                    <div id="vault-password-error" class="hidden text-[11px] text-rose-500 font-mono">Invalid password. Access denied.</div>
+                    <input type="password" id="vault-password-input" autocomplete="current-password" placeholder="Enter Admin Password..." class="w-full text-center px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-sm font-mono tracking-widest text-white focus:outline-none focus:border-accent">
+                    <div id="vault-password-error" class="hidden text-[11px] text-rose-500 font-mono">Access Denied. Invalid Admin Password.</div>
                     <div class="flex items-center gap-2">
                         <button type="button" id="vault-close-cancel-btn" class="flex-1 py-2 rounded-xl panel-card text-xs text-zinc-400 hover:text-white cursor-pointer">Cancel</button>
-                        <button type="submit" class="flex-1 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer">Unlock Vault</button>
+                        <button type="submit" class="flex-1 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer">Unlock Dashboard</button>
                     </div>
                 </form>
             </div>

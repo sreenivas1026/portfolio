@@ -1507,6 +1507,11 @@ select {
   border-color: rgb(168 85 247 / 0.2);
 }
 
+.border-rose-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(244 63 94 / var(--tw-border-opacity, 1));
+}
+
 .border-rose-500\/40 {
   border-color: rgb(244 63 94 / 0.4);
 }

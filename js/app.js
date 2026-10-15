@@ -1824,87 +1824,24 @@
 
     function closeVault() {
       vaultModal.classList.add('hidden');
-      if (passwordPanel) passwordPanel.classList.add('hidden');
+      if (passwordPanel) passwordPanel.classList.remove('hidden');
       if (dashboardPanel) dashboardPanel.classList.add('hidden');
       if (passwordInput) passwordInput.value = '';
       if (passwordError) passwordError.classList.add('hidden');
     }
 
-    function openVaultDashboard() {
+    function openVaultPasswordPrompt() {
       vaultModal.classList.remove('hidden');
-      if (passwordPanel) passwordPanel.classList.add('hidden');
-      if (dashboardPanel) dashboardPanel.classList.remove('hidden');
+      if (passwordPanel) passwordPanel.classList.remove('hidden');
+      if (dashboardPanel) dashboardPanel.classList.add('hidden');
       if (passwordError) passwordError.classList.add('hidden');
-      renderVisitorTable();
-
-      // Try fetching latest cloud logs if serverless endpoint is available
-      try {
-        fetch('/api/analytics?mode=admin&key=gopi_079_tapped')
-          .then(res => res.json())
-          .then(data => {
-            if (data && data.success && Array.isArray(data.visits) && data.visits.length > 0) {
-              const localLogs = JSON.parse(localStorage.getItem('gopi_portfolio_visitor_logs') || '[]');
-              // Merge cloud visits by sessionId
-              const merged = [...data.visits];
-              localLogs.forEach(loc => {
-                if (!merged.some(m => m.sessionId === loc.sessionId)) {
-                  merged.push(loc);
-                }
-              });
-              localStorage.setItem('gopi_portfolio_visitor_logs', JSON.stringify(merged));
-              localStorage.setItem('gopi_portfolio_visits_count', merged.length.toString());
-              updateVisitCounters(merged.length);
-              renderVisitorTable(searchInput ? searchInput.value : '');
-            }
-          })
-          .catch(() => {});
-      } catch (e) {}
-    }
-
-    // STRICT 4-Tap Detector: Exactly 4 distinct rapid taps within 1.5s
-    let tapCount = 0;
-    let lastTapTime = 0;
-    let tapResetTimer = null;
-
-    function registerTap(e) {
-      const now = Date.now();
-      if (now - lastTapTime < 80) return;
-
-      if (now - lastTapTime < 550) {
-        tapCount++;
-      } else {
-        tapCount = 1;
-      }
-      lastTapTime = now;
-
-      clearTimeout(tapResetTimer);
-      tapResetTimer = setTimeout(() => {
-        tapCount = 0;
-      }, 1400);
-
-      if (tapCount === 4) {
-        if (e) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        tapCount = 0;
-        clearTimeout(tapResetTimer);
-        openVaultDashboard();
+      if (passwordInput) {
+        passwordInput.value = '';
+        setTimeout(() => passwordInput.focus(), 150);
       }
     }
 
-    function handleScreenTap(e) {
-      if (e.target.closest('input, textarea, select, [contenteditable="true"], .hanging-lamp-fixture, .color-drag-bar-horizontal, .color-drag-bar-vertical, #owner-vault-modal, #resume-modal, #pipeline-preloader, #chat-window-panel, #fullscreen-menu-modal')) return;
-      registerTap(e);
-    }
-
-    if (window.PointerEvent) {
-      window.addEventListener('pointerup', handleScreenTap);
-    } else {
-      window.addEventListener('click', handleScreenTap);
-    }
-
-    // Direct 4-tap trigger on Header and Footer visitor count buttons
+    // STRICT 4-Tap Trigger ONLY on Header and Footer Visitor Count Badges (No random screen taps!)
     function attachBadgeTaps(selector) {
       const el = document.querySelector(selector);
       if (!el) return;
@@ -1912,16 +1849,18 @@
       if (!btn) return;
       let badgeTaps = 0;
       let badgeTimer = null;
+
       btn.addEventListener('click', function (e) {
         badgeTaps++;
         clearTimeout(badgeTimer);
         badgeTimer = setTimeout(() => { badgeTaps = 0; }, 1400);
+
         if (badgeTaps === 4) {
           e.preventDefault();
           e.stopPropagation();
           badgeTaps = 0;
           clearTimeout(badgeTimer);
-          openVaultDashboard();
+          openVaultPasswordPrompt();
         }
       });
     }
@@ -2001,10 +1940,50 @@
       });
     }
 
+    // STRICT Password Form Challenge: NEVER opens without entering correct Admin Password
     if (passwordForm) {
       passwordForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        openVaultDashboard();
+        const entered = (passwordInput ? passwordInput.value : '').trim().toLowerCase();
+        const allowedAdminKeys = ['079', 'gopi079', 'gopi@079', '1026', 'gopi', 'admin079', 'gopi_0k7'];
+
+        if (allowedAdminKeys.includes(entered)) {
+          if (passwordError) passwordError.classList.add('hidden');
+          if (passwordPanel) passwordPanel.classList.add('hidden');
+          if (dashboardPanel) dashboardPanel.classList.remove('hidden');
+          renderVisitorTable();
+
+          // Fetch cloud logs if available
+          try {
+            fetch('/api/analytics?mode=admin&key=gopi_admin_079_secret')
+              .then(res => res.json())
+              .then(data => {
+                if (data && data.success && Array.isArray(data.visits) && data.visits.length > 0) {
+                  const localLogs = JSON.parse(localStorage.getItem('gopi_portfolio_visitor_logs') || '[]');
+                  const merged = [...data.visits];
+                  localLogs.forEach(loc => {
+                    if (!merged.some(m => m.sessionId === loc.sessionId)) {
+                      merged.push(loc);
+                    }
+                  });
+                  localStorage.setItem('gopi_portfolio_visitor_logs', JSON.stringify(merged));
+                  localStorage.setItem('gopi_portfolio_visits_count', merged.length.toString());
+                  updateVisitCounters(merged.length);
+                  renderVisitorTable(searchInput ? searchInput.value : '');
+                }
+              })
+              .catch(() => {});
+          } catch (e) {}
+        } else {
+          if (passwordError) {
+            passwordError.textContent = 'Access Denied. Invalid Admin Password.';
+            passwordError.classList.remove('hidden');
+          }
+          if (passwordInput) {
+            passwordInput.classList.add('border-rose-500');
+            setTimeout(() => passwordInput.classList.remove('border-rose-500'), 800);
+          }
+        }
       });
     }
 
