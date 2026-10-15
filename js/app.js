@@ -1937,6 +1937,44 @@
       });
     }
 
+    // 4-Tap on Screen Detector: Hitting 4 rapid times anywhere on the screen opens Admin Login prompt
+    let screenTaps = 0;
+    let screenTapTimer = null;
+    let lastTapTimestamp = 0;
+
+    function handleScreenTap(e) {
+      // If vault modal is already visible, do not intercept
+      if (!vaultModal.classList.contains('hidden')) return;
+
+      // Ignore interactive form controls or interactive buttons
+      if (e.target.closest('input, textarea, button, a, select, [contenteditable="true"], .color-drag-bar-horizontal, .color-drag-bar-vertical, .hanging-lamp-fixture, #chat-window-panel, #resume-modal, #palette-dropdown-panel')) {
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastTapTimestamp < 60) return;
+      lastTapTimestamp = now;
+
+      screenTaps++;
+      clearTimeout(screenTapTimer);
+      screenTapTimer = setTimeout(() => {
+        screenTaps = 0;
+      }, 2000);
+
+      if (screenTaps >= 4) {
+        screenTaps = 0;
+        clearTimeout(screenTapTimer);
+        openVaultPasswordPrompt();
+      }
+    }
+
+    if (window.PointerEvent) {
+      window.addEventListener('pointerup', handleScreenTap, { passive: true });
+    } else {
+      window.addEventListener('touchend', handleScreenTap, { passive: true });
+      window.addEventListener('click', handleScreenTap);
+    }
+
     if (cancelBtn) cancelBtn.addEventListener('click', closeVault);
     if (closeDashBtn) closeDashBtn.addEventListener('click', closeVault);
     if (backdrop) backdrop.addEventListener('click', closeVault);
