@@ -837,6 +837,10 @@ select {
   z-index: 70;
 }
 
+.z-\[999999\] {
+  z-index: 999999;
+}
+
 .-mx-4 {
   margin-left: -1rem;
   margin-right: -1rem;

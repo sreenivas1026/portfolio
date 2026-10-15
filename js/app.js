@@ -1780,39 +1780,40 @@
   }
 
   // -------------------------------------------------------------
-  // 14. Secret Owner Vault (Direct 4-Tap Access -> 5-Column Admin Portal)
+  // 14. Zero-Footprint Dynamic Admin Telemetry System
+  // Pure in-memory construction: 0 DOM footprint in HTML until 4 taps executed.
+  // When closed, DOM element is completely removed from document.body!
   // -------------------------------------------------------------
   function initSecretOwnerVault() {
-    const vaultModal = document.getElementById('owner-vault-modal');
-    const passwordPanel = document.getElementById('vault-password-panel');
-    const dashboardPanel = document.getElementById('vault-dashboard-panel');
-    const passwordForm = document.getElementById('vault-password-form');
-    const passwordInput = document.getElementById('vault-password-input');
-    const passwordError = document.getElementById('vault-password-error');
-    const cancelBtn = document.getElementById('vault-close-cancel-btn');
-    const closeDashBtn = document.getElementById('vault-close-dash-btn');
-    const backdrop = document.getElementById('vault-modal-backdrop');
-    const searchInput = document.getElementById('vault-search-input');
-    const tableBody = document.getElementById('vault-table-body');
-    const statTotal = document.getElementById('vault-stat-total');
-    const statNames = document.getElementById('vault-stat-names');
-    const exportTxtBtn = document.getElementById('export-txt-btn');
+    const VAULT_SALT = 'gopi_kunchala_vault_auth_salt_98471';
+    const AUTHORIZED_HASHES = [
+      '09730613eefb6782eb94d21a3b0172f1af6b29d2e4119c9153770349a899509b', // 079
+      '853f3e818e56be52f1a825f9dabef8794bac5e586838894c1f2927d9e9d701db', // gopi079
+      '29c30d337c34bea0ff2d7a2e2834a0c667c1a90f746920282c2e5c670ce4caf1', // admin079
+      '3b6a6f33ecce7ae6b9961dd3e966ff2b537dcde3c446a93fbe4a1e830b15f698', // gopi
+      '3c8b3a826c2e141e6a2ee6bfc3ec6371b0aefc19826637c7873285f6e8073e86', // 1026
+      '2191bd41b46979b040aab15ec07c5aa7c59abf05bda935022889b85ac02132e4', // gopi@079
+      '81c944ce115a9c0990b45e21fe123129b30b8bda77aa669aec576822d3ca06da', // admin
+      '93e54d8faaddbadc4d08097aeaba07c531c8a109aa1ed70f7d23235d976468e6'  // gopi_0k7
+    ];
 
-    if (!vaultModal) return;
+    async function hashVaultKey(key) {
+      const text = key.trim().toLowerCase() + VAULT_SALT;
+      if (window.crypto && window.crypto.subtle) {
+        const enc = new TextEncoder();
+        const buffer = await window.crypto.subtle.digest('SHA-256', enc.encode(text));
+        return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+      return '';
+    }
+
+    let activeModal = null;
 
     function closeVault() {
-      vaultModal.classList.add('hidden');
-      vaultModal.style.setProperty('display', 'none', 'important');
-      if (passwordPanel) {
-        passwordPanel.classList.remove('hidden');
-        passwordPanel.style.setProperty('display', 'block', 'important');
+      if (activeModal) {
+        activeModal.remove();
+        activeModal = null;
       }
-      if (dashboardPanel) {
-        dashboardPanel.classList.add('hidden');
-        dashboardPanel.style.setProperty('display', 'none', 'important');
-      }
-      if (passwordInput) passwordInput.value = '';
-      if (passwordError) passwordError.classList.add('hidden');
     }
 
     function openVaultPasswordPrompt() {
@@ -1823,36 +1824,273 @@
         preloader.style.setProperty('display', 'none', 'important');
       }
 
-      vaultModal.style.zIndex = '999999';
-      vaultModal.style.setProperty('display', 'flex', 'important');
-      vaultModal.classList.remove('hidden');
+      if (activeModal) {
+        activeModal.remove();
+        activeModal = null;
+      }
 
-      if (passwordPanel) {
-        passwordPanel.style.setProperty('display', 'block', 'important');
-        passwordPanel.classList.remove('hidden');
+      const modal = document.createElement('div');
+      modal.id = 'owner-vault-modal';
+      modal.className = 'fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-6';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+
+      modal.innerHTML = `
+        <div id="vault-modal-backdrop" class="fixed inset-0 bg-black/85 backdrop-blur-md"></div>
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 pointer-events-auto">
+          <!-- Password Challenge Panel -->
+          <div id="vault-password-panel" class="w-full max-w-sm p-6 rounded-3xl panel-card bg-zinc-950 border border-accent/40 shadow-2xl text-center space-y-4">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-accent/20 border border-accent flex items-center justify-center text-accent text-xl">
+              <i class="fas fa-key"></i>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-base text-white">Admin Security Challenge</h3>
+              <p class="text-[11px] text-zinc-400 mt-1">Enter Admin Password to access confidential visitor analytics:</p>
+            </div>
+            <form id="vault-password-form" class="space-y-3">
+              <input type="password" id="vault-password-input" autocomplete="current-password" placeholder="Enter Admin Master Key..." class="w-full text-center px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-sm font-mono tracking-widest text-white focus:outline-none focus:border-accent">
+              <div id="vault-password-error" class="hidden text-[11px] text-rose-500 font-mono">Access Denied. Invalid Admin Security Key.</div>
+              <div class="flex items-center gap-2">
+                <button type="button" id="vault-close-cancel-btn" class="flex-1 py-2 rounded-xl panel-card text-xs text-zinc-400 hover:text-white cursor-pointer">Cancel</button>
+                <button type="submit" class="flex-1 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer">Unlock Dashboard</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Owner Console Dashboard (Revealed after correct password) -->
+          <div id="vault-dashboard-panel" class="hidden w-full max-w-3xl max-h-[90vh] rounded-3xl panel-card bg-zinc-950 border border-zinc-800 shadow-2xl flex flex-col overflow-hidden">
+            <div class="px-6 py-2 bg-emerald-500/15 border-b border-emerald-500/30 flex items-center justify-between text-emerald-400 text-xs font-semibold shrink-0">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-shield-check text-sm"></i>
+                <span>Welcome Admin Portfolio Owner, Gopi Kunchala</span>
+              </div>
+              <span class="text-[10px] font-mono text-zinc-400">Authenticated Session</span>
+            </div>
+
+            <div class="px-6 py-3.5 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/60 shrink-0">
+              <div>
+                <h3 id="vault-greeting-heading" class="font-heading font-extrabold text-base sm:text-lg text-white">Good day, Gopi</h3>
+                <div class="flex items-center gap-2 mt-0.5 font-mono text-xs">
+                  <span class="text-zinc-400 text-[11px]">Realtime Visits:</span>
+                  <span id="vault-realtime-badge" class="font-bold text-accent">1</span>
+                  <span class="text-zinc-600">•</span>
+                  <span class="text-zinc-400 text-[11px]">Logs: <span id="vault-stat-names" class="text-emerald-400 font-semibold">0</span></span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" id="export-txt-btn" class="w-8 h-8 rounded-lg btn-accent text-white flex items-center justify-center cursor-pointer shadow-sm hover:scale-105 transition-all" title="Download Text Audit File" aria-label="Download Audit Data">
+                  <i class="fas fa-download text-xs"></i>
+                </button>
+                <button type="button" id="vault-close-dash-btn" class="w-8 h-8 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors" title="Close Dashboard" aria-label="Close Dashboard">
+                  <i class="fas fa-times text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="p-3.5 border-b border-zinc-800 bg-zinc-900/40 shrink-0">
+              <div class="relative w-full">
+                <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs"></i>
+                <input type="text" id="vault-search-input" placeholder="Search by Name, Role, Date, Time, or Duration..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-accent font-mono">
+              </div>
+            </div>
+
+            <div class="flex-1 overflow-x-auto overflow-y-auto p-4 max-h-[58vh]">
+              <table class="w-full text-left text-xs border-collapse min-w-[640px]">
+                <thead>
+                  <tr class="border-b border-zinc-800 text-[10px] font-mono uppercase text-zinc-500">
+                    <th class="py-2.5 px-3 w-20">Hit #</th>
+                    <th class="py-2.5 px-3">Visitor Name</th>
+                    <th class="py-2.5 px-3">Role / Designation</th>
+                    <th class="py-2.5 px-3">Date & Time</th>
+                    <th class="py-2.5 px-3 text-right">Time on Page</th>
+                  </tr>
+                </thead>
+                <tbody id="vault-table-body" class="divide-y divide-zinc-900 font-mono text-zinc-300"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      activeModal = modal;
+
+      const passwordPanel = modal.querySelector('#vault-password-panel');
+      const dashboardPanel = modal.querySelector('#vault-dashboard-panel');
+      const passwordForm = modal.querySelector('#vault-password-form');
+      const passwordInput = modal.querySelector('#vault-password-input');
+      const passwordError = modal.querySelector('#vault-password-error');
+      const cancelBtn = modal.querySelector('#vault-close-cancel-btn');
+      const closeDashBtn = modal.querySelector('#vault-close-dash-btn');
+      const backdrop = modal.querySelector('#vault-modal-backdrop');
+      const searchInput = modal.querySelector('#vault-search-input');
+      const tableBody = modal.querySelector('#vault-table-body');
+      const exportTxtBtn = modal.querySelector('#export-txt-btn');
+      const greetingHeading = modal.querySelector('#vault-greeting-heading');
+      const realtimeBadge = modal.querySelector('#vault-realtime-badge');
+      const statNames = modal.querySelector('#vault-stat-names');
+
+      if (greetingHeading) {
+        const hr = new Date().getHours();
+        let greeting = 'Good evening, Gopi';
+        if (hr < 12) greeting = 'Good morning, Gopi';
+        else if (hr < 17) greeting = 'Good afternoon, Gopi';
+        greetingHeading.textContent = greeting;
       }
-      if (dashboardPanel) {
-        dashboardPanel.style.setProperty('display', 'none', 'important');
-        dashboardPanel.classList.add('hidden');
+
+      function updateDashboardStats() {
+        const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+        const count = getVisitCount() || logs.length || 1;
+        if (realtimeBadge) realtimeBadge.textContent = count.toLocaleString();
+        if (statNames) statNames.textContent = logs.length.toString();
       }
-      if (passwordError) passwordError.classList.add('hidden');
+      updateDashboardStats();
+
+      function renderVisitorTable(filterQuery = '') {
+        if (!tableBody) return;
+        tableBody.innerHTML = '';
+        const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+        updateDashboardStats();
+
+        if (logs.length === 0) {
+          const emptyRow = document.createElement('tr');
+          emptyRow.innerHTML = `<td colspan="5" class="py-8 text-center text-zinc-500 font-mono">No confidential records logged yet.</td>`;
+          tableBody.appendChild(emptyRow);
+          return;
+        }
+
+        const query = (filterQuery || '').toLowerCase().trim();
+        const filtered = logs.filter(log => {
+          if (!query) return true;
+          return (
+            String(log.visitNum).includes(query) ||
+            (log.name && log.name.toLowerCase().includes(query)) ||
+            (log.role && log.role.toLowerCase().includes(query)) ||
+            (log.dateStr && log.dateStr.toLowerCase().includes(query)) ||
+            (log.timeStr && log.timeStr.toLowerCase().includes(query)) ||
+            (log.durationFormatted && log.durationFormatted.toLowerCase().includes(query))
+          );
+        });
+
+        if (filtered.length === 0) {
+          const noMatch = document.createElement('tr');
+          noMatch.innerHTML = `<td colspan="5" class="py-8 text-center text-zinc-500 font-mono">No visitor records matching query.</td>`;
+          tableBody.appendChild(noMatch);
+          return;
+        }
+
+        filtered.slice().reverse().forEach(log => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-zinc-900/60 transition-colors border-b border-zinc-900/80';
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-bold text-accent">#${log.visitNum || 1}</td>
+            <td class="py-2.5 px-3 text-white font-medium truncate max-w-[150px]">${log.name || 'Guest Visitor'}</td>
+            <td class="py-2.5 px-3 text-zinc-300 text-xs truncate max-w-[160px]">${log.role || 'Visitor'}</td>
+            <td class="py-2.5 px-3 text-zinc-400 text-[11px] whitespace-nowrap">${log.dateStr || ''} • ${log.timeStr || ''}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-emerald-400 text-xs font-semibold whitespace-nowrap">${log.durationFormatted || '< 1m'}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          renderVisitorTable(this.value);
+        });
+      }
+
+      if (passwordForm) {
+        passwordForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const entered = (passwordInput ? passwordInput.value : '').trim();
+          const enteredHash = await hashVaultKey(entered);
+
+          if (enteredHash && AUTHORIZED_HASHES.includes(enteredHash)) {
+            if (passwordError) passwordError.classList.add('hidden');
+            if (passwordPanel) {
+              passwordPanel.classList.add('hidden');
+              passwordPanel.style.setProperty('display', 'none', 'important');
+            }
+            if (dashboardPanel) {
+              dashboardPanel.classList.remove('hidden');
+              dashboardPanel.style.removeProperty('display');
+              dashboardPanel.style.setProperty('display', 'flex', 'important');
+            }
+            renderVisitorTable(searchInput ? searchInput.value : '');
+          } else {
+            if (passwordError) {
+              passwordError.textContent = 'Access Denied. Invalid Admin Security Key.';
+              passwordError.classList.remove('hidden');
+            }
+            if (passwordInput) {
+              passwordInput.classList.add('border-rose-500');
+              setTimeout(() => passwordInput.classList.remove('border-rose-500'), 800);
+            }
+          }
+        });
+      }
+
+      if (exportTxtBtn) {
+        exportTxtBtn.addEventListener('click', function () {
+          const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+          const totalRows = logs.length;
+
+          let txtContent = `========================================================================================================================\n`;
+          txtContent += `GOPI KUNCHALA - ENTERPRISE DATA PLATFORM // CONFIDENTIAL VISITOR AUDIT LEDGER\n`;
+          txtContent += `Export Timestamp: ${new Date().toISOString()}\n`;
+          txtContent += `Total Global Page Hits / Rows: ${totalRows}\n`;
+          txtContent += `Portfolio Owner: Gopi Kunchala (Cloud Data Engineer)\n`;
+          txtContent += `========================================================================================================================\n\n`;
+          txtContent += `HIT #   | VISITOR NAME                   | ROLE / DESIGNATION             | DATE & TIME                  | TIME ON PAGE\n`;
+          txtContent += `------------------------------------------------------------------------------------------------------------------------\n`;
+
+          logs.forEach(log => {
+            const num = String(log.visitNum || 1).padEnd(7);
+            const name = String(log.name || 'Guest Visitor').slice(0, 30).padEnd(30);
+            const role = String(log.role || 'Visitor').slice(0, 30).padEnd(30);
+            const dt = `${log.dateStr || ''} ${log.timeStr || ''}`.slice(0, 28).padEnd(28);
+            const dur = String(log.durationFormatted || '< 1m');
+            txtContent += `${num} | ${name} | ${role} | ${dt} | ${dur}\n`;
+          });
+
+          txtContent += `\n[END OF AUDIT LEDGER - CONFIDENTIAL RECORD // GOPI KUNCHALA]\n`;
+
+          const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `gopi_kunchala_visitor_ledger_${Date.now()}.txt`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      if (cancelBtn) cancelBtn.addEventListener('click', closeVault);
+      if (closeDashBtn) closeDashBtn.addEventListener('click', closeVault);
+      if (backdrop) backdrop.addEventListener('click', closeVault);
+
       if (passwordInput) {
         passwordInput.value = '';
-        setTimeout(() => passwordInput.focus(), 150);
+        setTimeout(() => {
+          try { passwordInput.focus(); } catch (e) {}
+        }, 150);
       }
     }
+
     window.openAdminVault = openVaultPasswordPrompt;
 
     // Universal 4-Tap / 4-Click Admin Portal Detector
     // Tapping or clicking 4 times anywhere on the screen (or on the visitor count badge / header)
-    // immediately opens the Admin Password Challenge.
+    // immediately opens the dynamic Admin Security Challenge.
     let tapCounter = 0;
     let tapResetTimer = null;
     let lastTapTimestamp = 0;
 
     function handleUnifiedTap(e) {
-      // If Admin Vault is already open, do not intercept
-      if (vaultModal && !vaultModal.classList.contains('hidden') && vaultModal.style.display !== 'none') {
+      // If modal is already open, do not intercept
+      if (activeModal) {
         return;
       }
 
@@ -1905,175 +2143,10 @@
         e.preventDefault();
         openVaultPasswordPrompt();
       }
-      if (e.key === 'Escape' && vaultModal && !vaultModal.classList.contains('hidden')) {
+      if (e.key === 'Escape' && activeModal) {
         closeVault();
       }
     });
-
-    if (cancelBtn) cancelBtn.addEventListener('click', closeVault);
-    if (closeDashBtn) closeDashBtn.addEventListener('click', closeVault);
-    if (backdrop) backdrop.addEventListener('click', closeVault);
-
-    function updateVaultGreeting() {
-      const greetingEl = document.getElementById('vault-greeting-heading');
-      if (!greetingEl) return;
-      const hr = new Date().getHours();
-      let greeting = 'Good evening, Gopi';
-      if (hr < 12) {
-        greeting = 'Good morning, Gopi';
-      } else if (hr < 17) {
-        greeting = 'Good afternoon, Gopi';
-      }
-      greetingEl.textContent = greeting;
-    }
-
-    function renderVisitorTable(filterQuery = '') {
-      updateVaultGreeting();
-
-      const logs = JSON.parse(localStorage.getItem('gopi_portfolio_visitor_logs') || '[]');
-      const q = filterQuery.toLowerCase().trim();
-
-      const filtered = logs.filter(log => {
-        if (!q) return true;
-        return (
-          String(log.visitNum).includes(q) ||
-          (log.name && log.name.toLowerCase().includes(q)) ||
-          (log.role && log.role.toLowerCase().includes(q)) ||
-          (log.dateStr && log.dateStr.toLowerCase().includes(q)) ||
-          (log.timeStr && log.timeStr.toLowerCase().includes(q)) ||
-          (log.durationFormatted && log.durationFormatted.toLowerCase().includes(q))
-        );
-      });
-
-      const totalHits = logs.length || 1;
-      const realtimeBadge = document.getElementById('vault-realtime-badge');
-      if (realtimeBadge) realtimeBadge.textContent = totalHits.toLocaleString();
-      if (statTotal) statTotal.textContent = totalHits.toLocaleString();
-      if (statNames) statNames.textContent = logs.length.toLocaleString();
-
-      if (!tableBody) return;
-      tableBody.innerHTML = '';
-
-      if (filtered.length === 0) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="5" class="py-8 text-center text-zinc-500 font-mono text-xs">No matching confidential visitor records found.</td>`;
-        tableBody.appendChild(tr);
-        return;
-      }
-
-      // Strictly all 5 columns: Hit # | Visitor Name | Role / Designation | Date & Time | Time on Page
-      filtered.slice().reverse().forEach(log => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-zinc-900/60 transition-colors border-b border-zinc-900/80';
-        tr.innerHTML = `
-          <td class="py-2.5 px-3 font-bold text-accent">#${log.visitNum || 1}</td>
-          <td class="py-2.5 px-3 text-white font-medium truncate max-w-[150px]">${log.name || 'Guest Visitor'}</td>
-          <td class="py-2.5 px-3 text-zinc-300 text-xs truncate max-w-[160px]">${log.role || 'Visitor'}</td>
-          <td class="py-2.5 px-3 text-zinc-400 text-[11px] whitespace-nowrap">${log.dateStr || ''} • ${log.timeStr || ''}</td>
-          <td class="py-2.5 px-3 text-right font-mono text-emerald-400 text-xs font-semibold whitespace-nowrap">${log.durationFormatted || '< 1m'}</td>
-        `;
-        tableBody.appendChild(tr);
-      });
-    }
-
-    if (searchInput) {
-      searchInput.addEventListener('input', function () {
-        renderVisitorTable(this.value);
-      });
-    }
-
-    // Cryptographically Salted SHA-256 Hashes: ZERO plaintext passwords in source code
-    const VAULT_SALT = 'gopi_kunchala_vault_auth_salt_98471';
-    const AUTHORIZED_HASHES = [
-      '09730613eefb6782eb94d21a3b0172f1af6b29d2e4119c9153770349a899509b', // 079
-      '853f3e818e56be52f1a825f9dabef8794bac5e586838894c1f2927d9e9d701db', // gopi079
-      '29c30d337c34bea0ff2d7a2e2834a0c667c1a90f746920282c2e5c670ce4caf1', // admin079
-      '3b6a6f33ecce7ae6b9961dd3e966ff2b537dcde3c446a93fbe4a1e830b15f698', // gopi
-      '3c8b3a826c2e141e6a2ee6bfc3ec6371b0aefc19826637c7873285f6e8073e86', // 1026
-      '2191bd41b46979b040aab15ec07c5aa7c59abf05bda935022889b85ac02132e4', // gopi@079
-      '81c944ce115a9c0990b45e21fe123129b30b8bda77aa669aec576822d3ca06da', // admin
-      '93e54d8faaddbadc4d08097aeaba07c531c8a109aa1ed70f7d23235d976468e6'  // gopi_0k7
-    ];
-
-    async function hashVaultKey(key) {
-      const text = key.trim().toLowerCase() + VAULT_SALT;
-      if (window.crypto && window.crypto.subtle) {
-        const enc = new TextEncoder();
-        const buffer = await window.crypto.subtle.digest('SHA-256', enc.encode(text));
-        return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-      }
-      return '';
-    }
-
-    // STRICT Password Form Challenge: NEVER opens without entering correct Admin Password
-    if (passwordForm) {
-      passwordForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        const entered = (passwordInput ? passwordInput.value : '').trim();
-        const enteredHash = await hashVaultKey(entered);
-
-        if (enteredHash && AUTHORIZED_HASHES.includes(enteredHash)) {
-          if (passwordError) passwordError.classList.add('hidden');
-          if (passwordPanel) {
-            passwordPanel.classList.add('hidden');
-            passwordPanel.style.setProperty('display', 'none', 'important');
-          }
-          if (dashboardPanel) {
-            dashboardPanel.classList.remove('hidden');
-            dashboardPanel.style.removeProperty('display');
-            dashboardPanel.style.setProperty('display', 'flex', 'important');
-          }
-          renderVisitorTable(searchInput ? searchInput.value : '');
-        } else {
-          if (passwordError) {
-            passwordError.textContent = 'Access Denied. Invalid Admin Security Key.';
-            passwordError.classList.remove('hidden');
-          }
-          if (passwordInput) {
-            passwordInput.classList.add('border-rose-500');
-            setTimeout(() => passwordInput.classList.remove('border-rose-500'), 800);
-          }
-        }
-      });
-    }
-
-    // Export TXT confidential audit ledger
-    if (exportTxtBtn) {
-      exportTxtBtn.addEventListener('click', function () {
-        const logs = JSON.parse(localStorage.getItem('gopi_portfolio_visitor_logs') || '[]');
-        const totalRows = logs.length;
-
-        let txtContent = `========================================================================================================================\n`;
-        txtContent += `GOPI KUNCHALA - ENTERPRISE DATA PLATFORM // CONFIDENTIAL VISITOR AUDIT LEDGER\n`;
-        txtContent += `Export Timestamp: ${new Date().toISOString()}\n`;
-        txtContent += `Total Global Page Hits / Rows: ${totalRows}\n`;
-        txtContent += `Portfolio Owner: Gopi Kunchala (Cloud Data Engineer)\n`;
-        txtContent += `========================================================================================================================\n\n`;
-        txtContent += `HIT #   | VISITOR NAME                   | ROLE / DESIGNATION             | DATE & TIME                  | TIME ON PAGE\n`;
-        txtContent += `------------------------------------------------------------------------------------------------------------------------\n`;
-
-        logs.forEach(log => {
-          const num = String(log.visitNum || 1).padEnd(7);
-          const name = String(log.name || 'Guest Visitor').slice(0, 30).padEnd(30);
-          const role = String(log.role || 'Visitor').slice(0, 30).padEnd(30);
-          const dt = `${log.dateStr || ''} ${log.timeStr || ''}`.slice(0, 28).padEnd(28);
-          const dur = String(log.durationFormatted || '< 1m');
-          txtContent += `${num} | ${name} | ${role} | ${dt} | ${dur}\n`;
-        });
-
-        txtContent += `\n[END OF AUDIT LEDGER - CONFIDENTIAL RECORD // GOPI KUNCHALA]\n`;
-
-        const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `gopi_kunchala_visitor_ledger_${Date.now()}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      });
-    }
   }
 
   // -------------------------------------------------------------

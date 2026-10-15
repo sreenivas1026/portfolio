@@ -20,8 +20,8 @@
     <link rel="apple-touch-icon" href="./assets/gopi-illustration.png">
 
     <!-- Compiled Tailwind & Custom Stylesheet -->
-    <link rel="stylesheet" href="./css/tailwind.css?v=2.8">
-    <link rel="stylesheet" href="./css/styles.css?v=2.8">
+    <link rel="stylesheet" href="./css/tailwind.css?v=3.0">
+    <link rel="stylesheet" href="./css/styles.css?v=3.0">
     <!-- Instant Preloader Fallback Script (Executes synchronously with zero dependencies) -->
     <script>
         window.enterPortfolioDirectly = function(name, role) {
@@ -1565,96 +1565,7 @@
         </div>
     </div>
 
-    <!-- ================= SECRET OWNER VAULT MODAL (QUAD-TAP ON SCREEN UNLOCKED) ================= -->
-    <div id="owner-vault-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
-        <div id="vault-modal-backdrop" class="fixed inset-0 bg-black/85 backdrop-blur-md"></div>
-
-        <!-- Inside Vault: Password Challenge & Owner Console -->
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 pointer-events-auto">
-            
-            <!-- Password Challenge Panel (Shown first upon 4 screen taps) -->
-            <div id="vault-password-panel" class="w-full max-w-sm p-6 rounded-3xl panel-card bg-zinc-950 border border-accent/40 shadow-2xl text-center space-y-4">
-                <div class="w-12 h-12 mx-auto rounded-2xl bg-accent/20 border border-accent flex items-center justify-center text-accent text-xl">
-                    <i class="fas fa-key"></i>
-                </div>
-                <div>
-                    <h3 class="font-heading font-bold text-base text-white">Admin Security Challenge</h3>
-                    <p class="text-[11px] text-zinc-400 mt-1">Enter Admin Password to access confidential visitor analytics:</p>
-                </div>
-                <form id="vault-password-form" class="space-y-3">
-                    <input type="password" id="vault-password-input" autocomplete="current-password" placeholder="Enter Admin Master Key..." class="w-full text-center px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-sm font-mono tracking-widest text-white focus:outline-none focus:border-accent">
-                    <div id="vault-password-error" class="hidden text-[11px] text-rose-500 font-mono">Access Denied. Invalid Admin Security Key.</div>
-                    <div class="flex items-center gap-2">
-                        <button type="button" id="vault-close-cancel-btn" class="flex-1 py-2 rounded-xl panel-card text-xs text-zinc-400 hover:text-white cursor-pointer">Cancel</button>
-                        <button type="submit" class="flex-1 py-2 rounded-xl btn-accent text-xs font-bold cursor-pointer">Unlock Dashboard</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Owner Console Dashboard (Revealed after correct password) -->
-            <div id="vault-dashboard-panel" class="hidden w-full max-w-3xl max-h-[90vh] rounded-3xl panel-card bg-zinc-950 border border-zinc-800 shadow-2xl flex flex-col overflow-hidden">
-                <!-- Welcome Banner for Verified Portfolio Owner -->
-                <div class="px-6 py-2 bg-emerald-500/15 border-b border-emerald-500/30 flex items-center justify-between text-emerald-400 text-xs font-semibold shrink-0">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-shield-check text-sm"></i>
-                        <span>Welcome Admin Portfolio Owner, Gopi Kunchala</span>
-                    </div>
-                    <span class="text-[10px] font-mono text-zinc-400">Authenticated Session</span>
-                </div>
-
-                <!-- Header: Dynamic Timing Greeting + Realtime Count + Corner Download Icon (No Text) -->
-                <div class="px-6 py-3.5 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/60 shrink-0">
-                    <div>
-                        <h3 id="vault-greeting-heading" class="font-heading font-extrabold text-base sm:text-lg text-white">Good morning, Gopi</h3>
-                        <div class="flex items-center gap-2 mt-0.5 font-mono text-xs">
-                            <span class="text-zinc-400 text-[11px]">Realtime Visits:</span>
-                            <span id="vault-realtime-badge" class="font-bold text-accent">1</span>
-                            <span class="text-zinc-600">•</span>
-                            <span class="text-zinc-400 text-[11px]">Logs: <span id="vault-stat-names" class="text-emerald-400 font-semibold">0</span></span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <!-- Strict Icon Download Button (No Text) -->
-                        <button type="button" id="export-txt-btn" class="w-8 h-8 rounded-lg btn-accent text-white flex items-center justify-center cursor-pointer shadow-sm hover:scale-105 transition-all" title="Download Text Audit File" aria-label="Download Audit Data">
-                            <i class="fas fa-download text-xs"></i>
-                        </button>
-                        <button type="button" id="vault-close-dash-btn" class="w-8 h-8 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors" title="Close Dashboard" aria-label="Close Dashboard">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Search Bar on Top (Positioned cleanly right above the table) -->
-                <div class="p-3.5 border-b border-zinc-800 bg-zinc-900/40 shrink-0">
-                    <div class="relative w-full">
-                        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs"></i>
-                        <input type="text" id="vault-search-input" placeholder="Search by Name, Role, Date, Time, or Duration..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-accent font-mono">
-                    </div>
-                </div>
-
-                <!-- Scrollable Table with ALL 5 Columns: Hit # | Visitor Name | Role / Designation | Date & Time | Time on Page -->
-                <div class="flex-1 overflow-x-auto overflow-y-auto p-4 max-h-[58vh]">
-                    <table class="w-full text-left text-xs border-collapse min-w-[640px]">
-                        <thead>
-                            <tr class="border-b border-zinc-800 text-[10px] font-mono uppercase text-zinc-500">
-                                <th class="py-2.5 px-3 w-20">Hit #</th>
-                                <th class="py-2.5 px-3">Visitor Name</th>
-                                <th class="py-2.5 px-3">Role / Designation</th>
-                                <th class="py-2.5 px-3">Date & Time</th>
-                                <th class="py-2.5 px-3 text-right">Time on Page</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vault-table-body" class="divide-y divide-zinc-900 font-mono text-zinc-300">
-                            <!-- Populated dynamically with all 5 columns -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <!-- Self-Contained JavaScript Bundle (Works on file:// and all hosts) -->
-    <script src="./js/app.js?v=2.8"></script>
+    <script src="./js/app.js?v=3.0"></script>
 </body>
 </html>
