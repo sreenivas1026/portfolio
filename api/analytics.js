@@ -30,7 +30,7 @@ module.exports = async function handler(req, res) {
         const totalHits = data ? Object.keys(data).length : 0;
         return res.status(200).json({ success: true, totalHits });
       } catch (e) {
-        return res.status(200).json({ success: true, totalHits: 1, fallback: true });
+        return res.status(200).json({ success: false, fallback: true, message: 'Cloud store unconfigured' });
       }
     }
 

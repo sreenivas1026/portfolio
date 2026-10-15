@@ -1580,10 +1580,9 @@
     const SESSION_KEY = 'gopi_session_logged';
 
     let stored = localStorage.getItem(VISITS_KEY);
-    let visitsCount = parseInt(stored || '0', 10);
-    if (isNaN(visitsCount) || visitsCount >= 10000) {
-      visitsCount = 0;
-      try { localStorage.removeItem(LOGS_KEY); } catch (e) {}
+    let visitsCount = parseInt(stored || '1', 10);
+    if (isNaN(visitsCount) || visitsCount < 1) {
+      visitsCount = 1;
     }
 
     const sessionId = sessionStorage.getItem('gopi_session_id') || ('sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
@@ -1598,7 +1597,7 @@
     const finalRole = (role && role.trim()) ? role.trim() : 'Visitor';
 
     if (!sessionStorage.getItem(SESSION_KEY)) {
-      visitsCount = existingLogs.length + 1;
+      visitsCount = Math.max(visitsCount, existingLogs.length + 1);
       localStorage.setItem(VISITS_KEY, visitsCount.toString());
       sessionStorage.setItem(SESSION_KEY, 'true');
 
@@ -1785,16 +1784,20 @@
   function initVisitorTracker() {
     const VISITS_KEY = 'gopi_portfolio_visits_count';
     const LOGS_KEY = 'gopi_portfolio_visitor_logs';
+    const TAB_KEY = 'gopi_tab_session_recorded';
 
     let stored = localStorage.getItem(VISITS_KEY);
-    let visitsCount = parseInt(stored || '1', 10);
-    // Purge legacy fake seed counts (1234, 1253, etc.)
-    if (isNaN(visitsCount) || visitsCount >= 1000) {
+    let visitsCount = parseInt(stored || '0', 10);
+    if (isNaN(visitsCount) || visitsCount < 1) {
       visitsCount = 1;
       localStorage.setItem(VISITS_KEY, '1');
-      try { localStorage.removeItem(LOGS_KEY); } catch (e) {}
-    } else if (!stored) {
-      localStorage.setItem(VISITS_KEY, '1');
+    }
+
+    // Increment count on each new browser tab / session
+    if (!sessionStorage.getItem(TAB_KEY)) {
+      sessionStorage.setItem(TAB_KEY, 'true');
+      visitsCount++;
+      localStorage.setItem(VISITS_KEY, visitsCount.toString());
     }
 
     if (!localStorage.getItem(LOGS_KEY)) {
@@ -2099,13 +2102,16 @@
       });
     }
 
-    // Synchronize global total hits on startup
+    // Synchronize global total hits on startup (never downgrades local count)
     try {
       fetch('/api/analytics?mode=count')
         .then(res => res.json())
         .then(data => {
-          if (data && data.success && typeof data.totalHits === 'number' && data.totalHits > 0) {
-            updateVisitCounters(data.totalHits);
+          if (data && data.success && !data.fallback && typeof data.totalHits === 'number' && data.totalHits > 0) {
+            const currentLocal = parseInt(localStorage.getItem('gopi_portfolio_visits_count') || '1', 10);
+            const highest = Math.max(currentLocal, data.totalHits);
+            localStorage.setItem('gopi_portfolio_visits_count', highest.toString());
+            updateVisitCounters(highest);
           }
         })
         .catch(() => {});
