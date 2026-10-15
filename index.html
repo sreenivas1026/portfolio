@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth" data-theme="black" data-lamp="on">
+<html lang="en" class="dark scroll-smooth" data-theme="black" data-lamp="off">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,9 +29,9 @@
             var r = (role && typeof role === 'string' && role.trim()) ? role.trim() : 'Visitor';
             try {
                 sessionStorage.setItem('gopi_preloader_seen', 'true');
-                localStorage.setItem('gopi_lamp_state', 'on');
+                localStorage.setItem('gopi_lamp_state', 'off');
             } catch(e) {}
-            document.documentElement.setAttribute('data-lamp', 'on');
+            document.documentElement.setAttribute('data-lamp', 'off');
             
             var preloader = document.getElementById('pipeline-preloader');
             if (preloader) {
@@ -230,8 +230,8 @@
 
             <!-- Unified Controls Switch Group: Transparent, No Background, No Outer Border, Split ONLY by Vertical Lines -->
             <div class="flex items-center gap-2 shrink-0">
-                <!-- Public Visits Counter Badge (Desktop & Mobile - Click to view/edit Name & Role) -->
-                <button type="button" onclick="window.openVisitorIntake?window.openVisitorIntake():null" class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg text-xs font-mono text-zinc-600 dark:text-zinc-300 hover:text-accent cursor-pointer transition-colors" title="Total Profile Ingestion Visits • Click to view or change your Visitor Name & Role">
+                <!-- Public Visits Counter Badge (Desktop & Mobile - 1-Click for Intake, 4-Taps for Admin) -->
+                <button type="button" id="header-visit-btn" class="visitor-counter-btn flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg text-xs font-mono text-zinc-600 dark:text-zinc-300 hover:text-accent cursor-pointer transition-colors" title="Total Profile Ingestion Visits • 1-click for Visitor Name & Role • 4-taps for Admin Portal">
                     <i class="fas fa-eye text-accent text-[10px]"></i>
                     <span id="public-visit-counter" class="font-bold text-zinc-900 dark:text-white">1</span>
                     <span class="text-[10px] hidden xs:inline">Visits</span>
@@ -1489,8 +1489,8 @@
                 </a>
             </div>
 
-            <!-- Live Visitor Counter Badge (Click to view/edit Name & Role) -->
-            <button type="button" onclick="window.openVisitorIntake?window.openVisitorIntake():null" class="inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-accent cursor-pointer transition-colors shadow-sm" title="Total Profile Visits • Click to view or edit Visitor Name & Role">
+            <!-- Live Visitor Counter Badge (1-Click for Intake, 4-Taps for Admin) -->
+            <button type="button" id="footer-visit-btn" class="visitor-counter-btn inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-accent cursor-pointer transition-colors shadow-sm" title="Total Profile Visits • 1-click for Visitor Name & Role • 4-taps for Admin Portal">
                 <i class="fas fa-eye text-accent text-xs"></i>
                 <span id="footer-visit-counter" class="font-bold text-zinc-900 dark:text-white">1</span>
                 <span>Total Profile Visits</span>

@@ -1516,14 +1516,14 @@ html[data-theme="white"][data-lamp="off"] .hero-fullscreen-illustration img {
 /* ==========================================================================
    SECRET OWNER 3D VAULT DOOR MODAL
    ========================================================================== */
-#owner-vault-modal {
+#owner-vault-modal.hidden {
   display: none !important;
 }
 
 #owner-vault-modal:not(.hidden) {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 99999 !important;
   display: flex !important;
   align-items: center;
   justify-content: center;

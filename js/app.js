@@ -1316,9 +1316,12 @@
       } catch (e) {}
     }
 
-    // Default to 'on' so the portfolio is radiant and immediately interactive
-    let currentLampState = localStorage.getItem('gopi_lamp_state') || 'on';
-    document.documentElement.setAttribute('data-lamp', currentLampState);
+    // Default to 'off' on start as requested by user
+    let currentLampState = 'off';
+    document.documentElement.setAttribute('data-lamp', 'off');
+    try {
+      localStorage.setItem('gopi_lamp_state', 'off');
+    } catch (e) {}
 
     window.setPortfolioLampState = function(state) {
       currentLampState = state;
@@ -1678,9 +1681,9 @@
 
     const PRELOADER_KEY = 'gopi_preloader_seen';
     if (sessionStorage.getItem(PRELOADER_KEY)) {
-      document.documentElement.setAttribute('data-lamp', 'on');
+      document.documentElement.setAttribute('data-lamp', 'off');
       try {
-        localStorage.setItem('gopi_lamp_state', 'on');
+        localStorage.setItem('gopi_lamp_state', 'off');
         let currentVisits = parseInt(localStorage.getItem('gopi_portfolio_visits_count') || '1', 10);
         if (isNaN(currentVisits) || currentVisits >= 1000) currentVisits = 1;
         updateVisitCounters(currentVisits);
@@ -1704,13 +1707,13 @@
         sessionStorage.setItem(PRELOADER_KEY, 'true');
       } catch (e) {}
 
-      // Guarantee the portfolio is fully illuminated and interactive
-      document.documentElement.setAttribute('data-lamp', 'on');
+      // Keep lamp state off on start as requested by user
+      document.documentElement.setAttribute('data-lamp', 'off');
       try {
-        localStorage.setItem('gopi_lamp_state', 'on');
+        localStorage.setItem('gopi_lamp_state', 'off');
       } catch (e) {}
       if (typeof window.setPortfolioLampState === 'function') {
-        window.setPortfolioLampState('on');
+        window.setPortfolioLampState('off');
       }
 
       // Smooth fade-out and hide without removing from DOM
@@ -1824,49 +1827,115 @@
 
     function closeVault() {
       vaultModal.classList.add('hidden');
-      if (passwordPanel) passwordPanel.classList.remove('hidden');
-      if (dashboardPanel) dashboardPanel.classList.add('hidden');
+      vaultModal.style.setProperty('display', 'none', 'important');
+      if (passwordPanel) {
+        passwordPanel.classList.remove('hidden');
+        passwordPanel.style.setProperty('display', 'block', 'important');
+      }
+      if (dashboardPanel) {
+        dashboardPanel.classList.add('hidden');
+        dashboardPanel.style.setProperty('display', 'none', 'important');
+      }
       if (passwordInput) passwordInput.value = '';
       if (passwordError) passwordError.classList.add('hidden');
     }
 
     function openVaultPasswordPrompt() {
+      // Hide preloader if open so it never covers the modal
+      const preloader = document.getElementById('pipeline-preloader');
+      if (preloader) {
+        preloader.classList.add('hidden');
+        preloader.style.setProperty('display', 'none', 'important');
+      }
+
+      vaultModal.style.zIndex = '999999';
+      vaultModal.style.setProperty('display', 'flex', 'important');
       vaultModal.classList.remove('hidden');
-      if (passwordPanel) passwordPanel.classList.remove('hidden');
-      if (dashboardPanel) dashboardPanel.classList.add('hidden');
+
+      if (passwordPanel) {
+        passwordPanel.style.setProperty('display', 'block', 'important');
+        passwordPanel.classList.remove('hidden');
+      }
+      if (dashboardPanel) {
+        dashboardPanel.style.setProperty('display', 'none', 'important');
+        dashboardPanel.classList.add('hidden');
+      }
       if (passwordError) passwordError.classList.add('hidden');
       if (passwordInput) {
         passwordInput.value = '';
         setTimeout(() => passwordInput.focus(), 150);
       }
     }
+    window.openAdminVault = openVaultPasswordPrompt;
 
-    // STRICT 4-Tap Trigger ONLY on Header and Footer Visitor Count Badges (No random screen taps!)
-    function attachBadgeTaps(selector) {
-      const el = document.querySelector(selector);
-      if (!el) return;
-      const btn = el.closest('button');
-      if (!btn) return;
-      let badgeTaps = 0;
-      let badgeTimer = null;
+    // STRICT 4-Tap Trigger with Single-Click Debounce (No screen taps, 100% reliable)
+    let tapCounter = 0;
+    let tapResetTimer = null;
+    let singleTapTimer = null;
 
-      btn.addEventListener('click', function (e) {
-        badgeTaps++;
-        clearTimeout(badgeTimer);
-        badgeTimer = setTimeout(() => { badgeTaps = 0; }, 1400);
+    function handleBadgeTap(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
-        if (badgeTaps === 4) {
+      tapCounter++;
+      clearTimeout(tapResetTimer);
+      clearTimeout(singleTapTimer);
+
+      tapResetTimer = setTimeout(() => {
+        tapCounter = 0;
+      }, 2200);
+
+      // Visual micro-feedback on tap 2 and 3
+      const targetBtn = e ? (e.currentTarget || e.target.closest('button')) : null;
+      if (targetBtn && tapCounter > 1 && tapCounter < 4) {
+        targetBtn.style.transform = 'scale(0.92)';
+        setTimeout(() => { if (targetBtn) targetBtn.style.transform = ''; }, 120);
+      }
+
+      if (tapCounter >= 4) {
+        tapCounter = 0;
+        clearTimeout(tapResetTimer);
+        clearTimeout(singleTapTimer);
+        openVaultPasswordPrompt();
+      } else if (tapCounter === 1) {
+        // Open visitor intake only if not followed by more taps within 320ms
+        singleTapTimer = setTimeout(() => {
+          if (tapCounter === 1) {
+            tapCounter = 0;
+            if (typeof window.openVisitorIntake === 'function') {
+              window.openVisitorIntake();
+            }
+          }
+        }, 320);
+      }
+    }
+
+    // Attach to all visitor counter buttons
+    document.querySelectorAll('#header-visit-btn, #footer-visit-btn, .visitor-counter-btn, #public-visit-counter, #footer-visit-counter').forEach(el => {
+      const btn = el.closest('button') || el;
+      btn.addEventListener('click', handleBadgeTap);
+    });
+
+    // Also attach to Header Logo for easy 4-tap access
+    const headerLogo = document.querySelector('header a[href="#home"]') || document.querySelector('header .font-heading');
+    if (headerLogo) {
+      let logoTaps = 0;
+      let logoTimer = null;
+      headerLogo.addEventListener('click', function (e) {
+        logoTaps++;
+        clearTimeout(logoTimer);
+        logoTimer = setTimeout(() => { logoTaps = 0; }, 2200);
+        if (logoTaps >= 4) {
           e.preventDefault();
           e.stopPropagation();
-          badgeTaps = 0;
-          clearTimeout(badgeTimer);
+          logoTaps = 0;
+          clearTimeout(logoTimer);
           openVaultPasswordPrompt();
         }
       });
     }
-
-    attachBadgeTaps('#public-visit-counter');
-    attachBadgeTaps('#footer-visit-counter');
 
     if (cancelBtn) cancelBtn.addEventListener('click', closeVault);
     if (closeDashBtn) closeDashBtn.addEventListener('click', closeVault);
