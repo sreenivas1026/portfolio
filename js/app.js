@@ -1868,112 +1868,72 @@
     }
     window.openAdminVault = openVaultPasswordPrompt;
 
-    // STRICT 4-Tap Trigger with Single-Click Debounce (No screen taps, 100% reliable)
+    // Universal 4-Tap / 4-Click Admin Portal Detector
+    // Tapping or clicking 4 times anywhere on the screen (or on the visitor count badge / header)
+    // immediately opens the Admin Password Challenge.
     let tapCounter = 0;
     let tapResetTimer = null;
-    let singleTapTimer = null;
+    let lastTapTimestamp = 0;
 
-    function handleBadgeTap(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
+    function handleUnifiedTap(e) {
+      // If Admin Vault is already open, do not intercept
+      if (vaultModal && !vaultModal.classList.contains('hidden') && vaultModal.style.display !== 'none') {
+        return;
       }
+
+      // Ignore when user is actively typing inside interactive text fields
+      if (e && e.target && e.target.closest && e.target.closest('input, textarea, select')) {
+        return;
+      }
+
+      const now = Date.now();
+      // Filter out duplicate synthetic events within 100ms
+      if (now - lastTapTimestamp < 100) return;
+      lastTapTimestamp = now;
 
       tapCounter++;
       clearTimeout(tapResetTimer);
-      clearTimeout(singleTapTimer);
-
       tapResetTimer = setTimeout(() => {
         tapCounter = 0;
-      }, 2200);
+      }, 2500);
 
-      // Visual micro-feedback on tap 2 and 3
-      const targetBtn = e ? (e.currentTarget || e.target.closest('button')) : null;
-      if (targetBtn && tapCounter > 1 && tapCounter < 4) {
-        targetBtn.style.transform = 'scale(0.92)';
-        setTimeout(() => { if (targetBtn) targetBtn.style.transform = ''; }, 120);
+      // Micro haptic vibration feedback on mobile
+      if (tapCounter >= 2 && tapCounter < 4 && typeof navigator !== 'undefined' && navigator.vibrate) {
+        try { navigator.vibrate(25); } catch (err) {}
       }
 
       if (tapCounter >= 4) {
         tapCounter = 0;
         clearTimeout(tapResetTimer);
-        clearTimeout(singleTapTimer);
+        if (e) {
+          if (typeof e.preventDefault === 'function') e.preventDefault();
+          if (typeof e.stopPropagation === 'function') e.stopPropagation();
+        }
         openVaultPasswordPrompt();
-      } else if (tapCounter === 1) {
-        // Open visitor intake only if not followed by more taps within 320ms
-        singleTapTimer = setTimeout(() => {
-          if (tapCounter === 1) {
-            tapCounter = 0;
-            if (typeof window.openVisitorIntake === 'function') {
-              window.openVisitorIntake();
-            }
-          }
-        }, 320);
       }
     }
 
-    // Attach to all visitor counter buttons
+    // Attach capturing click listener to window so clicks anywhere across the entire document are captured
+    window.addEventListener('click', handleUnifiedTap, true);
+
+    // Also attach to all visitor counter buttons and badges for direct response
     document.querySelectorAll('#header-visit-btn, #footer-visit-btn, .visitor-counter-btn, #public-visit-counter, #footer-visit-counter').forEach(el => {
       const btn = el.closest('button') || el;
-      btn.addEventListener('click', handleBadgeTap);
+      btn.addEventListener('click', function (e) {
+        handleUnifiedTap(e);
+      });
     });
 
-    // Also attach to Header Logo for easy 4-tap access
-    const headerLogo = document.querySelector('header a[href="#home"]') || document.querySelector('header .font-heading');
-    if (headerLogo) {
-      let logoTaps = 0;
-      let logoTimer = null;
-      headerLogo.addEventListener('click', function (e) {
-        logoTaps++;
-        clearTimeout(logoTimer);
-        logoTimer = setTimeout(() => { logoTaps = 0; }, 2200);
-        if (logoTaps >= 4) {
-          e.preventDefault();
-          e.stopPropagation();
-          logoTaps = 0;
-          clearTimeout(logoTimer);
-          openVaultPasswordPrompt();
-        }
-      });
-    }
-
-    // 4-Tap on Screen Detector: Hitting 4 rapid times anywhere on the screen opens Admin Login prompt
-    let screenTaps = 0;
-    let screenTapTimer = null;
-    let lastTapTimestamp = 0;
-
-    function handleScreenTap(e) {
-      // If vault modal is already visible, do not intercept
-      if (!vaultModal.classList.contains('hidden')) return;
-
-      // Ignore interactive form controls or interactive buttons
-      if (e.target.closest('input, textarea, button, a, select, [contenteditable="true"], .color-drag-bar-horizontal, .color-drag-bar-vertical, .hanging-lamp-fixture, #chat-window-panel, #resume-modal, #palette-dropdown-panel')) {
-        return;
-      }
-
-      const now = Date.now();
-      if (now - lastTapTimestamp < 60) return;
-      lastTapTimestamp = now;
-
-      screenTaps++;
-      clearTimeout(screenTapTimer);
-      screenTapTimer = setTimeout(() => {
-        screenTaps = 0;
-      }, 2000);
-
-      if (screenTaps >= 4) {
-        screenTaps = 0;
-        clearTimeout(screenTapTimer);
+    // Keyboard shortcut for desktop power users: Alt+A or Ctrl+Shift+A
+    document.addEventListener('keydown', function (e) {
+      if ((e.altKey && (e.key === 'a' || e.key === 'A')) || (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a'))) {
+        e.preventDefault();
         openVaultPasswordPrompt();
       }
-    }
-
-    if (window.PointerEvent) {
-      window.addEventListener('pointerup', handleScreenTap, { passive: true });
-    } else {
-      window.addEventListener('touchend', handleScreenTap, { passive: true });
-      window.addEventListener('click', handleScreenTap);
-    }
+      if (e.key === 'Escape' && vaultModal && !vaultModal.classList.contains('hidden')) {
+        closeVault();
+      }
+    });
 
     if (cancelBtn) cancelBtn.addEventListener('click', closeVault);
     if (closeDashBtn) closeDashBtn.addEventListener('click', closeVault);
@@ -2056,8 +2016,15 @@
 
         if (allowedAdminKeys.includes(entered)) {
           if (passwordError) passwordError.classList.add('hidden');
-          if (passwordPanel) passwordPanel.classList.add('hidden');
-          if (dashboardPanel) dashboardPanel.classList.remove('hidden');
+          if (passwordPanel) {
+            passwordPanel.classList.add('hidden');
+            passwordPanel.style.setProperty('display', 'none', 'important');
+          }
+          if (dashboardPanel) {
+            dashboardPanel.classList.remove('hidden');
+            dashboardPanel.style.removeProperty('display');
+            dashboardPanel.style.setProperty('display', 'flex', 'important');
+          }
           renderVisitorTable();
 
           // Fetch cloud logs if available
