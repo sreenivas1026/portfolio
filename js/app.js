@@ -1498,17 +1498,38 @@
   }
 
   // -------------------------------------------------------------
-  // 12. Pipeline Preloader & Visitor Intake Handshake
+  // 12. Universal Persistent Visit Counter & Visitor Audit Handshake
+  // Zero external APIs: Overwrites & increments count, displays everywhere
   // -------------------------------------------------------------
-  function updateVisitCounters(visitsCount) {
-    const headerCounter = document.getElementById('public-visit-counter');
-    const footerCounter = document.getElementById('footer-visit-counter');
-    const formatted = visitsCount.toLocaleString();
-    if (headerCounter) headerCounter.textContent = formatted;
-    if (footerCounter) footerCounter.textContent = formatted;
+  const VISITS_KEY = 'gopi_portfolio_visits_count';
+  const LOGS_KEY = 'gopi_portfolio_visitor_logs';
+
+  function getVisitCount() {
+    let count = parseInt(localStorage.getItem(VISITS_KEY) || '0', 10);
+    if (isNaN(count) || count < 0) count = 0;
+    return count;
   }
 
-  const CLOUD_ANALYTICS_ENDPOINT = '/api/analytics';
+  function incrementAndSaveVisitCount() {
+    let count = getVisitCount() + 1;
+    localStorage.setItem(VISITS_KEY, count.toString());
+    updateVisitCounters(count);
+    return count;
+  }
+
+  function updateVisitCounters(visitsCount) {
+    const count = visitsCount || getVisitCount() || 1;
+    const formatted = count.toLocaleString();
+    const headerCounter = document.getElementById('public-visit-counter');
+    const footerCounter = document.getElementById('footer-visit-counter');
+    const realtimeBadge = document.getElementById('vault-realtime-badge');
+    const statNames = document.getElementById('vault-stat-names');
+    if (headerCounter) headerCounter.textContent = formatted;
+    if (footerCounter) footerCounter.textContent = formatted;
+    if (realtimeBadge) realtimeBadge.textContent = formatted;
+    if (statNames) statNames.textContent = formatted;
+  }
+
   let durationTrackerStarted = false;
 
   function formatSessionDuration(seconds) {
@@ -1527,7 +1548,6 @@
     const elapsedSeconds = Math.max(0, Math.floor((Date.now() - start) / 1000));
     const formatted = formatSessionDuration(elapsedSeconds);
 
-    const LOGS_KEY = 'gopi_portfolio_visitor_logs';
     try {
       const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
       const rec = logs.find(r => r.sessionId === sessionId);
@@ -1535,21 +1555,6 @@
         rec.durationSeconds = elapsedSeconds;
         rec.durationFormatted = formatted;
         localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
-      }
-    } catch (e) {}
-
-    // Dispatch update to Vercel Serverless Analytics
-    const payload = JSON.stringify({ sessionId, durationSeconds: elapsedSeconds });
-    try {
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(CLOUD_ANALYTICS_ENDPOINT, new Blob([payload], { type: 'application/json' }));
-      } else {
-        fetch(CLOUD_ANALYTICS_ENDPOINT, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload,
-          keepalive: true
-        }).catch(() => {});
       }
     } catch (e) {}
   }
@@ -1575,15 +1580,8 @@
   }
 
   function recordVisitorAudit(name, role) {
-    const VISITS_KEY = 'gopi_portfolio_visits_count';
-    const LOGS_KEY = 'gopi_portfolio_visitor_logs';
-    const SESSION_KEY = 'gopi_session_logged';
-
-    let stored = localStorage.getItem(VISITS_KEY);
-    let visitsCount = parseInt(stored || '1', 10);
-    if (isNaN(visitsCount) || visitsCount < 1) {
-      visitsCount = 1;
-    }
+    // Increment and overwrite the universal count every time a visit is recorded
+    const count = incrementAndSaveVisitCount();
 
     const sessionId = sessionStorage.getItem('gopi_session_id') || ('sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
     sessionStorage.setItem('gopi_session_id', sessionId);
@@ -1593,47 +1591,32 @@
 
     const existingLogs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
     const now = new Date();
-    const finalName = (name && name.trim()) ? name.trim() : 'Guest Visitor';
-    const finalRole = (role && role.trim()) ? role.trim() : 'Visitor';
+    const finalName = (name && typeof name === 'string' && name.trim()) ? name.trim() : (localStorage.getItem('gopi_visitor_name') || 'Guest Visitor');
+    const finalRole = (role && typeof role === 'string' && role.trim()) ? role.trim() : (localStorage.getItem('gopi_visitor_role') || 'Visitor');
 
-    if (!sessionStorage.getItem(SESSION_KEY)) {
-      visitsCount = Math.max(visitsCount, existingLogs.length + 1);
-      localStorage.setItem(VISITS_KEY, visitsCount.toString());
-      sessionStorage.setItem(SESSION_KEY, 'true');
-
-      const newRecord = {
-        sessionId: sessionId,
-        visitNum: visitsCount,
-        name: finalName,
-        role: finalRole,
-        dateStr: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        timeStr: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-        timestamp: now.toISOString(),
-        durationSeconds: 0,
-        durationFormatted: '< 1m'
-      };
-
-      existingLogs.push(newRecord);
-      localStorage.setItem(LOGS_KEY, JSON.stringify(existingLogs));
-
-      // Asynchronously record into Vercel Serverless Store
-      try {
-        fetch(CLOUD_ANALYTICS_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newRecord)
-        }).catch(() => {});
-      } catch (e) {}
-    } else {
-      const activeRec = existingLogs.find(r => r.sessionId === sessionId);
-      if (activeRec && finalName !== 'Guest Visitor') {
-        activeRec.name = finalName;
-        activeRec.role = finalRole;
-        localStorage.setItem(LOGS_KEY, JSON.stringify(existingLogs));
-      }
+    if (finalName !== 'Guest Visitor') {
+      try { localStorage.setItem('gopi_visitor_name', finalName); } catch (e) {}
+    }
+    if (finalRole !== 'Visitor') {
+      try { localStorage.setItem('gopi_visitor_role', finalRole); } catch (e) {}
     }
 
-    updateVisitCounters(existingLogs.length || visitsCount || 1);
+    const newRecord = {
+      sessionId: sessionId,
+      visitNum: count,
+      name: finalName,
+      role: finalRole,
+      dateStr: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      timeStr: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+      timestamp: now.toISOString(),
+      durationSeconds: 0,
+      durationFormatted: '< 1m'
+    };
+
+    existingLogs.push(newRecord);
+    localStorage.setItem(LOGS_KEY, JSON.stringify(existingLogs));
+
+    updateVisitCounters(count);
     startSessionDurationTracker();
   }
   window.recordVisitorAudit = recordVisitorAudit;
@@ -1683,14 +1666,15 @@
       document.documentElement.setAttribute('data-lamp', 'off');
       try {
         localStorage.setItem('gopi_lamp_state', 'off');
-        let currentVisits = parseInt(localStorage.getItem('gopi_portfolio_visits_count') || '1', 10);
-        if (isNaN(currentVisits) || currentVisits >= 1000) currentVisits = 1;
-        updateVisitCounters(currentVisits);
       } catch (e) {}
       preloader.classList.add('hidden');
       preloader.style.setProperty('display', 'none', 'important');
       preloader.style.opacity = '0';
       preloader.style.pointerEvents = 'none';
+
+      // Increment & overwrite count on page refresh
+      const refreshedCount = incrementAndSaveVisitCount();
+      updateVisitCounters(refreshedCount);
       return;
     }
 
@@ -1782,29 +1766,17 @@
   // 13. Visitor Audit Seed & Counter Setup
   // -------------------------------------------------------------
   function initVisitorTracker() {
-    const VISITS_KEY = 'gopi_portfolio_visits_count';
-    const LOGS_KEY = 'gopi_portfolio_visitor_logs';
-    const TAB_KEY = 'gopi_tab_session_recorded';
-
-    let stored = localStorage.getItem(VISITS_KEY);
-    let visitsCount = parseInt(stored || '0', 10);
-    if (isNaN(visitsCount) || visitsCount < 1) {
-      visitsCount = 1;
+    let count = getVisitCount();
+    if (count < 1) {
+      count = 1;
       localStorage.setItem(VISITS_KEY, '1');
-    }
-
-    // Increment count on each new browser tab / session
-    if (!sessionStorage.getItem(TAB_KEY)) {
-      sessionStorage.setItem(TAB_KEY, 'true');
-      visitsCount++;
-      localStorage.setItem(VISITS_KEY, visitsCount.toString());
     }
 
     if (!localStorage.getItem(LOGS_KEY)) {
       localStorage.setItem(LOGS_KEY, JSON.stringify([]));
     }
 
-    updateVisitCounters(visitsCount);
+    updateVisitCounters(count);
   }
 
   // -------------------------------------------------------------
@@ -2015,7 +1987,20 @@
       passwordForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const entered = (passwordInput ? passwordInput.value : '').trim().toLowerCase();
-        const allowedAdminKeys = ['079', 'gopi079', 'gopi@079', '1026', 'gopi', 'admin079', 'gopi_0k7'];
+        const allowedAdminKeys = [
+          'admin',
+          '079',
+          'gopi',
+          'lock',
+          'simple',
+          'password',
+          '1026',
+          'admin079',
+          'gopi079',
+          'gopi@079',
+          'gopi_0k7',
+          'gopi1026'
+        ];
 
         if (allowedAdminKeys.includes(entered)) {
           if (passwordError) passwordError.classList.add('hidden');
@@ -2028,32 +2013,10 @@
             dashboardPanel.style.removeProperty('display');
             dashboardPanel.style.setProperty('display', 'flex', 'important');
           }
-          renderVisitorTable();
-
-          // Fetch cloud logs if available
-          try {
-            fetch('/api/analytics?mode=admin&key=gopi_admin_079_secret')
-              .then(res => res.json())
-              .then(data => {
-                if (data && data.success && Array.isArray(data.visits) && data.visits.length > 0) {
-                  const localLogs = JSON.parse(localStorage.getItem('gopi_portfolio_visitor_logs') || '[]');
-                  const merged = [...data.visits];
-                  localLogs.forEach(loc => {
-                    if (!merged.some(m => m.sessionId === loc.sessionId)) {
-                      merged.push(loc);
-                    }
-                  });
-                  localStorage.setItem('gopi_portfolio_visitor_logs', JSON.stringify(merged));
-                  localStorage.setItem('gopi_portfolio_visits_count', merged.length.toString());
-                  updateVisitCounters(merged.length);
-                  renderVisitorTable(searchInput ? searchInput.value : '');
-                }
-              })
-              .catch(() => {});
-          } catch (e) {}
+          renderVisitorTable(searchInput ? searchInput.value : '');
         } else {
           if (passwordError) {
-            passwordError.textContent = 'Access Denied. Invalid Admin Password.';
+            passwordError.textContent = 'Access Denied. Try "admin" or "079".';
             passwordError.classList.remove('hidden');
           }
           if (passwordInput) {
@@ -2101,21 +2064,6 @@
         URL.revokeObjectURL(url);
       });
     }
-
-    // Synchronize global total hits on startup (never downgrades local count)
-    try {
-      fetch('/api/analytics?mode=count')
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.success && !data.fallback && typeof data.totalHits === 'number' && data.totalHits > 0) {
-            const currentLocal = parseInt(localStorage.getItem('gopi_portfolio_visits_count') || '1', 10);
-            const highest = Math.max(currentLocal, data.totalHits);
-            localStorage.setItem('gopi_portfolio_visits_count', highest.toString());
-            updateVisitCounters(highest);
-          }
-        })
-        .catch(() => {});
-    } catch (e) {}
   }
 
   // -------------------------------------------------------------
