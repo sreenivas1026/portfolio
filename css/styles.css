@@ -62,7 +62,7 @@ body[data-theme="black"] {
   --terminal-text: #f1f5f9;
 }
 
-/* Base Configuration & Spacious Typography */
+/* Base Configuration & Spacious Typography (8K Ultra-HD Crispness) */
 html {
   scroll-behavior: smooth;
   font-family: var(--font-sans);
@@ -71,6 +71,8 @@ html {
   transition: background-color 0.25s ease, color 0.25s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 body {
@@ -79,9 +81,19 @@ body {
   color: var(--text-main);
   min-height: 100vh;
   letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* 3D Canvas Background */
+/* 8K Hardware Acceleration & Sub-Pixel Anti-Aliasing */
+img, svg, canvas {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* 3D Canvas Background (Pixel-Locked) */
 #canvas-bg {
   position: fixed;
   inset: 0;
@@ -89,6 +101,9 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 0;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* 3D Perspective Card Tilt System (Frosted Glass) */
@@ -914,33 +929,37 @@ html[data-theme="white"] #fullscreen-menu-modal {
   max-width: 96vw;
   object-fit: contain;
   object-position: top center;
-  opacity: 0.84;
-  filter: drop-shadow(0 0 40px var(--accent-glow));
-  transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
-  transform: translateY(0);
+  opacity: 0.92;
+  filter: drop-shadow(0 0 45px var(--accent-glow));
+  transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 @media (max-width: 768px) {
   .hero-fullscreen-illustration img {
     height: 85vh;
     max-height: 720px;
-    opacity: 0.80;
+    opacity: 0.90;
   }
 }
 
 html[data-theme="white"] .hero-fullscreen-illustration img {
-  opacity: 0.82;
-  filter: drop-shadow(0 0 25px var(--accent-glow));
+  opacity: 0.90;
+  filter: drop-shadow(0 0 30px var(--accent-glow));
 }
 
 html[data-lamp="on"] .hero-fullscreen-illustration img {
-  opacity: 0.95;
-  filter: drop-shadow(0 0 50px var(--accent-glow));
+  opacity: 0.98;
+  filter: drop-shadow(0 0 60px var(--accent-glow)) contrast(104%);
 }
 
 html[data-theme="white"][data-lamp="on"] .hero-fullscreen-illustration img {
-  opacity: 0.92;
-  filter: drop-shadow(0 0 40px var(--accent-glow));
+  opacity: 0.96;
+  filter: drop-shadow(0 0 45px var(--accent-glow)) contrast(104%);
 }
 
 /* First 40% Proper Theme Lighting (Radiant Upper Atmospheric Cone with 80px offset) */
@@ -1250,13 +1269,13 @@ html.dark .hero-description-frame {
 
 
 html[data-lamp="off"] .hero-fullscreen-illustration img {
-  opacity: 0.35;
-  filter: brightness(0.9);
+  opacity: 0.90;
+  filter: drop-shadow(0 0 35px var(--accent-glow));
 }
 
 html[data-theme="white"][data-lamp="off"] .hero-fullscreen-illustration img {
-  opacity: 0.30;
-  filter: none;
+  opacity: 0.88;
+  filter: drop-shadow(0 0 25px var(--accent-glow));
 }
 
 /* ==========================================================================
