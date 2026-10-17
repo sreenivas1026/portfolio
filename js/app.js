@@ -1634,25 +1634,16 @@
   }
   window.recordVisitorAudit = recordVisitorAudit;
 
-  const FIREBASE_DB_URL = 'https://gopi-3cc1e-default-rtdb.firebaseio.com';
-  const FIREBASE_DB_ALT = 'https://gopi-3cc1e-default-rtdb.asia-southeast1.firebasedatabase.app';
-  let activeFirebaseUrl = FIREBASE_DB_URL;
+  const FIREBASE_DB_URL = 'https://gopi-3cc1e-default-rtdb.asia-southeast1.firebasedatabase.app';
+  const activeFirebaseUrl = FIREBASE_DB_URL;
 
   async function syncVisitToFirebase(record) {
     try {
-      let res = await fetch(`${activeFirebaseUrl}/visits.json`, {
+      await fetch(`${activeFirebaseUrl}/visits.json`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(record)
       });
-      if (!res.ok) {
-        activeFirebaseUrl = FIREBASE_DB_ALT;
-        await fetch(`${activeFirebaseUrl}/visits.json`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(record)
-        });
-      }
     } catch (e) {}
   }
 
@@ -1992,11 +1983,7 @@
 
         // Fetch universal records from Firebase
         try {
-          let res = await fetch(`${activeFirebaseUrl}/visits.json`);
-          if (!res.ok) {
-            activeFirebaseUrl = FIREBASE_DB_ALT;
-            res = await fetch(`${activeFirebaseUrl}/visits.json`);
-          }
+          const res = await fetch(`${activeFirebaseUrl}/visits.json`);
           if (res.ok) {
             const fbData = await res.json();
             if (fbData && typeof fbData === 'object') {
@@ -2074,11 +2061,7 @@
           // Dynamic admin password validation from Firebase
           if (!isAuthorized && entered) {
             try {
-              let res = await fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`);
-              if (!res.ok) {
-                activeFirebaseUrl = FIREBASE_DB_ALT;
-                res = await fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`);
-              }
+              const res = await fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`);
               if (res.ok) {
                 const fbHash = await res.json();
                 if (fbHash && typeof fbHash === 'string' && enteredHash === fbHash.trim()) {

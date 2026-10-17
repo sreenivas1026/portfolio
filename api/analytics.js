@@ -5,8 +5,7 @@
 // 3. PUT -> Updates session duration (time spent on page) for the given sessionId
 // 4. GET ?mode=admin&key=... -> Returns full confidential log for admin dashboard
 
-const CLOUD_STORE_URL = process.env.ANALYTICS_STORE_URL || 'https://gopi-3cc1e-default-rtdb.firebaseio.com/visits.json';
-const CLOUD_STORE_ALT_URL = 'https://gopi-3cc1e-default-rtdb.asia-southeast1.firebasedatabase.app/visits.json';
+const CLOUD_STORE_URL = process.env.ANALYTICS_STORE_URL || 'https://gopi-3cc1e-default-rtdb.asia-southeast1.firebasedatabase.app/visits.json';
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'gopi_admin_079_secret';
 
 module.exports = async function handler(req, res) {
