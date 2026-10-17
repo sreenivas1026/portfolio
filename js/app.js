@@ -2121,6 +2121,7 @@
         return;
       }
 
+      // Query only own internal endpoint, zero external third-party APIs
       try {
         const res = await fetch('/api/analytics?mode=ip', { cache: 'no-store' });
         if (res.ok) {
@@ -2128,16 +2129,6 @@
           if (data && data.ip) {
             cachedClientIp = data.ip.trim();
             return;
-          }
-        }
-      } catch (e) {}
-
-      try {
-        const ipify = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
-        if (ipify.ok) {
-          const data = await ipify.json();
-          if (data && data.ip) {
-            cachedClientIp = data.ip.trim();
           }
         }
       } catch (e) {}
@@ -2318,7 +2309,7 @@
     if (emailInput) emailInput.addEventListener('input', syncGmailLink);
     if (msgInput) msgInput.addEventListener('input', syncGmailLink);
 
-    form.addEventListener('submit', async function (e) {
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
       const name = nameInput ? nameInput.value.trim() : '';
       const email = emailInput ? emailInput.value.trim() : '';
@@ -2326,83 +2317,32 @@
 
       if (!name || !email || !message) return;
 
+      const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
+      const body = encodeURIComponent(`${message}\n\nFrom: ${name} (${email})`);
+      const webGmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=gopi.sk079@gmail.com&su=${subject}&body=${body}`;
+      const mailtoUrl = `mailto:gopi.sk079@gmail.com?subject=${subject}&body=${body}`;
+
       if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xs"></i> <span>Sending to Gopi...</span>';
+        submitBtn.innerHTML = '<i class="fas fa-check text-xs"></i> <span>Opened in Gmail!</span>';
       }
       if (statusBox) {
-        statusBox.classList.add('hidden');
-        statusBox.className = 'hidden text-xs rounded-xl p-3 text-center';
+        statusBox.className = 'text-xs rounded-xl p-3 text-center bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-medium block';
+        statusBox.innerHTML = '<i class="fas fa-circle-check mr-1.5"></i> Composing email to <strong>gopi.sk079@gmail.com</strong> in your browser (zero external APIs).';
       }
 
-      // If tested locally via file://, FormSubmit rejects requests without http/https origin
-      if (window.location.protocol === 'file:') {
-        syncGmailLink();
+      // Try opening Gmail Web first (desktop / mobile browser)
+      const win = window.open(webGmailUrl, '_blank');
+      if (!win) {
+        window.location.href = mailtoUrl;
+      }
+
+      form.reset();
+      syncGmailLink();
+      setTimeout(() => {
         if (submitBtn) {
-          submitBtn.disabled = false;
           submitBtn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Send Message</span>';
         }
-        if (statusBox) {
-          statusBox.className = 'text-xs rounded-xl p-3 text-center bg-cyan-500/15 border border-cyan-500/30 text-cyan-700 dark:text-cyan-300 font-medium block';
-          statusBox.innerHTML = '<i class="fas fa-info-circle mr-1.5"></i> Running locally from HTML file. Click <strong>Open in Gmail</strong> to send directly in your browser without Outlook, or host online (e.g. Vercel) for background dispatch!';
-        }
-        if (gmailBtn) {
-          window.open(gmailBtn.href, '_blank');
-        }
-        return;
-      }
-
-      try {
-        const payload = {
-          name: name,
-          email: email,
-          message: message,
-          _subject: `New Portfolio Message from ${name} (${email})`,
-          _replyto: email,
-          _captcha: 'false'
-        };
-
-        const response = await fetch('https://formsubmit.co/ajax/gopi.sk079@gmail.com', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success !== "false") {
-          if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-check text-xs"></i> <span>Message Sent!</span>';
-          }
-          if (statusBox) {
-            statusBox.className = 'text-xs rounded-xl p-3 text-center bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-medium block';
-            statusBox.innerHTML = '<i class="fas fa-circle-check mr-1.5"></i> Thank you, ' + name + '! Your message has been sent directly to Gopi\'s inbox (gopi.sk079@gmail.com).';
-          }
-          form.reset();
-          syncGmailLink();
-          setTimeout(() => {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Send Message</span>';
-            }
-          }, 4000);
-        } else {
-          throw new Error((data && data.message) || 'Activation or server dispatch error');
-        }
-      } catch (err) {
-        syncGmailLink();
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Send Message</span>';
-        }
-        if (statusBox) {
-          statusBox.className = 'text-xs rounded-xl p-3 text-center bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 font-medium block';
-          statusBox.innerHTML = '<div class="space-y-1"><div><i class="fas fa-envelope-open-text mr-1.5"></i> Note: For automatic dispatch, make sure you clicked the 1-time activation email from FormSubmit in <strong>gopi.sk079@gmail.com</strong>.</div><div>Or <a href="' + (gmailBtn ? gmailBtn.href : 'https://mail.google.com/mail/?view=cm&fs=1&to=gopi.sk079@gmail.com') + '" target="_blank" rel="noopener noreferrer" class="underline font-bold text-accent">click here to compose in Gmail Web browser</a> (no Outlook).</div></div>';
-        }
-      }
+      }, 4000);
     });
   }
 
