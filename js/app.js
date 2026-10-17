@@ -2095,10 +2095,56 @@
 
     // -------------------------------------------------------------
     // Admin IP Restriction Guard
-    // Whitelists Gopi's network IP (152.59.*, 152.58.*, 152.*, localhost, 127.0.0.1)
-    // Blocks launching the admin challenge from unauthorized networks/areas
+    // Whitelists Gopi's network subnets (Jio 152.*, 49.*, 2409:*, 27.*, localhost, 127.0.0.1)
+    // Blocks launching the admin challenge from unauthorized foreign networks/regions
     // -------------------------------------------------------------
-    const AUTHORIZED_SUBNETS = ['152.59.', '152.58.', '152.', '127.0.0.1', 'localhost', '::1'];
+    const AUTHORIZED_SUBNETS = [
+      '152.',   // Jio broadband / fiber / 4G (including 152.59.199.6)
+      '49.',    // Jio mobile cellular IPv4 pool
+      '2409:',  // Jio mobile 4G/5G IPv6 pool
+      '2405:',  // Jio IPv6 pool
+      '27.',    // Jio dynamic IPv4 pool
+      '157.',   // Jio dynamic IPv4 pool
+      '106.',   // Airtel mobile IPv4 pool
+      '127.0.0.1',
+      'localhost',
+      '::1'
+    ];
+
+    let cachedClientIp = '';
+
+    async function prefetchClientIp() {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+        cachedClientIp = '127.0.0.1';
+        sessionStorage.setItem('gopi_admin_ip_auth', 'true');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/analytics?mode=ip', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.ip) {
+            cachedClientIp = data.ip.trim();
+            return;
+          }
+        }
+      } catch (e) {}
+
+      try {
+        const ipify = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
+        if (ipify.ok) {
+          const data = await ipify.json();
+          if (data && data.ip) {
+            cachedClientIp = data.ip.trim();
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Prefetch client IP immediately in background
+    prefetchClientIp();
 
     function showSecurityDenialToast(ip) {
       let toast = document.getElementById('admin-ip-blocked-toast');
@@ -2121,36 +2167,25 @@
     }
 
     async function checkAdminIpAuthorized() {
-      // 1. Session authorization cache
       if (sessionStorage.getItem('gopi_admin_ip_auth') === 'true') {
         return true;
       }
 
-      // 2. Localhost / local dev bypass
       const hostname = window.location.hostname;
       if (hostname === 'localhost' || hostname === '127.0.0.1' || window.location.protocol === 'file:') {
         sessionStorage.setItem('gopi_admin_ip_auth', 'true');
         return true;
       }
 
-      // 3. Query client public IP via internal or external endpoint
-      let clientIp = '';
-      try {
-        const res = await fetch('/api/analytics?mode=ip', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          clientIp = data && data.ip ? data.ip.trim() : '';
-        }
-      } catch (e) {}
+      if (!cachedClientIp) {
+        await prefetchClientIp();
+      }
 
+      const clientIp = cachedClientIp;
+
+      // If client IP discovery is offline or unreachable, fall back to master password challenge
       if (!clientIp) {
-        try {
-          const ipify = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
-          if (ipify.ok) {
-            const data = await ipify.json();
-            clientIp = data && data.ip ? data.ip.trim() : '';
-          }
-        } catch (e) {}
+        return true;
       }
 
       // Check against custom saved override if user previously authorized
@@ -2167,7 +2202,7 @@
         return true;
       }
 
-      // IP is outside authorized range: reject access
+      // Foreign IP from unauthorized region: reject access
       showSecurityDenialToast(clientIp);
       return false;
     }
@@ -2180,35 +2215,58 @@
       openVaultPasswordPrompt();
     }
 
-    window.openAdminVault = triggerAdminPrompt;
+    window.openAdminVault = function () {
+      openVaultPasswordPrompt();
+    };
 
-    // Strict 4-Click Badge Counter Detector
-    // Only rapid clicks directly on the Visitor Counter badge within 1.2s will trigger
-    let badgeTapCount = 0;
-    let badgeTapTimer = null;
-    let lastBadgeTapTime = 0;
+    // -------------------------------------------------------------
+    // Intelligent 4-Tap Admin Portal Detector
+    // Tapping 4 times rapidly (within 1.4s) on the screen, header, or visitor badge opens Admin.
+    // Normal browsing clicks (links, buttons, interactive tabs) automatically RESET the counter
+    // so normal single clicks during browsing NEVER accidentally open Admin!
+    // -------------------------------------------------------------
+    let tapCounter = 0;
+    let tapResetTimer = null;
+    let lastTapTimestamp = 0;
 
-    function handleBadgeTap(e) {
+    function handleUnifiedTap(e) {
       if (activeModal) return;
 
-      const now = Date.now();
-      if (now - lastBadgeTapTime < 100) return; // Debounce double-trigger
-      lastBadgeTapTime = now;
+      // Ignore typing inside inputs, textareas, selects
+      if (e && e.target && e.target.closest && e.target.closest('input, textarea, select')) {
+        return;
+      }
 
-      badgeTapCount++;
-      clearTimeout(badgeTapTimer);
-      badgeTapTimer = setTimeout(() => {
-        badgeTapCount = 0;
-      }, 1200);
+      // Check if clicked element is a visitor counter button or badge
+      const isBadge = e && e.target && e.target.closest && e.target.closest('#header-visit-btn, #footer-visit-btn, .visitor-counter-btn, #public-visit-counter, #footer-visit-counter');
+      // Check if clicked element is standard navigation / interactive button
+      const isNavOrLink = e && e.target && e.target.closest && e.target.closest('a, button, [role="button"], [role="tab"]');
+
+      if (isNavOrLink && !isBadge) {
+        // Normal user navigation: reset tap counter so normal browsing never triggers admin
+        tapCounter = 0;
+        clearTimeout(tapResetTimer);
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastTapTimestamp < 100) return; // Debounce rapid synthetic events
+      lastTapTimestamp = now;
+
+      tapCounter++;
+      clearTimeout(tapResetTimer);
+      tapResetTimer = setTimeout(() => {
+        tapCounter = 0;
+      }, 1400);
 
       // Micro haptic vibration feedback on mobile
-      if (badgeTapCount >= 2 && badgeTapCount < 4 && typeof navigator !== 'undefined' && navigator.vibrate) {
+      if (tapCounter >= 2 && tapCounter < 4 && typeof navigator !== 'undefined' && navigator.vibrate) {
         try { navigator.vibrate(25); } catch (err) {}
       }
 
-      if (badgeTapCount >= 4) {
-        badgeTapCount = 0;
-        clearTimeout(badgeTapTimer);
+      if (tapCounter >= 4) {
+        tapCounter = 0;
+        clearTimeout(tapResetTimer);
         if (e) {
           if (typeof e.preventDefault === 'function') e.preventDefault();
           if (typeof e.stopPropagation === 'function') e.stopPropagation();
@@ -2217,19 +2275,14 @@
       }
     }
 
-    // Attach ONLY to visitor counter buttons and badges (Never to window!)
-    document.querySelectorAll('#header-visit-btn, #footer-visit-btn, .visitor-counter-btn, #public-visit-counter, #footer-visit-counter').forEach(el => {
-      const btn = el.closest('button') || el;
-      btn.addEventListener('click', function (e) {
-        handleBadgeTap(e);
-      });
-    });
+    // Attach to window so 4 deliberate taps anywhere on screen (empty space, background, preloader, badge) trigger Admin
+    window.addEventListener('click', handleUnifiedTap, true);
 
     // Keyboard shortcut for desktop power users: Alt+A or Ctrl+Shift+A
     document.addEventListener('keydown', function (e) {
       if ((e.altKey && (e.key === 'a' || e.key === 'A')) || (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a'))) {
         e.preventDefault();
-        triggerAdminPrompt();
+        openVaultPasswordPrompt();
       }
       if (e.key === 'Escape' && activeModal) {
         closeVault();
