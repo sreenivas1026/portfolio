@@ -2211,14 +2211,15 @@
     };
 
     // -------------------------------------------------------------
-    // Intelligent 4-Tap Admin Portal Detector
-    // Tapping 4 times rapidly (within 1.4s) on the screen, header, or visitor badge opens Admin.
-    // Normal browsing clicks (links, buttons, interactive tabs) automatically RESET the counter
-    // so normal single clicks during browsing NEVER accidentally open Admin!
+    // Continuous 5-Click Admin Portal Detector
+    // Must execute continuously 5 rapid clicks on the screen within 2.0 seconds.
+    // Mistaken single clicks, gapped clicks (> 500ms apart), or normal browsing clicks
+    // on navigation links/buttons will NOT work and immediately reset the counter.
     // -------------------------------------------------------------
     let tapCounter = 0;
-    let tapResetTimer = null;
+    let firstTapTime = 0;
     let lastTapTimestamp = 0;
+    let tapResetTimer = null;
 
     function handleUnifiedTap(e) {
       if (activeModal) return;
@@ -2228,35 +2229,58 @@
         return;
       }
 
-      // Check if clicked element is a visitor counter button or badge
-      const isBadge = e && e.target && e.target.closest && e.target.closest('#header-visit-btn, #footer-visit-btn, .visitor-counter-btn, #public-visit-counter, #footer-visit-counter');
-      // Check if clicked element is standard navigation / interactive button
+      // If clicking on normal navigation links or interactive buttons, reset counter immediately
       const isNavOrLink = e && e.target && e.target.closest && e.target.closest('a, button, [role="button"], [role="tab"]');
-
-      if (isNavOrLink && !isBadge) {
-        // Normal user navigation: reset tap counter so normal browsing never triggers admin
+      if (isNavOrLink) {
         tapCounter = 0;
+        firstTapTime = 0;
+        lastTapTimestamp = 0;
         clearTimeout(tapResetTimer);
         return;
       }
 
       const now = Date.now();
-      if (now - lastTapTimestamp < 100) return; // Debounce rapid synthetic events
+
+      // Debounce micro-clicks within 60ms
+      if (now - lastTapTimestamp < 60) return;
+
+      // Check for gapped clicks: if gap between consecutive clicks is > 500ms, reset to 0
+      if (lastTapTimestamp > 0 && (now - lastTapTimestamp > 500)) {
+        tapCounter = 0;
+        firstTapTime = 0;
+      }
+
+      if (tapCounter === 0) {
+        firstTapTime = now;
+      }
+
+      // Check overall window: if more than 2000ms (2 seconds) have elapsed since first tap, reset
+      if (now - firstTapTime > 2000) {
+        tapCounter = 1;
+        firstTapTime = now;
+      } else {
+        tapCounter++;
+      }
+
       lastTapTimestamp = now;
 
-      tapCounter++;
       clearTimeout(tapResetTimer);
       tapResetTimer = setTimeout(() => {
         tapCounter = 0;
-      }, 1400);
+        firstTapTime = 0;
+        lastTapTimestamp = 0;
+      }, 500); // 500ms gap resets counter
 
       // Micro haptic vibration feedback on mobile
-      if (tapCounter >= 2 && tapCounter < 4 && typeof navigator !== 'undefined' && navigator.vibrate) {
+      if (tapCounter >= 3 && tapCounter < 5 && typeof navigator !== 'undefined' && navigator.vibrate) {
         try { navigator.vibrate(25); } catch (err) {}
       }
 
-      if (tapCounter >= 4) {
+      // When continuous 5 clicks are executed within 2 seconds
+      if (tapCounter >= 5) {
         tapCounter = 0;
+        firstTapTime = 0;
+        lastTapTimestamp = 0;
         clearTimeout(tapResetTimer);
         if (e) {
           if (typeof e.preventDefault === 'function') e.preventDefault();
@@ -2266,7 +2290,7 @@
       }
     }
 
-    // Attach to window so 4 deliberate taps anywhere on screen (empty space, background, preloader, badge) trigger Admin
+    // Attach capturing listener to window so clicks anywhere on empty screen/background count
     window.addEventListener('click', handleUnifiedTap, true);
 
     // Keyboard shortcut for desktop power users: Alt+A or Ctrl+Shift+A

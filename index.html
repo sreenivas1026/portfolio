@@ -20,8 +20,8 @@
     <link rel="apple-touch-icon" href="./assets/gopi-illustration.png">
 
     <!-- Compiled Tailwind & Custom Stylesheet -->
-    <link rel="stylesheet" href="./css/tailwind.css?v=3.4">
-    <link rel="stylesheet" href="./css/styles.css?v=3.4">
+    <link rel="stylesheet" href="./css/tailwind.css?v=3.5">
+    <link rel="stylesheet" href="./css/styles.css?v=3.5">
     <!-- Instant Preloader Fallback Script (Executes synchronously with zero dependencies) -->
     <script>
         window.enterPortfolioDirectly = function(name, role) {
@@ -255,13 +255,6 @@
 
             <!-- Unified Controls Switch Group: Transparent, No Background, No Outer Border, Split ONLY by Vertical Lines -->
             <div class="flex items-center gap-2 shrink-0">
-                <!-- Public Visits Counter Badge (Desktop & Mobile - 1-Click for Intake, 4-Taps for Admin) -->
-                <button type="button" id="header-visit-btn" class="visitor-counter-btn flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg text-xs font-mono text-zinc-600 dark:text-zinc-300 hover:text-accent cursor-pointer transition-colors" title="Total Profile Ingestion Visits • 1-click for Visitor Name & Role • 4-taps for Admin Portal">
-                    <i class="fas fa-eye text-accent text-[10px]"></i>
-                    <span id="public-visit-counter" class="font-bold text-zinc-900 dark:text-white">1</span>
-                    <span class="text-[10px] hidden xs:inline">Visits</span>
-                </button>
-
                 <!-- Header Switch Group: Pure Transparent, No Background, No Outer Border, Split Only by Lines -->
                 <div class="header-switch-group inline-flex items-center divide-x divide-zinc-300/40 dark:divide-zinc-700/60 bg-transparent border-0 shadow-none">
                     <!-- 1. Theme Switch (White / Black) -->
@@ -1514,13 +1507,6 @@
                 </a>
             </div>
 
-            <!-- Live Visitor Counter Badge (1-Click for Intake, 4-Taps for Admin) -->
-            <button type="button" id="footer-visit-btn" class="visitor-counter-btn inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-accent cursor-pointer transition-colors shadow-sm" title="Total Profile Visits • 1-click for Visitor Name & Role • 4-taps for Admin Portal">
-                <i class="fas fa-eye text-accent text-xs"></i>
-                <span id="footer-visit-counter" class="font-bold text-zinc-900 dark:text-white">1</span>
-                <span>Total Profile Visits</span>
-            </button>
-
             <!-- Clean Tagline Requested by User -->
             <p class="text-xs font-mono text-zinc-500 dark:text-zinc-400">
                 Designed by Gopi. Data Engineer
@@ -1591,6 +1577,6 @@
     </div>
 
     <!-- Self-Contained JavaScript Bundle (Works on file:// and all hosts) -->
-    <script src="./js/app.js?v=3.4"></script>
+    <script src="./js/app.js?v=3.5"></script>
 </body>
 </html>
