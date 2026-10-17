@@ -1506,8 +1506,18 @@
 
   function getVisitCount() {
     let count = parseInt(localStorage.getItem(VISITS_KEY) || '0', 10);
-    if (isNaN(count) || count < 0) count = 0;
-    return count;
+    let logsCount = 0;
+    try {
+      const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+      if (Array.isArray(logs)) logsCount = logs.length;
+    } catch (e) {}
+    if (isNaN(count) || count < logsCount) {
+      count = logsCount;
+      if (count > 0) {
+        try { localStorage.setItem(VISITS_KEY, count.toString()); } catch (e) {}
+      }
+    }
+    return count > 0 ? count : 1;
   }
 
   function incrementAndSaveVisitCount() {
@@ -1626,8 +1636,7 @@
     if (!preloader) return;
 
     try {
-      let initialVisits = parseInt(localStorage.getItem('gopi_portfolio_visits_count') || '1', 10);
-      if (isNaN(initialVisits) || initialVisits >= 1000) initialVisits = 1;
+      const initialVisits = getVisitCount();
       updateVisitCounters(initialVisits);
     } catch (e) {}
 
@@ -1636,8 +1645,6 @@
     const form = document.getElementById('preloader-visitor-form');
     const nameInput = document.getElementById('preloader-name-input');
     const roleInput = document.getElementById('preloader-role-input');
-    const sessionText = document.getElementById('preloader-session-text');
-    const skipBtn = document.getElementById('preloader-skip-btn');
 
     let dismissed = false;
 
@@ -1672,20 +1679,51 @@
       preloader.style.opacity = '0';
       preloader.style.pointerEvents = 'none';
 
-      // Increment & overwrite count on page refresh
-      const refreshedCount = incrementAndSaveVisitCount();
-      updateVisitCounters(refreshedCount);
+      // DO NOT increment visit count on page refresh!
+      // Simply display the stable persistent count and continue session duration tracking.
+      const currentCount = getVisitCount();
+      updateVisitCounters(currentCount);
+      startSessionDurationTracker();
       return;
     }
 
     function dismissPreloader(name, role) {
-      if (dismissed) return;
+      if (dismissed) return false;
+
+      const rawName = (name && typeof name === 'string') ? name.trim() : (nameInput ? nameInput.value.trim() : '');
+      const rawRole = (role && typeof role === 'string') ? role.trim() : (roleInput ? roleInput.value.trim() : '');
+
+      const errorAlert = document.getElementById('preloader-validation-error');
+      const errorMsg = document.getElementById('preloader-validation-msg');
+
+      if (!rawName || rawName.length < 2) {
+        if (errorAlert) errorAlert.classList.remove('hidden');
+        if (errorMsg) errorMsg.textContent = 'Please enter your Name (at least 2 letters) to enter.';
+        if (nameInput) {
+          nameInput.classList.add('border-rose-500');
+          nameInput.focus();
+        }
+        return false;
+      }
+
+      if (!rawRole || rawRole.length < 2) {
+        if (errorAlert) errorAlert.classList.remove('hidden');
+        if (errorMsg) errorMsg.textContent = 'Please enter your Role or Organization to enter.';
+        if (roleInput) {
+          roleInput.classList.add('border-rose-500');
+          roleInput.focus();
+        }
+        return false;
+      }
+
+      if (errorAlert) errorAlert.classList.add('hidden');
+      if (nameInput) nameInput.classList.remove('border-rose-500');
+      if (roleInput) roleInput.classList.remove('border-rose-500');
+
       dismissed = true;
 
-      const finalName = name && name.trim() ? name.trim() : 'Guest Visitor';
-      const finalRole = role && role.trim() ? role.trim() : 'Visitor';
-
-      recordVisitorAudit(finalName, finalRole);
+      // Increment count and record audit row ONLY upon valid submission
+      recordVisitorAudit(rawName, rawRole);
       try {
         sessionStorage.setItem(PRELOADER_KEY, 'true');
       } catch (e) {}
@@ -1709,10 +1747,11 @@
         preloader.classList.add('hidden');
         preloader.style.setProperty('display', 'none', 'important');
       }, 250);
+      return true;
     }
 
     window.enterPortfolioDirectly = function (name, role) {
-      dismissPreloader(name, role);
+      return dismissPreloader(name, role);
     };
 
     // Submit button direct click handler
@@ -1726,31 +1765,6 @@
         dismissPreloader(rawName, rawRole);
       });
     }
-
-    // Skip button for direct instant access
-    if (skipBtn) {
-      skipBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        dismissPreloader('Guest Visitor', 'Visitor');
-      });
-    }
-
-    // Backdrop click dismiss: tapping outside intake card enters portfolio
-    preloader.addEventListener('click', function (e) {
-      if (e.target === preloader) {
-        dismissPreloader('Guest Visitor', 'Visitor');
-      }
-    });
-
-    // Escape key dismiss
-    function escDismissHandler(e) {
-      if (e.key === 'Escape') {
-        dismissPreloader('Guest Visitor', 'Visitor');
-        document.removeEventListener('keydown', escDismissHandler);
-      }
-    }
-    document.addEventListener('keydown', escDismissHandler);
 
     if (form) {
       form.addEventListener('submit', function (e) {
@@ -2079,61 +2093,135 @@
       }
     }
 
-    window.openAdminVault = openVaultPasswordPrompt;
+    // -------------------------------------------------------------
+    // Admin IP Restriction Guard
+    // Whitelists Gopi's network IP (152.59.*, 152.58.*, 152.*, localhost, 127.0.0.1)
+    // Blocks launching the admin challenge from unauthorized networks/areas
+    // -------------------------------------------------------------
+    const AUTHORIZED_SUBNETS = ['152.59.', '152.58.', '152.', '127.0.0.1', 'localhost', '::1'];
 
-    // Universal 4-Tap / 4-Click Admin Portal Detector
-    // Tapping or clicking 4 times anywhere on the screen (or on the visitor count badge / header)
-    // immediately opens the dynamic Admin Security Challenge.
-    let tapCounter = 0;
-    let tapResetTimer = null;
-    let lastTapTimestamp = 0;
+    function showSecurityDenialToast(ip) {
+      let toast = document.getElementById('admin-ip-blocked-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'admin-ip-blocked-toast';
+        toast.className = 'fixed bottom-5 right-5 z-[999999] px-4 py-2.5 rounded-xl bg-zinc-950/95 border border-rose-500/50 shadow-2xl text-xs font-mono text-rose-400 flex items-center gap-2 backdrop-blur-md transition-all duration-300';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fas fa-shield-halved text-rose-500"></i><span>Access Restricted: Admin console locked to authorized IP (${ip || 'External'}).</span>`;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      setTimeout(() => {
+        if (toast) {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          setTimeout(() => { try { toast.remove(); } catch (e) {} }, 300);
+        }
+      }, 3000);
+    }
 
-    function handleUnifiedTap(e) {
-      // If modal is already open, do not intercept
-      if (activeModal) {
-        return;
+    async function checkAdminIpAuthorized() {
+      // 1. Session authorization cache
+      if (sessionStorage.getItem('gopi_admin_ip_auth') === 'true') {
+        return true;
       }
 
-      // Ignore when user is actively typing inside interactive text fields
-      if (e && e.target && e.target.closest && e.target.closest('input, textarea, select')) {
+      // 2. Localhost / local dev bypass
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+        sessionStorage.setItem('gopi_admin_ip_auth', 'true');
+        return true;
+      }
+
+      // 3. Query client public IP via internal or external endpoint
+      let clientIp = '';
+      try {
+        const res = await fetch('/api/analytics?mode=ip', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          clientIp = data && data.ip ? data.ip.trim() : '';
+        }
+      } catch (e) {}
+
+      if (!clientIp) {
+        try {
+          const ipify = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
+          if (ipify.ok) {
+            const data = await ipify.json();
+            clientIp = data && data.ip ? data.ip.trim() : '';
+          }
+        } catch (e) {}
+      }
+
+      // Check against custom saved override if user previously authorized
+      const savedAuthIp = localStorage.getItem('gopi_admin_authorized_ip');
+      if (savedAuthIp && clientIp === savedAuthIp.trim()) {
+        sessionStorage.setItem('gopi_admin_ip_auth', 'true');
+        return true;
+      }
+
+      // Check against authorized subnet prefixes
+      const isAuthorized = AUTHORIZED_SUBNETS.some(subnet => clientIp.startsWith(subnet));
+      if (isAuthorized) {
+        sessionStorage.setItem('gopi_admin_ip_auth', 'true');
+        return true;
+      }
+
+      // IP is outside authorized range: reject access
+      showSecurityDenialToast(clientIp);
+      return false;
+    }
+
+    async function triggerAdminPrompt() {
+      const isAllowed = await checkAdminIpAuthorized();
+      if (!isAllowed) {
         return;
       }
+      openVaultPasswordPrompt();
+    }
+
+    window.openAdminVault = triggerAdminPrompt;
+
+    // Strict 4-Click Badge Counter Detector
+    // Only rapid clicks directly on the Visitor Counter badge within 1.2s will trigger
+    let badgeTapCount = 0;
+    let badgeTapTimer = null;
+    let lastBadgeTapTime = 0;
+
+    function handleBadgeTap(e) {
+      if (activeModal) return;
 
       const now = Date.now();
-      // Filter out duplicate synthetic events within 100ms
-      if (now - lastTapTimestamp < 100) return;
-      lastTapTimestamp = now;
+      if (now - lastBadgeTapTime < 100) return; // Debounce double-trigger
+      lastBadgeTapTime = now;
 
-      tapCounter++;
-      clearTimeout(tapResetTimer);
-      tapResetTimer = setTimeout(() => {
-        tapCounter = 0;
-      }, 2500);
+      badgeTapCount++;
+      clearTimeout(badgeTapTimer);
+      badgeTapTimer = setTimeout(() => {
+        badgeTapCount = 0;
+      }, 1200);
 
       // Micro haptic vibration feedback on mobile
-      if (tapCounter >= 2 && tapCounter < 4 && typeof navigator !== 'undefined' && navigator.vibrate) {
+      if (badgeTapCount >= 2 && badgeTapCount < 4 && typeof navigator !== 'undefined' && navigator.vibrate) {
         try { navigator.vibrate(25); } catch (err) {}
       }
 
-      if (tapCounter >= 4) {
-        tapCounter = 0;
-        clearTimeout(tapResetTimer);
+      if (badgeTapCount >= 4) {
+        badgeTapCount = 0;
+        clearTimeout(badgeTapTimer);
         if (e) {
           if (typeof e.preventDefault === 'function') e.preventDefault();
           if (typeof e.stopPropagation === 'function') e.stopPropagation();
         }
-        openVaultPasswordPrompt();
+        triggerAdminPrompt();
       }
     }
 
-    // Attach capturing click listener to window so clicks anywhere across the entire document are captured
-    window.addEventListener('click', handleUnifiedTap, true);
-
-    // Also attach to all visitor counter buttons and badges for direct response
+    // Attach ONLY to visitor counter buttons and badges (Never to window!)
     document.querySelectorAll('#header-visit-btn, #footer-visit-btn, .visitor-counter-btn, #public-visit-counter, #footer-visit-counter').forEach(el => {
       const btn = el.closest('button') || el;
       btn.addEventListener('click', function (e) {
-        handleUnifiedTap(e);
+        handleBadgeTap(e);
       });
     });
 
@@ -2141,7 +2229,7 @@
     document.addEventListener('keydown', function (e) {
       if ((e.altKey && (e.key === 'a' || e.key === 'A')) || (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a'))) {
         e.preventDefault();
-        openVaultPasswordPrompt();
+        triggerAdminPrompt();
       }
       if (e.key === 'Escape' && activeModal) {
         closeVault();

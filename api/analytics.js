@@ -21,6 +21,13 @@ module.exports = async function handler(req, res) {
   const { method, query, body } = req;
 
   try {
+    // 0. Client IP Discovery Endpoint for Admin Geographic/Network Lock
+    if (method === 'GET' && query.mode === 'ip') {
+      const forwarded = req.headers['x-forwarded-for'];
+      const clientIp = forwarded ? forwarded.split(',')[0].trim() : (req.socket ? req.socket.remoteAddress : '') || '';
+      return res.status(200).json({ success: true, ip: clientIp });
+    }
+
     // 1. Public Total Hits Count
     if (method === 'GET' && query.mode === 'count') {
       try {

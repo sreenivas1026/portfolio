@@ -785,6 +785,10 @@ select {
   bottom: 0px;
 }
 
+.bottom-5 {
+  bottom: 1.25rem;
+}
+
 .left-0 {
   left: 0px;
 }
@@ -795,6 +799,10 @@ select {
 
 .right-0 {
   right: 0px;
+}
+
+.right-5 {
+  right: 1.25rem;
 }
 
 .right-6 {
@@ -1520,6 +1528,10 @@ select {
   border-color: rgb(244 63 94 / 0.4);
 }
 
+.border-rose-500\/50 {
+  border-color: rgb(244 63 94 / 0.5);
+}
+
 .border-zinc-200 {
   --tw-border-opacity: 1;
   border-color: rgb(228 228 231 / var(--tw-border-opacity, 1));
@@ -1770,10 +1782,6 @@ select {
 
 .p-1 {
   padding: 0.25rem;
-}
-
-.p-2 {
-  padding: 0.5rem;
 }
 
 .p-2\.5 {
@@ -2346,6 +2354,10 @@ select {
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
 }
 
 /* Additional utility and component layer extensions */

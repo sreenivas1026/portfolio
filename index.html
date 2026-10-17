@@ -20,13 +20,42 @@
     <link rel="apple-touch-icon" href="./assets/gopi-illustration.png">
 
     <!-- Compiled Tailwind & Custom Stylesheet -->
-    <link rel="stylesheet" href="./css/tailwind.css?v=3.0">
-    <link rel="stylesheet" href="./css/styles.css?v=3.0">
+    <link rel="stylesheet" href="./css/tailwind.css?v=3.2">
+    <link rel="stylesheet" href="./css/styles.css?v=3.2">
     <!-- Instant Preloader Fallback Script (Executes synchronously with zero dependencies) -->
     <script>
         window.enterPortfolioDirectly = function(name, role) {
-            var n = (name && typeof name === 'string' && name.trim()) ? name.trim() : 'Guest Visitor';
-            var r = (role && typeof role === 'string' && role.trim()) ? role.trim() : 'Visitor';
+            var n = (name && typeof name === 'string') ? name.trim() : '';
+            var r = (role && typeof role === 'string') ? role.trim() : '';
+            var nameInput = document.getElementById('preloader-name-input');
+            var roleInput = document.getElementById('preloader-role-input');
+            var errorAlert = document.getElementById('preloader-validation-error');
+            var errorMsg = document.getElementById('preloader-validation-msg');
+            
+            if (!n && nameInput) n = nameInput.value.trim();
+            if (!r && roleInput) r = roleInput.value.trim();
+
+            if (!n || n.length < 2) {
+                if (errorAlert) errorAlert.classList.remove('hidden');
+                if (errorMsg) errorMsg.textContent = 'Please enter your Name (at least 2 letters) to continue.';
+                if (nameInput) {
+                    nameInput.classList.add('border-rose-500');
+                    nameInput.focus();
+                }
+                return false;
+            }
+            if (!r || r.length < 2) {
+                if (errorAlert) errorAlert.classList.remove('hidden');
+                if (errorMsg) errorMsg.textContent = 'Please enter your Role or Organization to continue.';
+                if (roleInput) {
+                    roleInput.classList.add('border-rose-500');
+                    roleInput.focus();
+                }
+                return false;
+            }
+
+            if (errorAlert) errorAlert.classList.add('hidden');
+
             try {
                 sessionStorage.setItem('gopi_preloader_seen', 'true');
                 localStorage.setItem('gopi_lamp_state', 'off');
@@ -42,6 +71,7 @@
             if (window.recordVisitorAudit) {
                 try { window.recordVisitorAudit(n, r); } catch(e) {}
             }
+            return true;
         };
 
         window.openVisitorIntake = function() {
@@ -72,42 +102,37 @@
 <body data-theme="black" class="relative selection:bg-blue-500/20 selection:text-blue-300 pb-24 md:pb-16 antialiased font-sans">
 
     <!-- Enterprise Pipeline Preloader & Visitor Intake Handshake -->
-    <div id="pipeline-preloader" onclick="if(event.target===this)window.enterPortfolioDirectly()" class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-zinc-950/95 backdrop-blur-xl">
+    <div id="pipeline-preloader" class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-zinc-950/95 backdrop-blur-xl">
         
-        <!-- Stage 1: Simple Credential Intake Card -->
+        <!-- Stage 1: Mandatory Credential Intake Card -->
         <div id="preloader-intake-card" class="w-full max-w-sm p-6 sm:p-7 rounded-2xl panel-card bg-zinc-950 border border-accent/40 shadow-2xl flex flex-col items-center text-center space-y-4">
             <div class="w-11 h-11 rounded-xl bg-accent/20 border border-accent flex items-center justify-center text-accent text-lg">
                 <i class="fas fa-id-badge"></i>
             </div>
             <div>
                 <h2 class="font-heading font-medium text-base sm:text-lg text-white">Welcome to Gopi's Portfolio</h2>
-                <p class="text-xs text-zinc-400 mt-1 font-light">Enter your name and role to connect to the portfolio</p>
+                <p class="text-xs text-zinc-400 mt-1 font-light">Please enter your name and role to connect to the portfolio</p>
             </div>
 
             <!-- Validation Error Alert -->
-            <div id="preloader-validation-error" class="hidden w-full p-2 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-400 text-xs text-left font-mono">
+            <div id="preloader-validation-error" class="hidden w-full p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-400 text-xs text-left font-mono">
                 <i class="fas fa-exclamation-triangle mr-1"></i>
-                <span id="preloader-validation-msg">Please enter your name to continue.</span>
+                <span id="preloader-validation-msg">Please enter both your name and role to continue.</span>
             </div>
 
-            <form id="preloader-visitor-form" onsubmit="event.preventDefault(); window.enterPortfolioDirectly(document.getElementById('preloader-name-input') ? document.getElementById('preloader-name-input').value : '', document.getElementById('preloader-role-input') ? document.getElementById('preloader-role-input').value : ''); return false;" class="w-full space-y-3 text-left">
+            <form id="preloader-visitor-form" onsubmit="event.preventDefault(); window.enterPortfolioDirectly(); return false;" class="w-full space-y-3.5 text-left">
                 <div>
-                    <label for="preloader-name-input" class="block text-[11px] font-mono text-zinc-300 mb-1">Your Name</label>
-                    <input type="text" id="preloader-name-input" placeholder="Your Name" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-accent">
+                    <label for="preloader-name-input" class="block text-[11px] font-mono text-zinc-300 mb-1">Your Name <span class="text-rose-400 font-bold">*</span></label>
+                    <input type="text" id="preloader-name-input" placeholder="e.g. Alex Morgan" required minlength="2" autocomplete="name" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-accent transition-colors">
                 </div>
                 <div>
-                    <label for="preloader-role-input" class="block text-[11px] font-mono text-zinc-300 mb-1">Your Role / Organization</label>
-                    <input type="text" id="preloader-role-input" placeholder="e.g. Recruiter, Engineer, Visitor" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-accent">
+                    <label for="preloader-role-input" class="block text-[11px] font-mono text-zinc-300 mb-1">Your Role / Organization <span class="text-rose-400 font-bold">*</span></label>
+                    <input type="text" id="preloader-role-input" placeholder="e.g. Recruiter, Data Engineer, Visitor" required minlength="2" autocomplete="organization-title" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-accent transition-colors">
                 </div>
-                <button type="button" id="preloader-submit-btn" onclick="window.enterPortfolioDirectly(document.getElementById('preloader-name-input') ? document.getElementById('preloader-name-input').value : '', document.getElementById('preloader-role-input') ? document.getElementById('preloader-role-input').value : '')" class="w-full py-2.5 rounded-xl btn-accent text-xs font-semibold cursor-pointer inline-flex items-center justify-center gap-1.5 shadow-md">
+                <button type="submit" id="preloader-submit-btn" class="w-full py-2.5 rounded-xl btn-accent text-xs font-semibold cursor-pointer inline-flex items-center justify-center gap-1.5 shadow-md mt-1">
                     <span>Enter Portfolio</span>
                     <i class="fas fa-arrow-right text-[10px]"></i>
                 </button>
-                <div class="text-center pt-1">
-                    <button type="button" id="preloader-skip-btn" onclick="window.enterPortfolioDirectly('Guest Visitor', 'Visitor')" class="text-[11px] font-mono text-zinc-400 hover:text-accent cursor-pointer transition-colors">
-                        <span>Skip and enter directly &rarr;</span>
-                    </button>
-                </div>
             </form>
         </div>
 
@@ -1566,6 +1591,6 @@
     </div>
 
     <!-- Self-Contained JavaScript Bundle (Works on file:// and all hosts) -->
-    <script src="./js/app.js?v=3.0"></script>
+    <script src="./js/app.js?v=3.2"></script>
 </body>
 </html>
