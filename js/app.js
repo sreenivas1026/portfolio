@@ -1629,17 +1629,14 @@
     updateVisitCounters(count);
     startSessionDurationTracker();
 
-    // Universal cross-device sync to Firebase Realtime Database
-    syncVisitToFirebase(newRecord);
+    // Universal cross-device sync via secure internal proxy (zero third-party/database URLs exposed)
+    syncVisitToTelemetry(newRecord);
   }
   window.recordVisitorAudit = recordVisitorAudit;
 
-  const FIREBASE_DB_URL = 'https://gopi-3cc1e-default-rtdb.asia-southeast1.firebasedatabase.app';
-  const activeFirebaseUrl = FIREBASE_DB_URL;
-
-  async function syncVisitToFirebase(record) {
+  async function syncVisitToTelemetry(record) {
     try {
-      await fetch(`${activeFirebaseUrl}/visits.json`, {
+      await fetch('/api/analytics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(record)
@@ -1981,21 +1978,16 @@
       async function renderVisitorTable(filterQuery = '') {
         if (!tableBody) return;
 
-        // Fetch universal records from Firebase
+        // Fetch universal records from own secure proxy (zero database URLs in client code)
         try {
-          const res = await fetch(`${activeFirebaseUrl}/visits.json`);
+          const res = await fetch('/api/analytics?mode=admin', {
+            headers: { 'X-Admin-Key': 'gopi_079_tapped' }
+          });
           if (res.ok) {
-            const fbData = await res.json();
-            if (fbData && typeof fbData === 'object') {
-              const fbList = Object.keys(fbData).map((k, idx) => ({
-                id: k,
-                visitNum: idx + 1,
-                ...fbData[k]
-              }));
-              if (fbList.length > 0) {
-                cachedLogs = fbList;
-                try { localStorage.setItem(LOGS_KEY, JSON.stringify(cachedLogs)); } catch (e) {}
-              }
+            const data = await res.json();
+            if (data && data.visits && Array.isArray(data.visits) && data.visits.length > 0) {
+              cachedLogs = data.visits;
+              try { localStorage.setItem(LOGS_KEY, JSON.stringify(cachedLogs)); } catch (e) {}
             }
           }
         } catch (e) {}
@@ -2058,13 +2050,17 @@
 
           let isAuthorized = enteredHash && AUTHORIZED_HASHES.includes(enteredHash);
 
-          // Dynamic admin password validation from Firebase
+          // Dynamic admin password validation via server-side proxy
           if (!isAuthorized && entered) {
             try {
-              const res = await fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`);
+              const res = await fetch('/api/analytics?mode=verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enteredHash })
+              });
               if (res.ok) {
-                const fbHash = await res.json();
-                if (fbHash && typeof fbHash === 'string' && enteredHash === fbHash.trim()) {
+                const data = await res.json();
+                if (data && data.success) {
                   isAuthorized = true;
                 }
               }
@@ -2072,15 +2068,6 @@
           }
 
           if (isAuthorized) {
-            // Seed current hash to Firebase if missing
-            try {
-              fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(enteredHash)
-              }).catch(() => {});
-            } catch (err) {}
-
             if (passwordError) passwordError.classList.add('hidden');
             if (passwordPanel) {
               passwordPanel.classList.add('hidden');

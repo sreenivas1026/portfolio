@@ -69,6 +69,43 @@ module.exports = async function handler(req, res) {
       }
     }
 
+    // 2.5 Secure Server-Side Admin Authentication Verification
+    if (method === 'POST' && query.mode === 'verify') {
+      const payload = typeof body === 'string' ? JSON.parse(body || '{}') : (body || {});
+      const { enteredHash } = payload;
+
+      const AUTHORIZED_HASHES = [
+        '09730613eefb6782eb94d21a3b0172f1af6b29d2e4119c9153770349a899509b', // 079
+        '853f3e818e56be52f1a825f9dabef8794bac5e586838894c1f2927d9e9d701db', // gopi079
+        '29c30d337c34bea0ff2d7a2e2834a0c667c1a90f746920282c2e5c670ce4caf1', // admin079
+        '3b6a6f33ecce7ae6b9961dd3e966ff2b537dcde3c446a93fbe4a1e830b15f698', // gopi
+        '3c8b3a826c2e141e6a2ee6bfc3ec6371b0aefc19826637c7873285f6e8073e86', // 1026
+        '2191bd41b46979b040aab15ec07c5aa7c59abf05bda935022889b85ac02132e4', // gopi@079
+        '81c944ce115a9c0990b45e21fe123129b30b8bda77aa669aec576822d3ca06da', // admin
+        '93e54d8faaddbadc4d08097aeaba07c531c8a109aa1ed70f7d23235d976468e6'  // gopi_0k7
+      ];
+
+      let isAuthorized = enteredHash && AUTHORIZED_HASHES.includes(enteredHash);
+
+      if (!isAuthorized && enteredHash) {
+        try {
+          const configUrl = CLOUD_STORE_URL.replace('/visits.json', '/admin_config/auth_hash.json');
+          const fbRes = await fetch(configUrl);
+          if (fbRes.ok) {
+            const fbHash = await fbRes.json();
+            if (fbHash && typeof fbHash === 'string' && enteredHash === fbHash.trim()) {
+              isAuthorized = true;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (isAuthorized) {
+        return res.status(200).json({ success: true, token: 'gopi_079_tapped' });
+      }
+      return res.status(401).json({ success: false, error: 'Invalid security key' });
+    }
+
     // 3. Record New Visit Hit (POST)
     if (method === 'POST') {
       const payload = typeof body === 'string' ? JSON.parse(body || '{}') : (body || {});
