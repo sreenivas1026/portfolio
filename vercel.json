@@ -2,18 +2,5 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": ".",
-  "framework": null,
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.gopikunchala.in"
-        }
-      ],
-      "destination": "https://gopikunchala.in/$1",
-      "permanent": true
-    }
-  ]
+  "framework": null
 }
