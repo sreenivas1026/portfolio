@@ -594,6 +594,51 @@ html[data-theme="white"] #owner-vault-modal * {
   word-break: break-word;
 }
 
+/* Chat Typing Effect & Thinking Pulse Indicators */
+.chat-typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  background-color: var(--accent);
+  margin-left: 2px;
+  vertical-align: -1px;
+  animation: chatCursorBlink 0.75s infinite ease-in-out;
+}
+
+@keyframes chatCursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.thinking-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-main);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.thinking-pulse-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  display: inline-block;
+  animation: thinkingDotBounce 1.4s infinite ease-in-out both;
+}
+
+.thinking-pulse-dot:nth-child(1) { animation-delay: -0.32s; }
+.thinking-pulse-dot:nth-child(2) { animation-delay: -0.16s; }
+.thinking-pulse-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes thinkingDotBounce {
+  0%, 80%, 100% { transform: scale(0.4); opacity: 0.35; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
 /* Live Pipeline Execution Stage Badges */
 .stage-status-badge {
   display: inline-flex;

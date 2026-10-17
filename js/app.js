@@ -1197,6 +1197,119 @@
     const promptChips = document.querySelectorAll('.chat-prompt-chip');
 
     let hasGreeted = false;
+    let isAssistantTyping = false;
+
+    function appendUserMessage(text) {
+      if (!msgBox) return;
+      const row = document.createElement('div');
+      row.className = 'flex justify-end';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble-user';
+      bubble.textContent = text;
+      row.appendChild(bubble);
+      msgBox.appendChild(row);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    function showThinkingIndicator() {
+      if (!msgBox) return null;
+      const row = document.createElement('div');
+      row.className = 'flex justify-start';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'thinking-bubble';
+      bubble.innerHTML = `
+        <span class="text-[11px] font-mono text-zinc-400 font-medium tracking-wide">Thinking</span>
+        <span class="inline-flex items-center gap-1 ml-0.5">
+          <span class="thinking-pulse-dot"></span>
+          <span class="thinking-pulse-dot"></span>
+          <span class="thinking-pulse-dot"></span>
+        </span>
+      `;
+      row.appendChild(bubble);
+      msgBox.appendChild(row);
+      msgBox.scrollTop = msgBox.scrollHeight;
+      return row;
+    }
+
+    function typeAssistantMessage(rawText, thinkingRow) {
+      if (!msgBox) return;
+      isAssistantTyping = true;
+      if (inputField) inputField.disabled = true;
+      if (sendBtn) sendBtn.disabled = true;
+
+      // Realistic thinking pause: 750ms
+      setTimeout(() => {
+        if (thinkingRow && thinkingRow.parentNode) {
+          thinkingRow.parentNode.removeChild(thinkingRow);
+        }
+
+        const row = document.createElement('div');
+        row.className = 'flex justify-start';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble-assistant';
+
+        const contentSpan = document.createElement('span');
+        const cursorSpan = document.createElement('span');
+        cursorSpan.className = 'chat-typing-cursor';
+
+        bubble.appendChild(contentSpan);
+        bubble.appendChild(cursorSpan);
+        row.appendChild(bubble);
+        msgBox.appendChild(row);
+        msgBox.scrollTop = msgBox.scrollHeight;
+
+        // Convert newlines and bold markdown safely
+        const formattedHtml = rawText
+          .replace(/\n/g, '<br>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Split HTML tokens (tags are atomic, characters are typed individually)
+        const tokens = formattedHtml.match(/(<[^>]+>|[^<])/g) || [];
+        let tokenIndex = 0;
+
+        function typeNext() {
+          if (tokenIndex >= tokens.length) {
+            // Finished typing: remove cursor and re-enable input
+            if (cursorSpan && cursorSpan.parentNode) {
+              cursorSpan.parentNode.removeChild(cursorSpan);
+            }
+            isAssistantTyping = false;
+            if (inputField) {
+              inputField.disabled = false;
+              inputField.focus();
+            }
+            if (sendBtn) sendBtn.disabled = false;
+            msgBox.scrollTop = msgBox.scrollHeight;
+            return;
+          }
+
+          const token = tokens[tokenIndex++];
+          contentSpan.innerHTML += token;
+          msgBox.scrollTop = msgBox.scrollHeight;
+
+          // If token is an HTML tag (like <br> or <strong>), continue immediately
+          if (token.startsWith('<')) {
+            typeNext();
+            return;
+          }
+
+          // Natural human cadence
+          let delay = 14;
+          if (token === '.' || token === '!' || token === '?') {
+            delay = 65;
+          } else if (token === ',' || token === ':' || token === ';') {
+            delay = 35;
+          }
+
+          setTimeout(typeNext, delay);
+        }
+
+        typeNext();
+      }, 750);
+    }
 
     function openChat() {
       if (chatPanel) {
@@ -1204,10 +1317,13 @@
         chatPanel.style.display = 'flex';
         if (!hasGreeted && msgBox && msgBox.children.length === 0) {
           const exp = getLiveExperienceData();
-          appendMessage('assistant', `Hello! I'm Kwen, Gopi's portfolio assistant. I'm here to assist you with any questions about Gopi Kunchala's **${exp.years} years of cloud data engineering at TCS**, technical stack, certifications, or resume. How can I help you today?`);
+          const greetingText = `Hello! I'm Kwen, Gopi's portfolio assistant. I'm here to assist you with any questions about Gopi Kunchala's **${exp.years} years of cloud data engineering at TCS**, technical stack, certifications, or resume. How can I help you today?`;
+          const thinking = showThinkingIndicator();
+          typeAssistantMessage(greetingText, thinking);
           hasGreeted = true;
+        } else if (inputField && !isAssistantTyping) {
+          inputField.focus();
         }
-        if (inputField) inputField.focus();
       }
     }
 
@@ -1243,32 +1359,17 @@
       }
     });
 
-    function appendMessage(role, text) {
-      if (!msgBox) return;
-      const row = document.createElement('div');
-      row.className = 'flex ' + (role === 'user' ? 'justify-end' : 'justify-start');
-
-      const bubble = document.createElement('div');
-      bubble.className = role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant';
-
-      bubble.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      row.appendChild(bubble);
-      msgBox.appendChild(row);
-      msgBox.scrollTop = msgBox.scrollHeight;
-    }
-
     function handleSend() {
-      if (!inputField) return;
+      if (isAssistantTyping || !inputField) return;
       const val = inputField.value.trim();
       if (!val) return;
 
-      appendMessage('user', val);
+      appendUserMessage(val);
       inputField.value = '';
 
-      setTimeout(function () {
-        const reply = findResponse(val);
-        appendMessage('assistant', reply);
-      }, 200);
+      const reply = findResponse(val);
+      const thinking = showThinkingIndicator();
+      typeAssistantMessage(reply, thinking);
     }
 
     if (sendBtn) sendBtn.addEventListener('click', handleSend);
@@ -1280,12 +1381,13 @@
 
     promptChips.forEach(chip => {
       chip.addEventListener('click', function () {
+        if (isAssistantTyping) return;
         const query = this.getAttribute('data-query');
         if (query) {
-          appendMessage('user', this.textContent);
-          setTimeout(function () {
-            appendMessage('assistant', findResponse(query));
-          }, 180);
+          appendUserMessage(this.textContent.trim());
+          const reply = findResponse(query);
+          const thinking = showThinkingIndicator();
+          typeAssistantMessage(reply, thinking);
         }
       });
     });
