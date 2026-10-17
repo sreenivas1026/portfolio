@@ -1628,8 +1628,33 @@
 
     updateVisitCounters(count);
     startSessionDurationTracker();
+
+    // Universal cross-device sync to Firebase Realtime Database
+    syncVisitToFirebase(newRecord);
   }
   window.recordVisitorAudit = recordVisitorAudit;
+
+  const FIREBASE_DB_URL = 'https://gopi-3cc1e-default-rtdb.firebaseio.com';
+  const FIREBASE_DB_ALT = 'https://gopi-3cc1e-default-rtdb.asia-southeast1.firebasedatabase.app';
+  let activeFirebaseUrl = FIREBASE_DB_URL;
+
+  async function syncVisitToFirebase(record) {
+    try {
+      let res = await fetch(`${activeFirebaseUrl}/visits.json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(record)
+      });
+      if (!res.ok) {
+        activeFirebaseUrl = FIREBASE_DB_ALT;
+        await fetch(`${activeFirebaseUrl}/visits.json`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record)
+        });
+      }
+    } catch (e) {}
+  }
 
   function initPipelinePreloader() {
     const preloader = document.getElementById('pipeline-preloader');
@@ -1952,21 +1977,46 @@
         greetingHeading.textContent = greeting;
       }
 
-      function updateDashboardStats() {
-        const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+      let cachedLogs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+
+      function updateDashboardStats(logsToUse) {
+        const logs = logsToUse || cachedLogs;
         const count = getVisitCount() || logs.length || 1;
         if (realtimeBadge) realtimeBadge.textContent = count.toLocaleString();
         if (statNames) statNames.textContent = logs.length.toString();
       }
       updateDashboardStats();
 
-      function renderVisitorTable(filterQuery = '') {
+      async function renderVisitorTable(filterQuery = '') {
         if (!tableBody) return;
-        tableBody.innerHTML = '';
-        const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
-        updateDashboardStats();
 
-        if (logs.length === 0) {
+        // Fetch universal records from Firebase
+        try {
+          let res = await fetch(`${activeFirebaseUrl}/visits.json`);
+          if (!res.ok) {
+            activeFirebaseUrl = FIREBASE_DB_ALT;
+            res = await fetch(`${activeFirebaseUrl}/visits.json`);
+          }
+          if (res.ok) {
+            const fbData = await res.json();
+            if (fbData && typeof fbData === 'object') {
+              const fbList = Object.keys(fbData).map((k, idx) => ({
+                id: k,
+                visitNum: idx + 1,
+                ...fbData[k]
+              }));
+              if (fbList.length > 0) {
+                cachedLogs = fbList;
+                try { localStorage.setItem(LOGS_KEY, JSON.stringify(cachedLogs)); } catch (e) {}
+              }
+            }
+          }
+        } catch (e) {}
+
+        tableBody.innerHTML = '';
+        updateDashboardStats(cachedLogs);
+
+        if (cachedLogs.length === 0) {
           const emptyRow = document.createElement('tr');
           emptyRow.innerHTML = `<td colspan="5" class="py-8 text-center text-zinc-500 font-mono">No confidential records logged yet.</td>`;
           tableBody.appendChild(emptyRow);
@@ -1974,7 +2024,7 @@
         }
 
         const query = (filterQuery || '').toLowerCase().trim();
-        const filtered = logs.filter(log => {
+        const filtered = cachedLogs.filter(log => {
           if (!query) return true;
           return (
             String(log.visitNum).includes(query) ||
@@ -2019,7 +2069,35 @@
           const entered = (passwordInput ? passwordInput.value : '').trim();
           const enteredHash = await hashVaultKey(entered);
 
-          if (enteredHash && AUTHORIZED_HASHES.includes(enteredHash)) {
+          let isAuthorized = enteredHash && AUTHORIZED_HASHES.includes(enteredHash);
+
+          // Dynamic admin password validation from Firebase
+          if (!isAuthorized && entered) {
+            try {
+              let res = await fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`);
+              if (!res.ok) {
+                activeFirebaseUrl = FIREBASE_DB_ALT;
+                res = await fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`);
+              }
+              if (res.ok) {
+                const fbHash = await res.json();
+                if (fbHash && typeof fbHash === 'string' && enteredHash === fbHash.trim()) {
+                  isAuthorized = true;
+                }
+              }
+            } catch (err) {}
+          }
+
+          if (isAuthorized) {
+            // Seed current hash to Firebase if missing
+            try {
+              fetch(`${activeFirebaseUrl}/admin_config/auth_hash.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(enteredHash)
+              }).catch(() => {});
+            } catch (err) {}
+
             if (passwordError) passwordError.classList.add('hidden');
             if (passwordPanel) {
               passwordPanel.classList.add('hidden');
