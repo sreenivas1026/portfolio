@@ -1812,28 +1812,6 @@
   // When closed, DOM element is completely removed from document.body!
   // -------------------------------------------------------------
   function initSecretOwnerVault() {
-    const VAULT_SALT = 'gopi_kunchala_vault_auth_salt_98471';
-    const AUTHORIZED_HASHES = [
-      '09730613eefb6782eb94d21a3b0172f1af6b29d2e4119c9153770349a899509b', // 079
-      '853f3e818e56be52f1a825f9dabef8794bac5e586838894c1f2927d9e9d701db', // gopi079
-      '29c30d337c34bea0ff2d7a2e2834a0c667c1a90f746920282c2e5c670ce4caf1', // admin079
-      '3b6a6f33ecce7ae6b9961dd3e966ff2b537dcde3c446a93fbe4a1e830b15f698', // gopi
-      '3c8b3a826c2e141e6a2ee6bfc3ec6371b0aefc19826637c7873285f6e8073e86', // 1026
-      '2191bd41b46979b040aab15ec07c5aa7c59abf05bda935022889b85ac02132e4', // gopi@079
-      '81c944ce115a9c0990b45e21fe123129b30b8bda77aa669aec576822d3ca06da', // admin
-      '93e54d8faaddbadc4d08097aeaba07c531c8a109aa1ed70f7d23235d976468e6'  // gopi_0k7
-    ];
-
-    async function hashVaultKey(key) {
-      const text = key.trim().toLowerCase() + VAULT_SALT;
-      if (window.crypto && window.crypto.subtle) {
-        const enc = new TextEncoder();
-        const buffer = await window.crypto.subtle.digest('SHA-256', enc.encode(text));
-        return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-      }
-      return '';
-    }
-
     let activeModal = null;
 
     function closeVault() {
@@ -2046,25 +2024,26 @@
         passwordForm.addEventListener('submit', async function (e) {
           e.preventDefault();
           const entered = (passwordInput ? passwordInput.value : '').trim();
-          const enteredHash = await hashVaultKey(entered);
+          if (!entered) return;
 
-          let isAuthorized = enteredHash && AUTHORIZED_HASHES.includes(enteredHash);
+          let isAuthorized = false;
+          let errorMessage = 'Access Denied. Invalid Admin Security Key.';
 
-          // Dynamic admin password validation via server-side proxy
-          if (!isAuthorized && entered) {
-            try {
-              const res = await fetch('/api/analytics?mode=verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ enteredHash, enteredPassword: entered })
-              });
-              if (res.ok) {
-                const data = await res.json();
-                if (data && data.success) {
-                  isAuthorized = true;
-                }
-              }
-            } catch (err) {}
+          // Secure verification through internal serverless proxy (zero client-side secrets)
+          try {
+            const res = await fetch('/api/analytics?mode=verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ enteredPassword: entered })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data && data.success) {
+              isAuthorized = true;
+            } else if (data && data.error) {
+              errorMessage = data.error;
+            }
+          } catch (err) {
+            errorMessage = 'Network error verifying security key. Please retry.';
           }
 
           if (isAuthorized) {
@@ -2081,7 +2060,7 @@
             renderVisitorTable(searchInput ? searchInput.value : '');
           } else {
             if (passwordError) {
-              passwordError.textContent = 'Access Denied. Invalid Admin Security Key.';
+              passwordError.textContent = errorMessage;
               passwordError.classList.remove('hidden');
             }
             if (passwordInput) {

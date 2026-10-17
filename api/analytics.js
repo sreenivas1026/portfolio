@@ -5,8 +5,18 @@
 // 3. PUT -> Updates session duration (time spent on page) for the given sessionId
 // 4. GET ?mode=admin&key=... -> Returns full confidential log for admin dashboard
 
+const crypto = require('crypto');
+
 const CLOUD_STORE_URL = process.env.ANALYTICS_STORE_URL || 'https://gopi-3cc1e-default-rtdb.asia-southeast1.firebasedatabase.app/visits.json';
 const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'gopi_admin_079_secret';
+
+// In-memory rate-limiter store to thwart brute-force password guessing
+const failedAttemptsMap = global._adminFailedAttempts || (global._adminFailedAttempts = new Map());
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes lockout
+
+// SHA-256 fallback hash for default master password (Gopi#Vault2026!Synapse984)
+const FALLBACK_HASH = '4bada9edf810990a652ef229e4ae1551627c954a1878836c77ead49e5380e3f3';
 
 module.exports = async function handler(req, res) {
   // Enable CORS
@@ -71,55 +81,82 @@ module.exports = async function handler(req, res) {
 
     // 2.5 Secure Server-Side Admin Authentication Verification
     if (method === 'POST' && query.mode === 'verify') {
+      const forwarded = req.headers['x-forwarded-for'];
+      const clientIp = forwarded ? forwarded.split(',')[0].trim() : (req.socket ? req.socket.remoteAddress : '') || 'default_client';
+
+      // Check brute-force lockout status
+      const nowMs = Date.now();
+      const attemptData = failedAttemptsMap.get(clientIp);
+      if (attemptData && attemptData.count >= MAX_FAILED_ATTEMPTS) {
+        const remainingMs = LOCKOUT_MS - (nowMs - attemptData.lastAttempt);
+        if (remainingMs > 0) {
+          const remainingMin = Math.ceil(remainingMs / 60000);
+          return res.status(429).json({
+            success: false,
+            error: `Security Lockout Active. 5 invalid attempts reached. Please wait ${remainingMin} minute(s).`
+          });
+        } else {
+          // Lockout window expired, reset
+          failedAttemptsMap.delete(clientIp);
+        }
+      }
+
       const payload = typeof body === 'string' ? JSON.parse(body || '{}') : (body || {});
-      const { enteredHash, enteredPassword } = payload;
+      const { enteredPassword } = payload;
+      const cleanPass = enteredPassword ? String(enteredPassword).trim() : '';
 
-      const AUTHORIZED_HASHES = [
-        '09730613eefb6782eb94d21a3b0172f1af6b29d2e4119c9153770349a899509b', // 079
-        '853f3e818e56be52f1a825f9dabef8794bac5e586838894c1f2927d9e9d701db', // gopi079
-        '29c30d337c34bea0ff2d7a2e2834a0c667c1a90f746920282c2e5c670ce4caf1', // admin079
-        '3b6a6f33ecce7ae6b9961dd3e966ff2b537dcde3c446a93fbe4a1e830b15f698', // gopi
-        '3c8b3a826c2e141e6a2ee6bfc3ec6371b0aefc19826637c7873285f6e8073e86', // 1026
-        '2191bd41b46979b040aab15ec07c5aa7c59abf05bda935022889b85ac02132e4', // gopi@079
-        '81c944ce115a9c0990b45e21fe123129b30b8bda77aa669aec576822d3ca06da', // admin
-        '93e54d8faaddbadc4d08097aeaba07c531c8a109aa1ed70f7d23235d976468e6'  // gopi_0k7
-      ];
+      if (!cleanPass) {
+        return res.status(400).json({ success: false, error: 'Password is required' });
+      }
 
-      let isAuthorized = enteredHash && AUTHORIZED_HASHES.includes(enteredHash);
+      const computedHash = crypto.createHash('sha256').update(cleanPass).digest('hex');
+      let isAuthorized = false;
 
-      // Verify dynamically against Firebase Realtime Database admin_config
-      if (!isAuthorized) {
-        try {
-          const configUrl = CLOUD_STORE_URL.replace('/visits.json', '/admin_config.json');
-          const fbRes = await fetch(configUrl);
-          if (fbRes.ok) {
-            const config = await fbRes.json();
-            if (config) {
-              // 1. Check direct password stored in Firebase
-              if (enteredPassword && config.password && String(config.password).trim() === String(enteredPassword).trim()) {
-                isAuthorized = true;
-              }
-              // 2. Check auth_hash stored in Firebase
-              if (enteredHash && config.auth_hash && String(config.auth_hash).trim() === String(enteredHash).trim()) {
-                isAuthorized = true;
-              }
-              // 3. Check authorized_hashes array in Firebase
-              if (enteredHash && Array.isArray(config.authorized_hashes) && config.authorized_hashes.includes(enteredHash)) {
-                isAuthorized = true;
-              }
-              // 4. Check passwords array in Firebase (if multiple plain passwords configured)
-              if (enteredPassword && Array.isArray(config.passwords) && config.passwords.map(p => String(p).trim()).includes(String(enteredPassword).trim())) {
-                isAuthorized = true;
-              }
+      // 1. Dynamic Check against Firebase Realtime Database
+      try {
+        const configUrl = CLOUD_STORE_URL.replace('/visits.json', '/admin_config.json');
+        const fbRes = await fetch(configUrl);
+        if (fbRes.ok) {
+          const config = await fbRes.json();
+          if (config) {
+            if (config.password && String(config.password).trim() === cleanPass) {
+              isAuthorized = true;
+            } else if (config.auth_hash && String(config.auth_hash).trim() === computedHash) {
+              isAuthorized = true;
+            } else if (Array.isArray(config.authorized_hashes) && config.authorized_hashes.includes(computedHash)) {
+              isAuthorized = true;
             }
           }
-        } catch (e) {}
+        }
+      } catch (e) {}
+
+      // 2. Fallback to hardcoded Master Hash if Firebase offline
+      if (!isAuthorized && computedHash === FALLBACK_HASH) {
+        isAuthorized = true;
       }
 
       if (isAuthorized) {
+        failedAttemptsMap.delete(clientIp);
         return res.status(200).json({ success: true, token: 'gopi_079_tapped' });
+      } else {
+        // Record failed attempt
+        const currentData = failedAttemptsMap.get(clientIp) || { count: 0, lastAttempt: nowMs };
+        currentData.count += 1;
+        currentData.lastAttempt = nowMs;
+        failedAttemptsMap.set(clientIp, currentData);
+
+        const attemptsLeft = MAX_FAILED_ATTEMPTS - currentData.count;
+        if (attemptsLeft <= 0) {
+          return res.status(429).json({
+            success: false,
+            error: 'Security Lockout Activated: 5 consecutive invalid keys. Locked for 15 minutes.'
+          });
+        }
+        return res.status(401).json({
+          success: false,
+          error: `Access Denied. Invalid Admin Security Key (${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining).`
+        });
       }
-      return res.status(401).json({ success: false, error: 'Invalid security key' });
     }
 
     // 3. Record New Visit Hit (POST)
