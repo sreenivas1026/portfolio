@@ -2056,7 +2056,7 @@
               const res = await fetch('/api/analytics?mode=verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ enteredHash })
+                body: JSON.stringify({ enteredHash, enteredPassword: entered })
               });
               if (res.ok) {
                 const data = await res.json();

@@ -72,7 +72,7 @@ module.exports = async function handler(req, res) {
     // 2.5 Secure Server-Side Admin Authentication Verification
     if (method === 'POST' && query.mode === 'verify') {
       const payload = typeof body === 'string' ? JSON.parse(body || '{}') : (body || {});
-      const { enteredHash } = payload;
+      const { enteredHash, enteredPassword } = payload;
 
       const AUTHORIZED_HASHES = [
         '09730613eefb6782eb94d21a3b0172f1af6b29d2e4119c9153770349a899509b', // 079
@@ -87,14 +87,30 @@ module.exports = async function handler(req, res) {
 
       let isAuthorized = enteredHash && AUTHORIZED_HASHES.includes(enteredHash);
 
-      if (!isAuthorized && enteredHash) {
+      // Verify dynamically against Firebase Realtime Database admin_config
+      if (!isAuthorized) {
         try {
-          const configUrl = CLOUD_STORE_URL.replace('/visits.json', '/admin_config/auth_hash.json');
+          const configUrl = CLOUD_STORE_URL.replace('/visits.json', '/admin_config.json');
           const fbRes = await fetch(configUrl);
           if (fbRes.ok) {
-            const fbHash = await fbRes.json();
-            if (fbHash && typeof fbHash === 'string' && enteredHash === fbHash.trim()) {
-              isAuthorized = true;
+            const config = await fbRes.json();
+            if (config) {
+              // 1. Check direct password stored in Firebase
+              if (enteredPassword && config.password && String(config.password).trim() === String(enteredPassword).trim()) {
+                isAuthorized = true;
+              }
+              // 2. Check auth_hash stored in Firebase
+              if (enteredHash && config.auth_hash && String(config.auth_hash).trim() === String(enteredHash).trim()) {
+                isAuthorized = true;
+              }
+              // 3. Check authorized_hashes array in Firebase
+              if (enteredHash && Array.isArray(config.authorized_hashes) && config.authorized_hashes.includes(enteredHash)) {
+                isAuthorized = true;
+              }
+              // 4. Check passwords array in Firebase (if multiple plain passwords configured)
+              if (enteredPassword && Array.isArray(config.passwords) && config.passwords.map(p => String(p).trim()).includes(String(enteredPassword).trim())) {
+                isAuthorized = true;
+              }
             }
           }
         } catch (e) {}
